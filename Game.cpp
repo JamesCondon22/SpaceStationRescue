@@ -24,7 +24,7 @@ Game::Game()
 	//this a test
 	//this a test
 	m_window.setVerticalSyncEnabled(true);
-
+	
 	if (!m_font.loadFromFile("mytype.ttf"))
 	{
 		std::cout << "problem loading font" << std::endl;
