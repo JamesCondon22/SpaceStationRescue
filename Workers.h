@@ -6,14 +6,17 @@
 class Workers
 {
 public:
-	Workers(int x, int y, int vx, int vy);
+	Workers(int x, int y, int speed);
 	void update();
 	void render(sf::RenderWindow &window);
+	void wander();
 
 
 private :
 	sf::Vector2f m_position;
-	sf::Vector2f m_velocity;
+	const int m_speed;
+	sf::Vector2f m_heading;
+	float m_rotation;
 	sf::Texture m_texture;
 	sf::Sprite m_sprite;
 };

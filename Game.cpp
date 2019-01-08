@@ -83,7 +83,7 @@ Game::Game()
 	};
 	//myfile.open("map.txt");
 
-	m_worker = new Workers(100,100,0,0);
+	m_worker = new Workers(100,100,10);
 
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {	
