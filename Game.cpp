@@ -19,7 +19,10 @@ Game::Game()
 	: m_window(sf::VideoMode(1250, 1250, 32), "SFML Playground", sf::Style::Default)
 
 {
-
+	//this a test
+	//this a test
+	//this a test
+	//this a test
 	m_window.setVerticalSyncEnabled(true);
 
 	if (!m_font.loadFromFile("mytype.ttf"))
