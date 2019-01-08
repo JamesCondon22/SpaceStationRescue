@@ -23,6 +23,8 @@ protected:
 	void addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue);
 	void checkLowest(int lowest, int current);
 	void createMap();
+
+	void collision(int x, int y);
 	// main window
 	sf::RenderWindow m_window;
 	//std::vector<Tile*> m_tiles;
@@ -49,7 +51,11 @@ protected:
 	sf::Texture miniMapTexture;
 
 	Player * m_player;
-
+	int lastX = 25;
+	int lastY = 25;
+	bool start = false;
+	bool colliding = false;
+	sf::Vector2f playerPosition;
 };
 
 #endif

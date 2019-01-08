@@ -16,13 +16,10 @@ static double const MS_PER_UPDATE = 10.0;
 /// </summary>
 /// 
 Game::Game()
-	: m_window(sf::VideoMode(1250, 1250, 32), "SFML Playground", sf::Style::Default)
+	: m_window(sf::VideoMode(1400, 900, 32), "SFML Playground", sf::Style::Default)
 
 {
-	//this a test
-	//this a test
-	//this a test
-	//this a test
+	
 	m_window.setVerticalSyncEnabled(true);
 	
 	if (!m_font.loadFromFile("mytype.ttf"))
@@ -38,11 +35,12 @@ Game::Game()
 	mouse.setPosition(sf::Vector2i(0, 0), m_window);
 	
 	miniMapView.setViewport(sf::FloatRect(0.75f, 0.0f, 0.25f, 0.25f));
-	miniMapView.setSize(1500, 1500);
+	miniMapView.setSize(1250, 1250);
+	//miniMapView.setCenter(625, 625);
 	
-	gameView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
-	gameView.setSize(1250.f, 1250.f);
-	gameView.setCenter(625, 625);
+	gameView.setViewport(sf::FloatRect(0.f, 0.f, 3.0f, 3.0f));
+	gameView.setSize(1250, 1250);
+	//gameView.setCenter(625, 625);
 
 	
 	
@@ -107,15 +105,15 @@ Game::Game()
 		for (int j = 0; j < 50; j++) {	
 			if (map[i][j] == 0)
 			{
-				m_tile[j][i] = new Tile(25 * j, 25 * i, m_font, j, i, false);
+				m_tile[j][i] = new Tile(50 * j, 50 * i, m_font, j, i, false);
 			}
 			if (map[i][j] == 1)
 			{
-				m_tile[j][i] = new Tile(25 * j, 25 * i, m_font, j, i, true);
+				m_tile[j][i] = new Tile(50 * j, 50 * i, m_font, j, i, true);
 			}
 		}
 	}
-	
+	//std::cout << m_tile[25][25]->getPosition().x;
 	m_player = new Player();
 
 	/*miniMapView.setViewport(sf::FloatRect(0.73f, 0.02f, 0.25f, 0.25f));
@@ -182,34 +180,6 @@ void Game::processEvents()
 void Game::processGameEvents(sf::Event& event)
 {
 
-	/*if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !pressed)
-	{
-		pressed = true;
-		for (int i = 0; i < 50; i++) {
-			for (int j = 0; j < 50; j++) {
-				count++;
-				if (m_tile[j][i]->getObstacle())
-				{
-					myfile << "1,";
-				}
-				if (!m_tile[j][i]->getObstacle())
-				{
-					myfile << "0,";
-				}
-				if (count >= 50)
-				{
-					myfile << "\n";
-					count = 0;
-				}
-				
-			}
-		}
-
-	}
-	if (!sf::Keyboard::isKeyPressed(sf::Keyboard::S) && pressed)
-	{
-		myfile.close();
-	}*/
 	if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		Leftpressed = false;
@@ -221,10 +191,10 @@ void Game::processGameEvents(sf::Event& event)
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !Leftpressed)
 	{
 		Leftpressed = true;
-		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 1250) {
-			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 1250) {
-				int x = mouse.getPosition(m_window).x / 25;
-				int y = mouse.getPosition(m_window).y / 25;
+		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 2500) {
+			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 2500) {
+				int x = mouse.getPosition(m_window).x / 50;
+				int y = mouse.getPosition(m_window).y / 50;
 				if (m_starttile != NULL)
 				{
 					m_starttile->changeColor();
@@ -237,14 +207,15 @@ void Game::processGameEvents(sf::Event& event)
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !Rightpressed) {
 		Rightpressed = true;
-		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 1250) {
-			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 1250) {
-				int x = mouse.getPosition(m_window).x / 25;
-				int y = mouse.getPosition(m_window).y / 25;
+		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 2500) {
+			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 2500) {
+				int x = mouse.getPosition(m_window).x / 50;
+				int y = mouse.getPosition(m_window).y / 50;
 				if (m_goaltile != NULL) {
 					//m_goaltile->changeColor();
 				}
 				m_goaltile = m_tile[x][y];
+				std::cout << x << "," << y;
 				//m_tile[x][y]->setGoal();
 				breadthFirst(m_goaltile->getXpos(), m_goaltile->getYpos());
 
@@ -253,10 +224,10 @@ void Game::processGameEvents(sf::Event& event)
 	}
 	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 	{
-       		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 1250) {
-			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 1250) {
-				int x = mouse.getPosition(m_window).x / 25;
-				int y = mouse.getPosition(m_window).y / 25;
+       		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 2500) {
+			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 2500) {
+				int x = mouse.getPosition(m_window).x / 50;
+				int y = mouse.getPosition(m_window).y / 50;
 				m_tile[x][y]->setObstacle();
 			}
 		}
@@ -266,9 +237,20 @@ void Game::processGameEvents(sf::Event& event)
 	{
 		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 1250) {
 			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 1250) {
-				int x = mouse.getPosition(m_window).x / 25;
-				int y = mouse.getPosition(m_window).y / 25;
+				int x = mouse.getPosition(m_window).x / 50;
+				int y = mouse.getPosition(m_window).y / 50;
 				m_tile[x][y]->removeObstacle();
+			}
+		}
+	}
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
+	{
+		for (int i = 0; i < 50; i++) {
+			for (int j = 0; j < 50; j++) {
+
+				m_tile[j][i]->setCost(0);
+				m_tile[j][i]->setVisited(false);
 			}
 		}
 	}
@@ -286,6 +268,35 @@ void Game::update(double dt)
 	sf::Time deltaTime;
 
 	m_player->update(dt);
+	playerPosition = sf::Vector2f(m_player->getPos().x + 400, m_player->getPos().y + 400);
+	gameView.setCenter(playerPosition);
+	
+	
+	int curX =  round(m_player->getPos().x / 50);
+	int curY = round(m_player->getPos().y / 50);
+
+	
+	collision(curX, curY);
+	
+	
+	//breadthFirst(curX, curY);
+	
+	/*
+	for (int i = 0; i < 50; i++) {
+		for (int j = 0; j < 50; j++) {
+
+			m_tile[j][i]->setCost(0);
+			m_tile[j][i]->setVisited(false);
+		}
+	}
+	*/
+		
+	lastX = curX;
+	lastY = curY;
+	
+	
+	std::cout << curX << ", " << curY << std::endl;
+	miniMapView.setCenter(m_player->getPos());
 }
 
 
@@ -303,13 +314,18 @@ void Game::update(double dt)
 void Game::render()
 {
 	m_window.clear(sf::Color::Black);
-	//m_window.setView(miniMapView);
 	m_window.setView(gameView);
 	
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {
 
-			m_tile[j][i]->render(m_window);
+			//std::cout << m_tile[j][i]->getPosition().x << std::endl;
+			if (m_tile[j][i]->getPosition().x > playerPosition.x - 700 && m_tile[j][i]->getPosition().x < playerPosition.x - 200
+				&& m_tile[j][i]->getPosition().y > playerPosition.y - 700 && m_tile[j][i]->getPosition().y < playerPosition.y - 200)
+			{
+				m_tile[j][i]->render(m_window);
+			}
+			
 		}
 	}
 	m_player->render(m_window);
@@ -324,7 +340,26 @@ void Game::render()
 	
 }
 
-
+void Game::collision(int x, int y)
+{
+	
+	if (m_tile[x][y-1]->getObstacle())
+	{
+		m_player->setPosition(m_tile[x][y + 1]->getPosition());
+	}
+	if (m_tile[x][y + 1]->getObstacle())
+	{
+		m_player->setPosition(m_tile[x][y - 1]->getPosition());
+	}
+	if (m_tile[x - 1][y]->getObstacle())
+	{
+		m_player->setPosition(m_tile[x + 1][y]->getPosition());
+	}
+	if (m_tile[x + 1][y]->getObstacle())
+	{
+		m_player->setPosition(m_tile[x - 1][y]->getPosition());
+	}
+}
 
 void Game::breadthFirst(int posX, int posY) {
 
@@ -373,7 +408,7 @@ void Game::addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos,
 	if (!m_tile[currentPos.first][currentPos.second]->getVisited() && !m_tile[currentPos.first][currentPos.second]->getObstacle())
 	{
 		auto currentTop = (queue.front()->getGridPos());
-		//m_tile[currentPos.first][currentPos.second]->setColor(sf::Color(255, 200 - (cost * 4), 215 - (cost * 2), 221 - (cost * 3)));
+		m_tile[currentPos.first][currentPos.second]->setColor(sf::Color(255, 200 - (cost * 4), 215 - (cost * 2), 221 - (cost * 3)));
 		m_tile[currentPos.first][currentPos.second]->setVisited(true);
 		m_tile[currentPos.first][currentPos.second]->setCost(cost + 1);
 		queue.push_back(m_tile[currentPos.first][currentPos.second]);

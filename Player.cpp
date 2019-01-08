@@ -16,7 +16,7 @@ Player::Player() :
 	m_rect.setOrigin(m_position.x + 30 / 2, m_position.y + 50 / 2);
 	m_rect.setTexture(&m_texture);
 	m_rect.setSize(sf::Vector2f(30, 50));
-	m_position = sf::Vector2f(900, 500);
+	m_position = sf::Vector2f(1250, 1250);
 	m_rect.setPosition(m_position);
 	follow.setViewport(sf::FloatRect(0, 0, 1.5, 1.5));
 	follow.setSize(1000, 650);
@@ -27,6 +27,12 @@ Player::Player() :
 
 Player::~Player()
 {
+}
+
+void Player::setPosition(sf::Vector2f position)
+{
+	//m_rect.setPosition(position);
+	m_speed = 0;
 }
 
 void Player::update(double dt)
@@ -55,23 +61,23 @@ void Player::update(double dt)
 		decreaseSpeed();
 	}
 
-	//looping screen 
-	if (m_rect.getPosition().x > 1920)
-	{
-		m_rect.setPosition(-100, m_rect.getPosition().y);
-	}
-	if (m_rect.getPosition().x < -200)
-	{
-		m_rect.setPosition(1920, m_rect.getPosition().y);
-	}
-	if (m_rect.getPosition().y < -200)
-	{
-		m_rect.setPosition(m_rect.getPosition().x, 1080);
-	}
-	if (m_rect.getPosition().y > 1080)
-	{
-		m_rect.setPosition(m_rect.getPosition().x, 0);
-	}
+	////looping screen 
+	//if (m_rect.getPosition().x > 1920)
+	//{
+	//	m_rect.setPosition(-100, m_rect.getPosition().y);
+	//}
+	//if (m_rect.getPosition().x < -200)
+	//{
+	//	m_rect.setPosition(1920, m_rect.getPosition().y);
+	//}
+	//if (m_rect.getPosition().y < -200)
+	//{
+	//	m_rect.setPosition(m_rect.getPosition().x, 1080);
+	//}
+	//if (m_rect.getPosition().y > 1080)
+	//{
+	//	m_rect.setPosition(m_rect.getPosition().x, 0);
+	//}
 
 	follow.setCenter(m_position.x, m_position.y);
 }

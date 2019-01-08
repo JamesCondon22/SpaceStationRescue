@@ -12,10 +12,8 @@ Tile::Tile(int x, int y, sf::Font & m_font, int dx, int dy, bool isObs) :
 
 {
 
-	m_rect.setSize(sf::Vector2f(25.0, 25.0));
+	m_rect.setSize(sf::Vector2f(50.0, 50.0));
 	m_rect.setPosition(m_position);
-	m_rect.setOutlineColor(sf::Color::Black);
-	m_rect.setOutlineThickness(2.0f);
 	line[0] = sf::Vector2f(m_position.x + 25, m_position.y + 25);
 	line[1] = sf::Vector2f(m_position);
 	line->color = sf::Color::Black;
@@ -70,7 +68,7 @@ void Tile::render(sf::RenderWindow & window)
 	}
 	
 	window.draw(m_rect);
-	//window.draw(m_label);
+	window.draw(m_label);
 
 }
 
