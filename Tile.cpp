@@ -2,13 +2,13 @@
 
 
 
-Tile::Tile(int x, int y, sf::Font & m_font, int dx, int dy) :
+Tile::Tile(int x, int y, sf::Font & m_font, int dx, int dy, bool isObs) :
 	m_position(x, y),
 	posX(dx),
 	posY(dy),
 	m_gridPos(dx, dy),
 	m_cost(0),
-	isObstacle(false)
+	isObstacle(isObs)
 
 {
 

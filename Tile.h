@@ -13,7 +13,7 @@ enum Obstacles
 class Tile
 {
 public:
-	Tile(int x, int y, sf::Font & m_font, int X, int Y);
+	Tile(int x, int y, sf::Font & m_font, int X, int Y, bool isObs);
 	~Tile();
 	void update(double dt);
 	void render(sf::RenderWindow &window);
