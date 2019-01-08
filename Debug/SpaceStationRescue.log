@@ -1,3 +1,5 @@
-﻿  Game.cpp
-c:\users\gameuser\desktop\spacestationrescue\game.cpp(121): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
-  SpaceStationRescue.vcxproj -> C:\Users\gameuser\Desktop\SpaceStationRescue\Debug\SpaceStationRescue.exe
+﻿  Workers.cpp
+c:\users\gameuser\documents\spacestationrescue\workers.cpp(6): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\workers.cpp(7): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\workers.cpp(15): warning C4305: 'argument': truncation from 'double' to 'float'
+  SpaceStationRescue.vcxproj -> C:\Users\gameuser\Documents\SpaceStationRescue\Debug\SpaceStationRescue.exe

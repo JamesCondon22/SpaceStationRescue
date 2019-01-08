@@ -19,10 +19,7 @@ Game::Game()
 	: m_window(sf::VideoMode(1250, 1250, 32), "SFML Playground", sf::Style::Default)
 
 {
-	//this a test
-	//this a test
-	//this a test
-	//this a test
+
 	m_window.setVerticalSyncEnabled(true);
 
 	if (!m_font.loadFromFile("mytype.ttf"))
@@ -85,6 +82,8 @@ Game::Game()
 
 	};
 	//myfile.open("map.txt");
+
+	m_worker = new Workers(100,100,0,0);
 
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {	
@@ -287,6 +286,7 @@ void Game::render()
 			m_tile[j][i]->render(m_window);
 		}
 	}
+	m_worker->render(m_window);
 	m_window.display();
 }
 
