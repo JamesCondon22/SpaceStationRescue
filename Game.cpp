@@ -29,7 +29,24 @@ Game::Game()
 	{
 		std::cout << "problem loading font" << std::endl;
 	}
+	if (!miniMapTexture.loadFromFile("minimap.PNG"))
+	{
+		std::cout << "problem loading texture" << std::endl;
+	}
+
+	miniMapSprite.setTexture(miniMapTexture);
 	mouse.setPosition(sf::Vector2i(0, 0), m_window);
+	
+	miniMapView.setViewport(sf::FloatRect(0.75f, 0.0f, 0.25f, 0.25f));
+	miniMapView.setSize(1500, 1500);
+	
+	gameView.setViewport(sf::FloatRect(0.f, 0.f, 1.0f, 1.0f));
+	gameView.setSize(1250.f, 1250.f);
+	gameView.setCenter(625, 625);
+
+	
+	
+	//miniMapView.setCenter(100, 100);
 
 	int map[50][50] = {
 		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -98,6 +115,12 @@ Game::Game()
 			}
 		}
 	}
+	
+	m_player = new Player();
+
+	/*miniMapView.setViewport(sf::FloatRect(0.73f, 0.02f, 0.25f, 0.25f));
+	miniMapView.setSize(4000, 2600);
+	miniMapView.setCenter(2000, 1300);*/
 }
 
 
@@ -262,7 +285,7 @@ void Game::update(double dt)
 {
 	sf::Time deltaTime;
 
-
+	m_player->update(dt);
 }
 
 
@@ -280,14 +303,25 @@ void Game::update(double dt)
 void Game::render()
 {
 	m_window.clear(sf::Color::Black);
-
+	//m_window.setView(miniMapView);
+	m_window.setView(gameView);
+	
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {
 
 			m_tile[j][i]->render(m_window);
 		}
 	}
+	m_player->render(m_window);
+	m_window.setView(miniMapView);
+	m_window.draw(miniMapSprite);
+	m_player->render(m_window);
 	m_window.display();
+
+	
+	
+	
+	
 }
 
 

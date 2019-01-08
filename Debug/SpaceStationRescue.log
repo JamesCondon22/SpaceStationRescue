@@ -1,3 +1,11 @@
 ﻿  Game.cpp
-c:\users\gameuser\desktop\spacestationrescue\game.cpp(121): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(147): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
+  Player.cpp
+c:\users\gameuser\desktop\spacestationrescue\player.cpp(34): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\player.cpp(35): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\player.cpp(36): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\player.cpp(37): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+  Generating Code...
+  LINK : C:\Users\gameuser\Desktop\SpaceStationRescue\Debug\SpaceStationRescue.exe not found or not built by the last incremental link; performing full link
   SpaceStationRescue.vcxproj -> C:\Users\gameuser\Desktop\SpaceStationRescue\Debug\SpaceStationRescue.exe
