@@ -5,6 +5,7 @@
 #include <fstream>
 
 #include "Tile.h"
+#include "Player.h"
 #include <list>
 
 class Game
@@ -41,6 +42,14 @@ protected:
 	std::ofstream myfile;
 	bool pressed = false;
 	int count = 0;
+	//The two views that wil make up the render window
+	sf::View gameView;
+	sf::View miniMapView;
+	sf::Sprite miniMapSprite;
+	sf::Texture miniMapTexture;
+
+	Player * m_player;
+
 };
 
 #endif
