@@ -8,7 +8,7 @@ Player::Player() :
 	size(100),
 	m_rotation(0),
 	m_speed(0),
-	MAX_SPEED(350)
+	MAX_SPEED(100)
 {
 	if (!m_texture.loadFromFile("player.png")) {
 		//do something
@@ -29,10 +29,16 @@ Player::~Player()
 {
 }
 
-void Player::setPosition(sf::Vector2f position)
+void Player::setPosition(float x, float y)
 {
-	//m_rect.setPosition(position);
-	m_speed = 0;
+	m_rect.setPosition(x, y);
+	//m_speed = 1;
+
+}
+
+void Player::collide()
+{
+	collision = true;
 }
 
 void Player::update(double dt)

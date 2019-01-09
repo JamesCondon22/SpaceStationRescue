@@ -17,7 +17,8 @@ public:
 	void decreaseSpeed();
 	sf::RectangleShape m_rect;
 	sf::Vector2f getPos();
-	void setPosition(sf::Vector2f position);
+	void setPosition(float x, float y);
+	void collide();
 private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_velocity;
@@ -29,7 +30,7 @@ private:
 	double m_speed;
 	double MAX_SPEED;
 	sf::Vector2f m_heading;
-
+	bool collision = false;
 	sf::View follow;
 };
 

@@ -345,19 +345,34 @@ void Game::collision(int x, int y)
 	
 	if (m_tile[x][y-1]->getObstacle())
 	{
-		m_player->setPosition(m_tile[x][y + 1]->getPosition());
+		if (m_player->getPos().y < m_tile[x][y - 1]->getPosition().y + 65)
+		{
+			m_player->setPosition(m_player->getPos().x, m_tile[x][y - 1]->getPosition().y + 65);
+		}
+		
 	}
 	if (m_tile[x][y + 1]->getObstacle())
 	{
-		m_player->setPosition(m_tile[x][y - 1]->getPosition());
+		if (m_player->getPos().y > m_tile[x][y + 1]->getPosition().y - 30)
+		{
+			m_player->setPosition(m_player->getPos().x, m_tile[x][y + 1]->getPosition().y - 30);
+		}
 	}
+	
 	if (m_tile[x - 1][y]->getObstacle())
 	{
-		m_player->setPosition(m_tile[x + 1][y]->getPosition());
+
+		if (m_player->getPos().x < m_tile[x - 1][y]->getPosition().x + 65)
+		{
+			m_player->setPosition(m_tile[x - 1][y]->getPosition().x + 65, m_player->getPos().y);
+		}
 	}
 	if (m_tile[x + 1][y]->getObstacle())
 	{
-		m_player->setPosition(m_tile[x - 1][y]->getPosition());
+		if (m_player->getPos().x > m_tile[x + 1][y]->getPosition().x - 30)
+		{
+			m_player->setPosition(m_tile[x + 1][y]->getPosition().x - 30, m_player->getPos().y);
+		}
 	}
 }
 
