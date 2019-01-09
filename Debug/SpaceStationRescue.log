@@ -1,2 +1,14 @@
-﻿  AlienNest.cpp
+﻿  Game.cpp
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(113): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(160): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(290): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(291): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(329): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(334): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(343): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(348): warning C4018: '<': signed/unsigned mismatch
+  Tile.cpp
+c:\users\gameuser\desktop\spacestationrescue\tile.cpp(6): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+  main.cpp
+  Generating Code...
   SpaceStationRescue.vcxproj -> C:\Users\gameuser\Desktop\SpaceStationRescue\Debug\SpaceStationRescue.exe

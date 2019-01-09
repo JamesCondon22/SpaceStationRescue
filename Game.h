@@ -7,6 +7,7 @@
 #include "Tile.h"
 #include "Player.h"
 #include "AlienNest.h"
+#include "Worker.h"
 
 #include <list>
 
@@ -24,6 +25,8 @@ protected:
 	void breadthFirst(int posx, int posy);
 	void addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue);
 	void checkLowest(int lowest, int current);
+	void generateNests();
+	void generateWorkers();
 	void createMap();
 
 	void collision(int x, int y);
@@ -53,7 +56,9 @@ protected:
 	sf::Texture miniMapTexture;
 
 	Player * m_player;
+	std::vector<Worker*> m_workers;
 	std::vector<AlienNest*> m_alienNests;
+
 	int lastX = 25;
 	int lastY = 25;
 	bool start = false;
@@ -61,6 +66,7 @@ protected:
 	sf::Vector2f playerPosition;
 	sf::Texture m_tileTexture;
 	sf::Texture nestTexture;
+	sf::Texture workerTexture;
 };
 
 #endif

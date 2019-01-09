@@ -39,6 +39,10 @@ Game::Game()
 	{
 		std::cout << "problem loading texture" << std::endl;
 	}
+	if (!workerTexture.loadFromFile("worker.png"))
+	{
+		std::cout << "problem loading texture" << std::endl;
+	}
 
 
 	miniMapSprite.setTexture(miniMapTexture);
@@ -121,23 +125,9 @@ Game::Game()
 			}
 		}
 	}
-	int i, j;
-	int count = 0;
-	AlienNest*  nest[3];
-
-	while (m_alienNests.size() < 3)
-	{
-		i = (rand() % 50) + 1;
-		j = (rand() % 50) + 1;
-
-		if (!m_tile[i][j]->getObstacle())
-		{
-			nest[count] = new AlienNest(nestTexture, m_tile[i][j]->getPosition());
-			m_alienNests.push_back(nest[count]);
-			count++;
-		}
-		
-	}
+	
+	generateNests();
+	generateWorkers();
 
 	m_player = new Player();
 
@@ -341,10 +331,24 @@ void Game::render()
 		m_alienNests[i]->render(m_window);
 	}
 
+	for (int i = 0; i < m_workers.size(); i++)
+	{
+		m_workers[i]->render(m_window);
+	}
+
 	m_player->render(m_window);
 	m_window.setView(miniMapView);
 	m_window.draw(miniMapSprite);
 	m_player->render(m_window);
+	for (int i = 0; i < m_alienNests.size(); i++)
+	{
+		m_alienNests[i]->render(m_window);
+	}
+
+	for (int i = 0; i < m_workers.size(); i++)
+	{
+		m_workers[i]->render(m_window);
+	}
 	m_window.display();
 
 	
@@ -450,5 +454,49 @@ void Game::checkLowest(int lowest, int current)
 	if (current < lowest)
 	{
 		current = lowest;
+	}
+}
+
+void Game::generateNests()
+{
+	int i, j;
+	int count = 0;
+	AlienNest*  nest[3];
+
+	while (m_alienNests.size() < 3)
+	{
+		i = (rand() % 50) + 1;
+		j = (rand() % 50) + 1;
+
+		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest)
+		{
+			m_tile[i][j]->containsNest = true;
+			nest[count] = new AlienNest(nestTexture, m_tile[i][j]->getPosition());
+			m_alienNests.push_back(nest[count]);
+			count++;
+		}
+
+	}
+}
+
+void Game::generateWorkers()
+{
+	int i, j;
+	int count = 0;
+	Worker*  worker[20];
+
+	while (m_workers.size() < 20)
+	{
+		i = (rand() % 49) + 1;
+		j = (rand() % 49) + 1;
+
+		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker)
+		{
+			m_tile[i][j]->containsWorker = true;
+			worker[count] = new Worker(workerTexture, m_tile[i][j]->getPosition());
+			m_workers.push_back(worker[count]);
+			count++;
+		}
+
 	}
 }

@@ -38,6 +38,10 @@ public:
 	int posY;
 	int weight = 0;
 	std::vector<int> costs;
+
+	bool containsWorker = false;
+	bool containsNest = false;
+
 private:
 	sf::RectangleShape m_rect;
 	sf::Vector2f m_position;
@@ -52,6 +56,8 @@ private:
 	std::pair<int, int> m_gridPos;
 	sf::Vector2f vectors[9];
 	double m_rotation;
+
+	
 	
 };
 
