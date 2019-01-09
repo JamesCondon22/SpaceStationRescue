@@ -16,11 +16,12 @@ static double const MS_PER_UPDATE = 10.0;
 /// </summary>
 /// 
 Game::Game()
-	: m_window(sf::VideoMode(1400, 900, 32), "SFML Playground", sf::Style::Default)
+	: m_window(sf::VideoMode(1920, 1080, 32), "SFML Playground", sf::Style::Default)
 
 {
 	
 	m_window.setVerticalSyncEnabled(true);
+	m_window.setFramerateLimit(60);
 	
 	if (!m_font.loadFromFile("mytype.ttf"))
 	{
@@ -30,11 +31,15 @@ Game::Game()
 	{
 		std::cout << "problem loading texture" << std::endl;
 	}
-
 	if (!m_tileTexture.loadFromFile("groundTile.jpg"))
 	{
 		std::cout << "problem loading texture" << std::endl;
 	}
+	if (!nestTexture.loadFromFile("nest.png"))
+	{
+		std::cout << "problem loading texture" << std::endl;
+	}
+
 
 	miniMapSprite.setTexture(miniMapTexture);
 	mouse.setPosition(sf::Vector2i(0, 0), m_window);
@@ -45,11 +50,7 @@ Game::Game()
 	
 	gameView.setViewport(sf::FloatRect(0.f, 0.f, 3.0f, 3.0f));
 	gameView.setSize(1250, 1250);
-	//gameView.setCenter(625, 625);
 
-	
-	
-	//miniMapView.setCenter(100, 100);
 
 	int map[50][50] = {
 		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
@@ -86,15 +87,15 @@ Game::Game()
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,
-		1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,
-		1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,
-		1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1,
-		1,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,0,0,0,1,0,0,0,0,1,
-		1,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,1,
-		1,0,0,0,0,1,1,0,0,0,0,1,1,1,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,1,1,1,0,0,0,0,1,1,0,0,0,0,1,
-		1,0,0,0,0,0,1,1,0,0,0,0,1,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,1,
-		1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,
-		1,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,1,
+		1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,
+		1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,
+		1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,
+		1,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,1,
+		1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,
+		1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1,
+		1,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,1,
+		1,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,1,
+		1,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
@@ -105,7 +106,9 @@ Game::Game()
 
 	};
 	//myfile.open("map.txt");
+	srand(time(NULL));
 
+	
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {	
 			if (map[i][j] == 0)
@@ -118,12 +121,29 @@ Game::Game()
 			}
 		}
 	}
-	//std::cout << m_tile[25][25]->getPosition().x;
+	int i, j;
+	int count = 0;
+	AlienNest*  nest[3];
+
+	while (m_alienNests.size() < 3)
+	{
+		i = (rand() % 50) + 1;
+		j = (rand() % 50) + 1;
+
+		if (!m_tile[i][j]->getObstacle())
+		{
+			nest[count] = new AlienNest(nestTexture, m_tile[i][j]->getPosition());
+			m_alienNests.push_back(nest[count]);
+			count++;
+		}
+		
+	}
+
 	m_player = new Player();
 
-	/*miniMapView.setViewport(sf::FloatRect(0.73f, 0.02f, 0.25f, 0.25f));
-	miniMapView.setSize(4000, 2600);
-	miniMapView.setCenter(2000, 1300);*/
+	//AlienNest*  nestOne =  new AlienNest(nestTexture, m_tile[25][25]->getPosition());
+
+	//m_alienNests.push_back(nestOne);
 }
 
 
@@ -284,23 +304,7 @@ void Game::update(double dt)
 	collision(curX, curY);
 	
 	
-	//breadthFirst(curX, curY);
 	
-	/*
-	for (int i = 0; i < 50; i++) {
-		for (int j = 0; j < 50; j++) {
-
-			m_tile[j][i]->setCost(0);
-			m_tile[j][i]->setVisited(false);
-		}
-	}
-	*/
-		
-	lastX = curX;
-	lastY = curY;
-	
-	
-	std::cout << curX << ", " << curY << std::endl;
 	miniMapView.setCenter(m_player->getPos());
 }
 
@@ -324,7 +328,6 @@ void Game::render()
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {
 
-			//std::cout << m_tile[j][i]->getPosition().x << std::endl;
 			if (m_tile[j][i]->getPosition().x > playerPosition.x - 700 && m_tile[j][i]->getPosition().x < playerPosition.x - 200
 				&& m_tile[j][i]->getPosition().y > playerPosition.y - 700 && m_tile[j][i]->getPosition().y < playerPosition.y - 200)
 			{
@@ -333,6 +336,11 @@ void Game::render()
 			
 		}
 	}
+	for (int i = 0; i < m_alienNests.size(); i++)
+	{
+		m_alienNests[i]->render(m_window);
+	}
+
 	m_player->render(m_window);
 	m_window.setView(miniMapView);
 	m_window.draw(miniMapSprite);

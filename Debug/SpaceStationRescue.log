@@ -1,5 +1,2 @@
-﻿  Game.cpp
-c:\users\gameuser\desktop\spacestationrescue\game.cpp(150): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
-c:\users\gameuser\desktop\spacestationrescue\game.cpp(280): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\desktop\spacestationrescue\game.cpp(281): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+﻿  AlienNest.cpp
   SpaceStationRescue.vcxproj -> C:\Users\gameuser\Desktop\SpaceStationRescue\Debug\SpaceStationRescue.exe

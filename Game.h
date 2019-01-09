@@ -6,6 +6,8 @@
 
 #include "Tile.h"
 #include "Player.h"
+#include "AlienNest.h"
+
 #include <list>
 
 class Game
@@ -51,13 +53,14 @@ protected:
 	sf::Texture miniMapTexture;
 
 	Player * m_player;
+	std::vector<AlienNest*> m_alienNests;
 	int lastX = 25;
 	int lastY = 25;
 	bool start = false;
 	bool colliding = false;
 	sf::Vector2f playerPosition;
 	sf::Texture m_tileTexture;
-
+	sf::Texture nestTexture;
 };
 
 #endif
