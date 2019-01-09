@@ -56,6 +56,8 @@ protected:
 	bool start = false;
 	bool colliding = false;
 	sf::Vector2f playerPosition;
+	sf::Texture m_tileTexture;
+
 };
 
 #endif

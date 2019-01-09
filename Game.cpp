@@ -31,6 +31,11 @@ Game::Game()
 		std::cout << "problem loading texture" << std::endl;
 	}
 
+	if (!m_tileTexture.loadFromFile("groundTile.jpg"))
+	{
+		std::cout << "problem loading texture" << std::endl;
+	}
+
 	miniMapSprite.setTexture(miniMapTexture);
 	mouse.setPosition(sf::Vector2i(0, 0), m_window);
 	
@@ -105,11 +110,11 @@ Game::Game()
 		for (int j = 0; j < 50; j++) {	
 			if (map[i][j] == 0)
 			{
-				m_tile[j][i] = new Tile(50 * j, 50 * i, m_font, j, i, false);
+				m_tile[j][i] = new Tile(50 * j, 50 * i, m_tileTexture, j, i, false);
 			}
 			if (map[i][j] == 1)
 			{
-				m_tile[j][i] = new Tile(50 * j, 50 * i, m_font, j, i, true);
+				m_tile[j][i] = new Tile(50 * j, 50 * i, m_tileTexture, j, i, true);
 			}
 		}
 	}

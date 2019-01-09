@@ -13,7 +13,7 @@ enum Obstacles
 class Tile
 {
 public:
-	Tile(int x, int y, sf::Font & m_font, int X, int Y, bool isObs);
+	Tile(int x, int y, sf::Texture & texture, int X, int Y, bool isObs);
 	~Tile();
 	void update(double dt);
 	void render(sf::RenderWindow &window);
@@ -52,5 +52,6 @@ private:
 	std::pair<int, int> m_gridPos;
 	sf::Vector2f vectors[9];
 	double m_rotation;
+	
 };
 
