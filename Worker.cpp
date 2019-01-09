@@ -27,20 +27,33 @@ void Worker::setPosition(float x, float y)
 }
 
 
-void Worker::update(double dt)
+void Worker::update(double dt, sf::Vector2f playerPosition)
 {
-
-	//m_rect.setRotation(m_rotation);
-
+	if (!collected)
+	{
+		collisionPlayer(playerPosition);
+	}
 }
 
 void Worker::render(sf::RenderWindow & window)
 {
-	//window.setView(follow);
-	window.draw(m_rect);
+	if (!collected) {
+		window.draw(m_rect);
+	}
+	
 }
 
 sf::Vector2f Worker::getPos()
 {
 	return m_rect.getPosition();
+}
+
+void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
+{
+	if (playerPosition.x > m_rect.getPosition().x && playerPosition.x < m_rect.getPosition().x + 25
+		&& playerPosition.y > m_rect.getPosition().y && playerPosition.y < m_rect.getPosition().y + 50)
+	{		
+		collected = true;				
+	}
+	
 }

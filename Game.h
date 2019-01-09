@@ -67,6 +67,7 @@ protected:
 	sf::Texture m_tileTexture;
 	sf::Texture nestTexture;
 	sf::Texture workerTexture;
+	sf::RectangleShape miniMapRect;
 };
 
 #endif
