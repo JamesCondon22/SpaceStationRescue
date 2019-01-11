@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "AlienNest.h"
 #include "Worker.h"
+//#include "SweeperBots.h"
 
 #include <list>
 
@@ -58,6 +59,7 @@ protected:
 	Player * m_player;
 	std::vector<Worker*> m_workers;
 	std::vector<AlienNest*> m_alienNests;
+	//SweeperBots bot;
 
 	int lastX = 25;
 	int lastY = 25;

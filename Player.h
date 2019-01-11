@@ -2,7 +2,10 @@
 #ifndef PLAYER
 #define PLAYER
 #include <SFML/Graphics.hpp>
+#include "Bullet.h"
 #include <iostream>
+
+
 class Player
 {
 public:
@@ -19,6 +22,8 @@ public:
 	sf::Vector2f getPos();
 	void setPosition(float x, float y);
 	void collide();
+
+	void handleInput();
 private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_velocity;
@@ -32,6 +37,11 @@ private:
 	sf::Vector2f m_heading;
 	bool collision = false;
 	sf::View follow;
+
+	std::vector<Bullet *> m_bullets;
+
+	int m_bulletCount = 0;
+	int m_bulletTime = 30;
 };
 
 #endif

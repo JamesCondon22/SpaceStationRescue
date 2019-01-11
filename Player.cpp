@@ -5,7 +5,6 @@ double const Player::DEG_TO_RAD = 3.14 / 180.0f;
 Player::Player() :
 	m_position(0, 0),
 	m_velocity(0, 0),
-	size(100),
 	m_rotation(0),
 	m_speed(0),
 	MAX_SPEED(100)
@@ -13,14 +12,12 @@ Player::Player() :
 	if (!m_texture.loadFromFile("player.png")) {
 		//do something
 	}
-	m_rect.setOrigin(m_position.x + 30 / 2, m_position.y + 50 / 2);
+	
 	m_rect.setTexture(&m_texture);
 	m_rect.setSize(sf::Vector2f(30, 50));
 	m_position = sf::Vector2f(1250, 1250);
+	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2);
 	m_rect.setPosition(m_position);
-	follow.setViewport(sf::FloatRect(0, 0, 1.5, 1.5));
-	follow.setSize(1000, 650);
-	follow.setCenter(m_position.x, m_position.y);
 
 }
 
@@ -32,7 +29,6 @@ Player::~Player()
 void Player::setPosition(float x, float y)
 {
 	m_rect.setPosition(x, y);
-	//m_speed = 1;
 
 }
 
@@ -43,12 +39,30 @@ void Player::collide()
 
 void Player::update(double dt)
 {
+	handleInput();
+
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);
 	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
 	m_rect.setRotation(m_rotation);
 
-	
+	for (Bullet * bullet : m_bullets)
+	{
+		bullet->update(dt);
+
+		if (bullet->m_life > bullet->max_life)
+		{
+			m_bullets.erase(m_bullets.begin());
+		}
+	}
+
+
+	//follow.setCenter(m_position.x, m_position.y);
+}
+
+void Player::handleInput()
+{
+
 	//key presses 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
 	{
@@ -67,30 +81,26 @@ void Player::update(double dt)
 		decreaseSpeed();
 	}
 
-	////looping screen 
-	//if (m_rect.getPosition().x > 1920)
-	//{
-	//	m_rect.setPosition(-100, m_rect.getPosition().y);
-	//}
-	//if (m_rect.getPosition().x < -200)
-	//{
-	//	m_rect.setPosition(1920, m_rect.getPosition().y);
-	//}
-	//if (m_rect.getPosition().y < -200)
-	//{
-	//	m_rect.setPosition(m_rect.getPosition().x, 1080);
-	//}
-	//if (m_rect.getPosition().y > 1080)
-	//{
-	//	m_rect.setPosition(m_rect.getPosition().x, 0);
-	//}
-
-	follow.setCenter(m_position.x, m_position.y);
+	m_bulletCount++;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
+		m_bulletCount > m_bulletTime)
+	{
+		m_bulletCount = 0;
+		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rect.getRotation()));
+	}
 }
 
 void Player::render(sf::RenderWindow & window)
 {
 	//window.setView(follow);
+
+	for (Bullet * bullet : m_bullets)
+	{
+		if (bullet)
+		{
+			bullet->render(window);
+		}
+	}
 	window.draw(m_rect);
 }
 
