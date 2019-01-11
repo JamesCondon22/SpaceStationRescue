@@ -24,6 +24,8 @@ public:
 	void collide();
 
 	void handleInput();
+
+	std::vector<Bullet *> m_bullets;
 private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_velocity;
@@ -38,10 +40,11 @@ private:
 	bool collision = false;
 	sf::View follow;
 
-	std::vector<Bullet *> m_bullets;
+
 
 	int m_bulletCount = 0;
 	int m_bulletTime = 30;
+	sf::Vector2f currentBulletPosition;
 };
 
 #endif

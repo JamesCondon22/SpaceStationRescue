@@ -38,7 +38,7 @@ Game::Game()
 	{
 		std::cout << "problem loading texture" << std::endl;
 	}
-	if (!workerTexture.loadFromFile("worker.png"))
+	if (!workerTexture.loadFromFile("images/worker.png"))
 	{
 		std::cout << "problem loading texture" << std::endl;
 	}
@@ -133,10 +133,21 @@ Game::Game()
 	miniMapRect.setFillColor(sf::Color::Black);
 	miniMapRect.setSize(sf::Vector2f(178, 112));
 	
+	m_workerUI.setSize(sf::Vector2f(40, 40));
+	m_workerUI.setTexture(&workerTexture);
+	m_workerUI.setPosition(gameView.getCenter());
 	generateNests();
 	generateWorkers();
 
 	m_player = new Player();
+
+	m_countText.setFont(m_font);
+	m_countText.setCharacterSize(20);
+	m_countText.setOutlineThickness(.5);
+	m_countText.setOutlineColor(sf::Color::White);
+	m_countText.setFillColor(sf::Color::White);
+	m_countText.setString(std::to_string(0));
+	//m_countText.setFillColor(sf::Color(255, 255, 255));
 
 }
 
@@ -293,6 +304,16 @@ void Game::update(double dt)
 	for (int i = 0; i < m_workers.size(); i++)
 	{
 		m_workers[i]->update(dt, m_player->getPos());
+		
+		if (m_workers[i]->getCollision())
+		{
+			m_count++;
+		}
+	}
+	std::cout << m_count << std::endl;
+	for (int i = 0; i < m_alienNests.size(); i++)
+	{
+		m_alienNests[i]->update(dt);
 	}
 	
 	int curX =  round(m_player->getPos().x / 50);
@@ -301,6 +322,7 @@ void Game::update(double dt)
 	
 	collision(curX, curY);
 	workerWallCollision();
+	bulletWallCollision();
 	
 	//std::cout << m_player->getPos().x << ", " << m_player->getPos().y << std::endl;
 
@@ -328,6 +350,9 @@ void Game::render()
 	m_window.setView(gameView);
 	
 	miniMapRect.setPosition(miniMapView.getCenter().x - 320, miniMapView.getCenter().y + 98);
+	m_workerUI.setPosition(miniMapView.getCenter().x - 300, miniMapView.getCenter().y - 170);
+	
+	m_countText.setPosition(m_workerUI.getPosition().x + 50, m_workerUI.getPosition().y + 5);
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {
 
@@ -353,6 +378,8 @@ void Game::render()
 	}
 
 	m_player->render(m_window);
+	m_window.draw(m_countText);
+	m_window.draw(m_workerUI);
 	m_window.draw(miniMapRect);
 	m_window.setView(miniMapView);
 	
@@ -436,6 +463,51 @@ void Game::workerWallCollision()
 		if (m_tile[a + 1][b]->getObstacle())
 		{
 			m_workers[i]->changeDirection();
+		}
+	}
+}
+
+void Game::bulletWallCollision()
+{
+	for (int i = 0; i < m_player->m_bullets.size(); i++)
+	{
+		int a = m_player->m_bullets[i]->getTileX();
+		int b = m_player->m_bullets[i]->getTileY();
+
+		if (m_tile[a][b - 1]->getObstacle())
+		{
+
+			if (m_player->m_bullets[i]->getPosition().y < m_tile[a][b - 1]->getPosition().y + 65)
+			{
+				m_player->m_bullets.erase(m_player->m_bullets.begin());
+			}
+			
+		}
+		if (m_tile[a][b + 1]->getObstacle())
+		{
+			if (m_player->m_bullets[i]->getPosition().y > m_tile[a][b + 1]->getPosition().y - 30)
+			{
+				m_player->m_bullets.erase(m_player->m_bullets.begin());
+			}
+		}
+		if (m_tile[a - 1][b]->getObstacle())
+		{
+			if (m_player->m_bullets[i]->getPosition().x < m_tile[a - 1][b]->getPosition().x + 65)
+			{
+				m_player->m_bullets.erase(m_player->m_bullets.begin());
+			}
+		}
+		if (m_tile[a + 1][b]->getObstacle())
+		{
+			if (m_player->m_bullets[i]->getPosition().x > m_tile[a + 1][b]->getPosition().x - 30)
+			{
+				m_player->m_bullets.erase(m_player->m_bullets.begin());
+			}
+		}
+
+		if (m_tile[a - 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle() || m_tile[a + 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle())
+		{
+			m_player->m_bullets.erase(m_player->m_bullets.begin());
 		}
 	}
 }

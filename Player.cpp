@@ -54,9 +54,11 @@ void Player::update(double dt)
 		{
 			m_bullets.erase(m_bullets.begin());
 		}
+		//currentBulletPosition = bullet->getPosition();
 	}
 
-
+	//std::cout << currentBulletPosition.x << std::endl;
+	
 	//follow.setCenter(m_position.x, m_position.y);
 }
 
@@ -86,6 +88,8 @@ void Player::handleInput()
 		m_bulletCount > m_bulletTime)
 	{
 		m_bulletCount = 0;
+		sf::Vector2f newPos = m_rect.getPosition();
+		
 		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rect.getRotation()));
 	}
 }

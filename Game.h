@@ -33,6 +33,7 @@ protected:
 
 	void collision(int x, int y);
 	void workerWallCollision();
+	void bulletWallCollision();
 	// main window
 	sf::RenderWindow m_window;
 	//std::vector<Tile*> m_tiles;
@@ -73,6 +74,10 @@ protected:
 	sf::Texture nestTexture;
 	sf::Texture workerTexture;
 	sf::RectangleShape miniMapRect;
+	sf::RectangleShape m_workerUI;
+	sf::Text m_countText;
+
+	int m_count = 0;
 };
 
 #endif

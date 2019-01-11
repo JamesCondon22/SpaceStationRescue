@@ -17,6 +17,11 @@ private:
 	sf::Vector2f m_velocity;
 	int size;
 	sf::RectangleShape m_rect;
+	sf::CircleShape m_surroundingCircle;
+
+	bool alive = false;
+	int shotsTaken = 0;
+	int maxLife = 4;
 };
 
 #endif

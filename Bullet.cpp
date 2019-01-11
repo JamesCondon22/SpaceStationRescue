@@ -22,6 +22,11 @@ Bullet::~Bullet()
 {
 }
 
+sf::Vector2f Bullet::getPosition()
+{
+	return m_rect.getPosition();
+}
+
 void Bullet::update(double dt)
 {
 	m_heading = sf::Vector2f(cos(m_rotation * DEG_TO_RAD) * m_speed, sin(m_rotation * DEG_TO_RAD)) * m_speed;
@@ -32,6 +37,16 @@ void Bullet::update(double dt)
 
 
 	m_rect.setPosition(m_position);
+}
+
+int Bullet::getTileX()
+{
+	return m_rect.getPosition().x / 50;
+}
+
+int Bullet::getTileY()
+{
+	return m_rect.getPosition().y / 50;
 }
 
 void Bullet::render(sf::RenderWindow & window)

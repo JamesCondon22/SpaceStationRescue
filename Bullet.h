@@ -9,12 +9,14 @@ class Bullet
 public:
 	Bullet(sf::Vector2f pos, float rotation);
 	~Bullet();
-
-
-	int max_life = 100;
+	int getTileX();
+	int getTileY();
+	//void killBullet();
+	int max_life = 200;
 
 	float m_life;
 
+	sf::Vector2f getPosition();
 	void update(double dt);
 	void render(sf::RenderWindow & window);
 
@@ -28,5 +30,7 @@ private:
 	double const DEG_TO_RAD = 3.14 / 180.0f;
 
 	sf::RectangleShape m_rect;
+
+	//bool alive = false;
 };
 

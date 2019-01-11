@@ -10,6 +10,7 @@
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Workers.cpp" />
     <ClCompile Include="Worker.cpp" />
+    <ClCompile Include="Predator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlienNest.h" />
@@ -21,6 +22,7 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Workers.h" />
     <ClInclude Include="Worker.h" />
+    <ClInclude Include="Predator.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\worker.png" />
