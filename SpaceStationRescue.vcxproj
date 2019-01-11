@@ -73,6 +73,10 @@
     <IncludePath>C:\SFML-2.5.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\SFML-2.5.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\SFML-2.5.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\SFML-2.5.0\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -126,11 +130,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tile.cpp" />
-<<<<<<< HEAD
     <ClCompile Include="Workers.cpp" />
-=======
     <ClCompile Include="Worker.cpp" />
->>>>>>> 1cf1fb25a168ff6ee12f9a4a48272dd17f6a8221
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlienNest.h" />
@@ -138,14 +139,11 @@
     <ClInclude Include="main.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Tile.h" />
-<<<<<<< HEAD
     <ClInclude Include="Workers.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\worker.png" />
-=======
     <ClInclude Include="Worker.h" />
->>>>>>> 1cf1fb25a168ff6ee12f9a4a48272dd17f6a8221
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

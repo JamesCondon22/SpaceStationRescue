@@ -3,7 +3,8 @@
 
 Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	m_position(0, 0),
-	size(100)
+	size(100),
+	m_speed(10)
 	
 {
 	
@@ -12,6 +13,15 @@ Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	m_rect.setSize(sf::Vector2f(25, 50));
 	m_position = pos;
 	m_rect.setPosition(m_position.x + 20 , m_position.y + 10);
+
+	if (!m_texture.loadFromFile("images/worker.png"))
+	{
+		std::cout << "worker png not loaded" << std::endl;
+	}
+
+	m_sprite.setTexture(m_texture);
+	m_sprite.setScale(0.1, 0.1);
+	m_sprite.setPosition(m_position.x + 20, m_position.y + 20);
 	
 }
 
@@ -35,10 +45,25 @@ void Worker::update(double dt, sf::Vector2f playerPosition)
 	}
 }
 
+void Worker::wander()
+{
+	//random angle assigned
+	//rotation set to new angle
+	/*m_heading.x = cos(m_rotation * DEG_TO_RAD);
+	m_heading.y = sin(m_rotation * DEG_TO_RAD);
+	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
+	m_rect.setRotation(m_rotation);*/
+	//start timer
+	//check timer
+	//randomize rotation
+	//repeat
+}
+
 void Worker::render(sf::RenderWindow & window)
 {
 	if (!collected) {
 		window.draw(m_rect);
+		window.draw(m_sprite);
 	}
 	
 }
