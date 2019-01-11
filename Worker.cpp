@@ -47,6 +47,9 @@ void Worker::update(double dt, sf::Vector2f playerPosition)
 
 	//implimenting wander functionality
 	wander(dt);
+
+	int curX = round(m_sprite.getPosition().x / 50);
+	int curY = round(m_sprite.getPosition().y / 50);
 }
 
 void Worker::wander(double dt)
@@ -60,11 +63,9 @@ void Worker::wander(double dt)
 		
 		m_random = (rand() % -90 + 90);
 		m_rotation = m_random;
-		//timer = 0;
 		m_timeCheck += 5;
 		
 	}
-	//int clocktimer = m_clock.getElapsedTime().asSeconds();
 	//random angle assigned
 	//rotation set to new angle
 	
@@ -83,7 +84,6 @@ void Worker::wander(double dt)
 void Worker::render(sf::RenderWindow & window)
 {
 	if (!collected) {
-		//window.draw(m_rect);
 		window.draw(m_sprite);
 	}
 	
@@ -103,3 +103,19 @@ void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
 	}
 	
 }
+
+int Worker::getTileX()
+{
+	return m_sprite.getPosition().x / 50;
+}
+
+int Worker::getTileY()
+{
+	return m_sprite.getPosition().y / 50;
+}
+
+void Worker::changeDirection()
+{
+	m_speed = -m_speed;
+}
+

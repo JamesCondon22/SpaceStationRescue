@@ -5,6 +5,7 @@
 #include <iostream>
 #include <ctime>
 #include <math.h>
+#include "Tile.h"
 
 class Worker
 {
@@ -17,6 +18,9 @@ public:
 	void setPosition(float x, float y);
 	void collisionPlayer(sf::Vector2f & playerPosition);
 	void wander(double dt);
+	void changeDirection();
+	int getTileX();
+	int getTileY();
 
 private:
 	sf::Vector2f m_position;

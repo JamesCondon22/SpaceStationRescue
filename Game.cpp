@@ -294,12 +294,13 @@ void Game::update(double dt)
 	{
 		m_workers[i]->update(dt, m_player->getPos());
 	}
+	
 	int curX =  round(m_player->getPos().x / 50);
 	int curY = round(m_player->getPos().y / 50);
 
 	
 	collision(curX, curY);
-	
+	workerWallCollision();
 	
 	//std::cout << m_player->getPos().x << ", " << m_player->getPos().y << std::endl;
 
@@ -411,6 +412,36 @@ void Game::collision(int x, int y)
 	}
 }
 
+
+void Game::workerWallCollision()
+{
+	
+	for (int i = 0; i < m_workers.size(); i++)
+	{
+		int a = m_workers[i]->getTileX();
+		int b = m_workers[i]->getTileY();
+
+		if (m_tile[a][b - 1]->getObstacle())
+		{
+			m_workers[i]->changeDirection();
+		}
+		if (m_tile[a][b + 1]->getObstacle())
+		{
+			m_workers[i]->changeDirection();
+		}
+		if (m_tile[a - 1][b]->getObstacle())
+		{
+			m_workers[i]->changeDirection();
+		}
+		if (m_tile[a + 1][b]->getObstacle())
+		{
+			m_workers[i]->changeDirection();
+		}
+	}
+}
+
+
+
 void Game::breadthFirst(int posX, int posY) {
 
 
@@ -510,10 +541,15 @@ void Game::generateWorkers()
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker)
 		{
-			m_tile[i][j]->containsWorker = true;
-			worker[count] = new Worker(workerTexture, m_tile[i][j]->getPosition());
-			m_workers.push_back(worker[count]);
-			count++;
+			if (!m_tile[i][j - 1]->getObstacle() && !m_tile[i][j + 1]->getObstacle() &&
+				!m_tile[i - 1][j]->getObstacle() && !m_tile[i + 1][j]->getObstacle())
+			{
+				m_tile[i][j]->containsWorker = true;
+				worker[count] = new Worker(workerTexture, m_tile[i][j]->getPosition());
+				m_workers.push_back(worker[count]);
+				count++;
+			}
+			
 		}
 
 	}

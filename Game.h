@@ -32,6 +32,7 @@ protected:
 	void createMap();
 
 	void collision(int x, int y);
+	void workerWallCollision();
 	// main window
 	sf::RenderWindow m_window;
 	//std::vector<Tile*> m_tiles;
