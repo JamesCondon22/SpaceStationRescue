@@ -73,6 +73,10 @@
     <IncludePath>C:\SFML-2.5.0\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\SFML-2.5.0\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IncludePath>C:\SFML-2.5.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\SFML-2.5.0\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -128,6 +132,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SweeperBots.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="Workers.cpp" />
     <ClCompile Include="Worker.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -138,6 +143,10 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="SweeperBots.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="Workers.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="images\worker.png" />
     <ClInclude Include="Worker.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

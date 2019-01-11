@@ -1,3 +1,0 @@
-﻿  Bullet.cpp
-c:\users\gameuser\desktop\spacestationrescue\bullet.cpp(27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  SpaceStationRescue.vcxproj -> C:\Users\gameuser\Desktop\SpaceStationRescue\Debug\SpaceStationRescue.exe

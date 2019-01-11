@@ -19,7 +19,7 @@ Game::Game()
 	: m_window(sf::VideoMode(1920, 1080, 32), "SFML Playground", sf::Style::Default)
 
 {
-	
+
 	m_window.setVerticalSyncEnabled(true);
 	
 	if (!m_font.loadFromFile("mytype.ttf"))
@@ -114,7 +114,9 @@ Game::Game()
 
 	srand(time(NULL));
 
-	
+	m_worker = new Workers(100,100,10);
+
+
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {	
 			if (map[i][j] == 0)
@@ -336,6 +338,9 @@ void Game::render()
 			
 		}
 	}
+
+	m_worker->render(m_window);
+
 	for (int i = 0; i < m_alienNests.size(); i++)
 	{
 		m_alienNests[i]->render(m_window);
@@ -361,6 +366,7 @@ void Game::render()
 	{
 		m_workers[i]->render(m_window);
 	}
+
 	m_window.display();
 
 	
