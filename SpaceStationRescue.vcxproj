@@ -121,19 +121,31 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AlienNest.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tile.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="Workers.cpp" />
+=======
+    <ClCompile Include="Worker.cpp" />
+>>>>>>> 1cf1fb25a168ff6ee12f9a4a48272dd17f6a8221
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AlienNest.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="main.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Tile.h" />
+<<<<<<< HEAD
     <ClInclude Include="Workers.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\worker.png" />
+=======
+    <ClInclude Include="Worker.h" />
+>>>>>>> 1cf1fb25a168ff6ee12f9a4a48272dd17f6a8221
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

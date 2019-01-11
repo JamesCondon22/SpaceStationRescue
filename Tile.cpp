@@ -2,7 +2,7 @@
 
 
 
-Tile::Tile(int x, int y, sf::Font & m_font, int dx, int dy, bool isObs) :
+Tile::Tile(int x, int y, sf::Texture & texture, int dx, int dy, bool isObs) :
 	m_position(x, y),
 	posX(dx),
 	posY(dy),
@@ -11,21 +11,17 @@ Tile::Tile(int x, int y, sf::Font & m_font, int dx, int dy, bool isObs) :
 	isObstacle(isObs)
 
 {
+	
 
-	m_rect.setSize(sf::Vector2f(25.0, 25.0));
+	m_rect.setTexture(&texture);
+	m_rect.setSize(sf::Vector2f(50.0, 50.0));
 	m_rect.setPosition(m_position);
-	m_rect.setOutlineColor(sf::Color::Black);
-	m_rect.setOutlineThickness(2.0f);
 	line[0] = sf::Vector2f(m_position.x + 25, m_position.y + 25);
 	line[1] = sf::Vector2f(m_position);
 	line->color = sf::Color::Black;
 	//m_line = sf::Vector2f(150, 5);
 
-	m_label.setFont(m_font);
-	m_label.setCharacterSize(20);
-	m_label.setString(std::to_string(m_cost));
-	m_label.setPosition(m_position);
-	m_label.setFillColor(sf::Color(0, 0, 0));
+	
 }
 
 

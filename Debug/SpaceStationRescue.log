@@ -1,4 +1,5 @@
 ﻿  Game.cpp
+<<<<<<< HEAD
 c:\users\gameuser\documents\spacestationrescue\game.cpp(123): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
   Workers.cpp
 c:\users\gameuser\documents\spacestationrescue\workers.cpp(6): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
@@ -6,3 +7,15 @@ c:\users\gameuser\documents\spacestationrescue\workers.cpp(15): warning C4305: '
   main.cpp
   Generating Code...
   SpaceStationRescue.vcxproj -> C:\Users\gameuser\Documents\SpaceStationRescue\Debug\SpaceStationRescue.exe
+=======
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(113): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(163): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(292): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(296): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(297): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(340): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(345): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(356): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\desktop\spacestationrescue\game.cpp(361): warning C4018: '<': signed/unsigned mismatch
+  SpaceStationRescue.vcxproj -> C:\Users\gameuser\Desktop\SpaceStationRescue\Debug\SpaceStationRescue.exe
+>>>>>>> 1cf1fb25a168ff6ee12f9a4a48272dd17f6a8221

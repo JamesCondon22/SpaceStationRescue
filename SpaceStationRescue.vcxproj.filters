@@ -24,7 +24,17 @@
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+<<<<<<< HEAD
     <ClCompile Include="Workers.cpp">
+=======
+    <ClCompile Include="Player.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AlienNest.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Worker.cpp">
+>>>>>>> 1cf1fb25a168ff6ee12f9a4a48272dd17f6a8221
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -38,6 +48,7 @@
     <ClInclude Include="Tile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="Workers.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -46,5 +57,16 @@
     <Image Include="images\worker.png">
       <Filter>Resource Files</Filter>
     </Image>
+=======
+    <ClInclude Include="Player.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AlienNest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Worker.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+>>>>>>> 1cf1fb25a168ff6ee12f9a4a48272dd17f6a8221
   </ItemGroup>
 </Project>
