@@ -324,6 +324,7 @@ void Game::update(double dt)
 	collision(curX, curY);
 	workerWallCollision();
 	bulletWallCollision();
+	m_sweeper->update(dt, m_player->getPos());
 	
 	//std::cout << m_player->getPos().x << ", " << m_player->getPos().y << std::endl;
 
@@ -378,6 +379,7 @@ void Game::render()
 		m_workers[i]->render(m_window);
 	}
 
+	m_sweeper->render(m_window);
 	m_player->render(m_window);
 	m_window.draw(m_countText);
 	m_window.draw(m_workerUI);
@@ -395,6 +397,8 @@ void Game::render()
 	{
 		m_workers[i]->render(m_window);
 	}
+
+	m_sweeper->render(m_window);
 
 	m_window.display();
 

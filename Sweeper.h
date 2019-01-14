@@ -33,6 +33,7 @@ public:
 	void collisionPlayer(sf::Vector2f & playerPosition);
 	double static const DEG_TO_RAD;
 	double static const RAD_TO_DEG;
+
 	void KinematicFlee(sf::Vector2f enemyPosition);
 
 
@@ -56,6 +57,7 @@ private:
 	float m_rotation;
 	float m_maxRotation;
 	bool m_collected;
+	
 
 	sf::Text m_label;
 	sf::Font m_font;

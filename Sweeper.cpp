@@ -2,9 +2,9 @@
 
 
 double const Sweeper::DEG_TO_RAD = 3.14 / 180.0f;
-
+double const Sweeper::RAD_TO_DEG = 180.0f / 3.14;
 Sweeper::Sweeper() :
-	m_position(0, 0),
+	m_position(1250, 1250),
 	size(100),
 	m_speed(10),
 	m_timeCheck(5)
@@ -45,8 +45,8 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition)
 {
 	if (!collected)
 	{
-		//collisionPlayer(playerPosition);
-		std::cout << "break" << std::endl;
+		collisionPlayer(playerPosition);
+		//std::cout << "updat" << std::endl;
 	}
 
 	//implimenting wander functionality
@@ -113,6 +113,7 @@ void Sweeper::render(sf::RenderWindow & window)
 {
 	window.draw(m_rect);
 	window.draw(m_label);
+	window.draw(m_sprite);
 }
 
 void Sweeper::seek()

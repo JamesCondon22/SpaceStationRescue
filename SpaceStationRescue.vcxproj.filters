@@ -25,10 +25,10 @@
     <ClInclude Include="Worker.h" />
     <ClInclude Include="Sweeper.h" />
     <ClInclude Include="Predator.h" />
-
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\worker.png" />
     <Image Include="Enemyrocket.png" />
+    <Image Include="images\UFOsweeper.png" />
   </ItemGroup>
 </Project>
