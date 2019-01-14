@@ -3,6 +3,7 @@
 #define PLAYER
 #include <SFML/Graphics.hpp>
 #include "Bullet.h"
+#include "AlienNest.h"
 #include <iostream>
 
 
@@ -12,6 +13,7 @@ public:
 	Player();
 	~Player();
 	void update(double dt);
+	void checkNests(AlienNest * nest);
 	void render(sf::RenderWindow & window);
 	sf::Vector2f getVel();
 	void increaseRotation();
@@ -21,6 +23,8 @@ public:
 	sf::RectangleShape m_rect;
 	sf::Vector2f getPos();
 	void setPosition(float x, float y);
+	void setLifeBarPosition(float x, float y);
+	void updateLifeBar();
 	void collide();
 	double getRotation();
 	void handleInput();
@@ -47,6 +51,9 @@ private:
 	sf::Vector2f currentBulletPosition;
 	sf::CircleShape m_surroundingCircle;
 	int m_radius = 20;
+	int lives = 3;
+	sf::RectangleShape lifebar;
+	sf::RectangleShape underLie;
 };
 
 #endif

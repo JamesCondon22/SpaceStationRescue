@@ -7,7 +7,7 @@ Player::Player() :
 	m_velocity(0, 0),
 	m_rotation(0),
 	m_speed(0),
-	MAX_SPEED(100)
+	MAX_SPEED(150)
 {
 	if (!m_texture.loadFromFile("player.png")) {
 		//do something
@@ -22,10 +22,19 @@ Player::Player() :
 	m_surroundingCircle.setRadius(m_radius);
 	m_surroundingCircle.setPosition(0, 0);
 	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
-	//std::cout << m_surroundingCircle.getOrigin().x << ", " << m_surroundingCircle.getOrigin().y << std::endl;
 	m_surroundingCircle.setPosition(m_position);
 	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
 
+	lifebar.setOutlineColor(sf::Color::Black);
+	lifebar.setSize(sf::Vector2f(150, 10));
+	lifebar.setOutlineThickness(2);
+	lifebar.setFillColor(sf::Color::Green);
+
+	underLie.setOutlineColor(sf::Color::Black);
+	underLie.setSize(sf::Vector2f(150, 10));
+	underLie.setOutlineThickness(2);
+	underLie.setFillColor(sf::Color(0,0,0,40));
+	//lifebar.setPosition(m_position);
 }
 
 
@@ -56,19 +65,35 @@ void Player::update(double dt)
 
 	for (Bullet * bullet : m_bullets)
 	{
+		bullet->getPosition();
 		bullet->update(dt);
 
 		if (bullet->m_life > bullet->max_life)
 		{
 			m_bullets.erase(m_bullets.begin());
 		}
-		//currentBulletPosition = bullet->getPosition();
 	}
-
-	//std::cout << currentBulletPosition.x << std::endl;
 	m_surroundingCircle.setPosition(m_rect.getPosition());
-	//follow.setCenter(m_position.x, m_position.y);
 }
+
+void Player::checkNests(AlienNest * nest)
+{
+	for (int i = 0; i < m_bullets.size(); i++)
+	{
+		if (m_bullets[i]->getPosition().x > nest->getPos().x&& m_bullets[i]->getPosition().x < nest->getPos().x + 100
+		&& m_bullets[i]->getPosition().y> nest->getPos().y&& m_bullets[i]->getPosition().y < nest->getPos().y + 100)
+		{
+			m_bullets.erase(m_bullets.begin());
+			nest->killNest();
+		}
+	}
+}
+void Player::setLifeBarPosition(float x, float y)
+{
+	lifebar.setPosition(x, y);
+	underLie.setPosition(x, y);
+}
+
 
 void Player::handleInput()
 {
@@ -114,6 +139,8 @@ void Player::render(sf::RenderWindow & window)
 		}
 	}
 	window.draw(m_rect);
+	window.draw(underLie);
+	window.draw(lifebar);
 }
 
 void Player::increaseRotation()
@@ -168,4 +195,19 @@ int Player::getRadius()
 double Player::getRotation()
 {
 	return m_rect.getRotation();
+}
+
+void Player::updateLifeBar()
+{
+	lives--;
+	if (lives == 2)
+	{
+		lifebar.setSize(sf::Vector2f(100, 10));
+		lifebar.setFillColor(sf::Color(255, 140, 0));
+	}
+	if (lives == 1)
+	{
+		lifebar.setSize(sf::Vector2f(50, 10));
+		lifebar.setFillColor(sf::Color::Red);
+	}
 }

@@ -34,10 +34,12 @@ protected:
 	void collision(int x, int y);
 	void workerWallCollision();
 	void bulletWallCollision();
+	void bulletNestCollision(AlienNest *nest);
 	// main window
 	sf::RenderWindow m_window;
 	//std::vector<Tile*> m_tiles;
 	Tile *m_tile[50][50];
+	Tile *containingTile;
 	Tile *m_starttile;
 	Tile *m_goaltile;
 	Workers *m_worker;
@@ -77,7 +79,10 @@ protected:
 	sf::RectangleShape m_workerUI;
 	sf::Text m_countText;
 
+	bool hitNest = false;
 	int m_count = 0;
+
+	
 };
 
 #endif

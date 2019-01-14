@@ -21,6 +21,8 @@ public:
 	float m_life;
 
 	sf::Vector2f getPosition();
+	void checkCollision(sf::Vector2f pos);
+	void resetToNest(sf::Vector2f pos);
 	void update(double dt);
 	void render(sf::RenderWindow & window);
 
@@ -36,7 +38,7 @@ private:
 
 	sf::RectangleShape m_rect;
 	sf::Vector2f m_velocity;
-
+	sf::CircleShape m_surroundingCircle;
 	//bool alive = false;
 };
 
