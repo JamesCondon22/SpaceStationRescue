@@ -3,31 +3,36 @@
 
 double const Sweeper::DEG_TO_RAD = 3.14 / 180.0f;
 double const Sweeper::RAD_TO_DEG = 180.0f / 3.14;
-Sweeper::Sweeper() :
-	m_position(1250, 1250),
+Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
+	m_position(0, 0),
+	m_texture(texture),
 	size(100),
-	m_speed(10),
-	m_timeCheck(5)
+	m_speed(20),
+	m_timeCheck(8),
+	m_collected(false),
+	m_radius(150)
 
 {
-	if (!m_texture.loadFromFile("images/UFOsweeper.png"))
-	{
-		std::cout << "UFOsweeper png not loaded" << std::endl;
-	}
 
 	m_rect.setOrigin(m_position.x + 15 / 2, m_position.y + 15 / 2);
-	//m_rect.setTexture(m_texture);
+	m_rect.setTexture(&m_texture);
 	m_rect.setSize(sf::Vector2f(25, 50));
-	//m_position = pos;
+	m_position = position;
 	m_rect.setPosition(m_position.x + 20, m_position.y + 10);
 
-	
+	//circle detection
+	m_surroundingCircle.setRadius(m_radius);
+	m_surroundingCircle.setPosition(0, 0);
+	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
+	//std::cout << m_surroundingCircle.getOrigin().x << ", " << m_surroundingCircle.getOrigin().y << std::endl;
+	m_surroundingCircle.setPosition(m_position);
+	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
 
+	//assigning sprite textures
 	m_sprite.setTexture(m_texture);
 	m_sprite.setScale(0.1, 0.1);
 	m_sprite.setPosition(m_position.x + 18, m_position.y + 20);
 
-	//srand(time(0));
 }
 
 
@@ -46,11 +51,12 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition)
 	if (!collected)
 	{
 		collisionPlayer(playerPosition);
-		//std::cout << "updat" << std::endl;
 	}
 
 	//implimenting wander functionality
 	wander(dt);
+
+	m_surroundingCircle.setPosition(m_sprite.getPosition().x, m_sprite.getPosition().y + 10);
 
 }
 
@@ -85,14 +91,6 @@ void Sweeper::wander(double dt)
 
 }
 
-/*void Sweeper::render(sf::RenderWindow & window)
-{
-	if (!collected) {
-		//window.draw(m_rect);
-		window.draw(m_sprite);
-	}
-
-}*/
 
 sf::Vector2f Sweeper::getPos()
 {
@@ -111,9 +109,12 @@ void  Sweeper::collisionPlayer(sf::Vector2f & playerPosition)
 
 void Sweeper::render(sf::RenderWindow & window)
 {
-	window.draw(m_rect);
-	window.draw(m_label);
-	window.draw(m_sprite);
+	if (!m_collected)
+	{
+		window.draw(m_sprite);
+		window.draw(m_surroundingCircle);
+	}
+	
 }
 
 void Sweeper::seek()
@@ -149,4 +150,20 @@ sf::Vector2f Sweeper::normalise()
 // Returns the length of the vector
 float Sweeper::length(sf::Vector2f vel) {
 	return sqrt(vel.x * vel.x + vel.y * vel.y);
+}
+
+int Sweeper::getTileX()
+{
+	return m_sprite.getPosition().x / 50;
+}
+
+int Sweeper::getTileY()
+{
+	return m_sprite.getPosition().y / 50;
+}
+
+
+void Sweeper::changeDirection()
+{
+	m_speed = -m_speed;
 }

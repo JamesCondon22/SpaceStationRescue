@@ -14,7 +14,7 @@
 class Sweeper
 {
 public:
-	Sweeper();
+	Sweeper(sf::Texture texture, sf::Vector2f position);
 	~Sweeper();
 	void update(double dt, sf::Vector2f playerPosition);
 	void render(sf::RenderWindow & window);
@@ -29,11 +29,14 @@ public:
 	void checkBorders();
 	void setPosition(float x, float y);
 	void wander(double dt);
+	void changeDirection();
 	sf::Vector2f getPos();
 	void collisionPlayer(sf::Vector2f & playerPosition);
 	double static const DEG_TO_RAD;
 	double static const RAD_TO_DEG;
 
+	int getTileX();
+	int getTileY();
 	void KinematicFlee(sf::Vector2f enemyPosition);
 
 
@@ -65,13 +68,15 @@ private:
 	sf::Vector2f m_heading;
 	int m_speed;
 	int size;
-	bool collected = false;
+	bool collected;
 
 	sf::Clock m_clock;
 	int timer;
 	int m_timeCheck;
 	int m_random;
 
+	//Attack/flee range
+	sf::CircleShape m_surroundingCircle;
 };
 
 #endif // !SWEEPER

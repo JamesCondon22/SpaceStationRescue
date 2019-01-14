@@ -41,6 +41,7 @@ public:
 	
 	bool containsWorker = false;
 	bool containsNest = false;
+	bool containsSweeper = false;
 
 private:
 	sf::RectangleShape m_rect;

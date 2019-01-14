@@ -31,11 +31,13 @@ protected:
 	void checkLowest(int lowest, int current);
 	void generateNests();
 	void generateWorkers();
+	void generateSweepers();
 	void createMap();
 
 
 	void collision(int x, int y);
 	void workerWallCollision();
+	void sweeperWallCollision();
 	void bulletWallCollision();
 	// main window
 	sf::RenderWindow m_window;
@@ -63,11 +65,10 @@ protected:
 	sf::Sprite miniMapSprite;
 	sf::Texture miniMapTexture;
 
-	Sweeper * m_sweeper;
+	std::vector<Sweeper*> m_sweeper;
 	Player * m_player;
 	std::vector<Worker*> m_workers;
 	std::vector<AlienNest*> m_alienNests;
-	//SweeperBots bot;
 
 	int lastX = 25;
 	int lastY = 25;
@@ -77,6 +78,7 @@ protected:
 	sf::Texture m_tileTexture;
 	sf::Texture nestTexture;
 	sf::Texture workerTexture;
+	sf::Texture sweeperTexture;
 	sf::RectangleShape miniMapRect;
 	sf::RectangleShape m_workerUI;
 	sf::Text m_countText;

@@ -1,15 +1,11 @@
-﻿  Game.cpp
-c:\users\gameuser\documents\spacestationrescue\game.cpp(56): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\gameuser\documents\spacestationrescue\game.cpp(115): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\game.cpp(176): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\game.cpp(305): warning C4018: '<': signed/unsigned mismatch
-c:\users\gameuser\documents\spacestationrescue\game.cpp(315): warning C4018: '<': signed/unsigned mismatch
-c:\users\gameuser\documents\spacestationrescue\game.cpp(320): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\game.cpp(321): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\game.cpp(372): warning C4018: '<': signed/unsigned mismatch
-c:\users\gameuser\documents\spacestationrescue\game.cpp(377): warning C4018: '<': signed/unsigned mismatch
-c:\users\gameuser\documents\spacestationrescue\game.cpp(391): warning C4018: '<': signed/unsigned mismatch
-c:\users\gameuser\documents\spacestationrescue\game.cpp(396): warning C4018: '<': signed/unsigned mismatch
-c:\users\gameuser\documents\spacestationrescue\game.cpp(451): warning C4018: '<': signed/unsigned mismatch
-c:\users\gameuser\documents\spacestationrescue\game.cpp(477): warning C4018: '<': signed/unsigned mismatch
+﻿  Sweeper.cpp
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(33): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(67): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(73): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(82): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(83): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(84): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(132): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(157): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(162): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
   SpaceStationRescue.vcxproj -> C:\Users\gameuser\Documents\SpaceStationRescue\Debug\SpaceStationRescue.exe

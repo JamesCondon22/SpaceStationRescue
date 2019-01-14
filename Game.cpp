@@ -43,6 +43,11 @@ Game::Game()
 		std::cout << "problem loading texture" << std::endl;
 	}
 
+	if (!sweeperTexture.loadFromFile("UFOsweeper.png"))
+	{
+		std::cout << "problem loading UFO texture" << std::endl;
+	}
+
 
 	miniMapSprite.setTexture(miniMapTexture);
 	miniMapSprite.setScale(2, 2);
@@ -138,9 +143,9 @@ Game::Game()
 	m_workerUI.setPosition(gameView.getCenter());
 	generateNests();
 	generateWorkers();
+	generateSweepers();
 
 	m_player = new Player();
-	m_sweeper = new Sweeper();
 
 	m_countText.setFont(m_font);
 	m_countText.setCharacterSize(20);
@@ -320,11 +325,18 @@ void Game::update(double dt)
 	int curX =  round(m_player->getPos().x / 50);
 	int curY = round(m_player->getPos().y / 50);
 
+	for (int i = 0; i < m_sweeper.size(); i++)
+	{
+		m_sweeper[i]->update(dt, m_player->getPos());
+	}
 	
 	collision(curX, curY);
 	workerWallCollision();
 	bulletWallCollision();
-	m_sweeper->update(dt, m_player->getPos());
+	sweeperWallCollision();
+
+	
+	
 	
 	//std::cout << m_player->getPos().x << ", " << m_player->getPos().y << std::endl;
 
@@ -379,7 +391,11 @@ void Game::render()
 		m_workers[i]->render(m_window);
 	}
 
-	m_sweeper->render(m_window);
+	for (int i = 0; i < m_sweeper.size(); i++)
+	{
+		m_sweeper[i]->render(m_window);
+	}
+
 	m_player->render(m_window);
 	m_window.draw(m_countText);
 	m_window.draw(m_workerUI);
@@ -398,7 +414,10 @@ void Game::render()
 		m_workers[i]->render(m_window);
 	}
 
-	m_sweeper->render(m_window);
+	for (int i = 0; i < m_sweeper.size(); i++)
+	{
+		m_sweeper[i]->render(m_window);
+	}
 
 	m_window.display();
 
@@ -468,6 +487,33 @@ void Game::workerWallCollision()
 		if (m_tile[a + 1][b]->getObstacle())
 		{
 			m_workers[i]->changeDirection();
+		}
+	}
+}
+
+void Game::sweeperWallCollision()
+{
+
+	for (int i = 0; i < m_sweeper.size(); i++)
+	{
+		int a = m_sweeper[i]->getTileX();
+		int b = m_sweeper[i]->getTileY();
+
+		if (m_tile[a][b - 1]->getObstacle())
+		{
+			m_sweeper[i]->changeDirection();
+		}
+		if (m_tile[a][b + 1]->getObstacle())
+		{
+			m_sweeper[i]->changeDirection();
+		}
+		if (m_tile[a - 1][b]->getObstacle())
+		{
+			m_sweeper[i]->changeDirection();
+		}
+		if (m_tile[a + 1][b]->getObstacle())
+		{
+			m_sweeper[i]->changeDirection();
 		}
 	}
 }
@@ -627,6 +673,36 @@ void Game::generateWorkers()
 				count++;
 			}
 			
+		}
+
+	}
+}
+
+
+
+
+void Game::generateSweepers()
+{
+	int i, j;
+	int count = 0;
+	Sweeper*  sweeper[5];
+
+	while (m_sweeper.size() < 5)
+	{
+		i = (rand() % 49) + 1;
+		j = (rand() % 49) + 1;
+
+		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker && !m_tile[i][i]->containsSweeper)
+		{
+			if (!m_tile[i][j - 1]->getObstacle() && !m_tile[i][j + 1]->getObstacle() &&
+				!m_tile[i - 1][j]->getObstacle() && !m_tile[i + 1][j]->getObstacle())
+			{
+				m_tile[i][j]->containsSweeper = true;
+				sweeper[count] = new Sweeper(sweeperTexture, m_tile[i][j]->getPosition());
+				m_sweeper.push_back(sweeper[count]);
+				count++;
+			}
+
 		}
 
 	}

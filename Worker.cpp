@@ -2,7 +2,7 @@
 
 double const Worker::DEG_TO_RAD = 3.14 / 180.0f;
 Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
-	m_position(0, 0),
+	//m_position(0, 0),
 	size(100),
 	m_speed(10),
 	m_timeCheck(5)
@@ -21,6 +21,7 @@ Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	m_sprite.setScale(0.1, 0.1);
 	m_sprite.setPosition(m_position.x + 18, m_position.y + 20);
 	
+
 	//srand(time(0));
 }
 
