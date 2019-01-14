@@ -21,7 +21,6 @@ Game::Game()
 {
 
 	m_window.setVerticalSyncEnabled(true);
-	m_window.setFramerateLimit(60);
 	
 	if (!m_font.loadFromFile("mytype.ttf"))
 	{
@@ -39,27 +38,29 @@ Game::Game()
 	{
 		std::cout << "problem loading texture" << std::endl;
 	}
-	if (!workerTexture.loadFromFile("worker.png"))
+	if (!workerTexture.loadFromFile("images/worker.png"))
 	{
 		std::cout << "problem loading texture" << std::endl;
 	}
 
 
 	miniMapSprite.setTexture(miniMapTexture);
+	miniMapSprite.setScale(2, 2);
+
 	mouse.setPosition(sf::Vector2i(0, 0), m_window);
 	
-	miniMapView.setViewport(sf::FloatRect(0.75f, 0.0f, 0.25f, 0.25f));
-
+	miniMapView.setViewport(sf::FloatRect(0.01f, 0.74f, 0.25f, 0.25f));
 	
-	gameView.setViewport(sf::FloatRect(0.f, 0.f, 3.0f, 3.0f));
-	gameView.setSize(1250, 1250);
+	gameView.setViewport(sf::FloatRect(0.f, 0.f, 2.0f, 2.0f));
+	gameView.setSize(1920, 1080);
+	gameView.zoom(.7);
 
 
 	int map[50][50] = {
 
-		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
@@ -78,15 +79,15 @@ Game::Game()
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
-		0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1,0,0,1,0,0,0,
-		0,0,0,1,0,0,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
-		0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
-		0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
-		0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
-		0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
-		0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
-		0,0,0,1,0,0,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,
-		0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1,0,0,1,0,0,0,
+		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,
+		1,1,1,1,0,0,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+		1,1,1,1,0,0,1,1,1,1,1,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
+		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1,1,1,1,1,1,0,0,1,1,1,1,
 		1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
@@ -104,12 +105,13 @@ Game::Game()
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
 		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
-		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+		1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,
+		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
 
 	};
-	//myfile.open("map.txt");
+
+
 	srand(time(NULL));
 
 	m_worker = new Workers(100,100,10);
@@ -129,17 +131,25 @@ Game::Game()
 	}
 	
 	miniMapRect.setFillColor(sf::Color::Black);
-	miniMapRect.setSize(sf::Vector2f(150, 112));
+	miniMapRect.setSize(sf::Vector2f(178, 112));
 	
+	m_workerUI.setSize(sf::Vector2f(40, 40));
+	m_workerUI.setTexture(&workerTexture);
+	m_workerUI.setPosition(gameView.getCenter());
 	generateNests();
 	generateWorkers();
 
 	m_player = new Player();
 	m_sweeper = new Sweeper();
 
-	//AlienNest*  nestOne =  new AlienNest(nestTexture, m_tile[25][25]->getPosition());
+	m_countText.setFont(m_font);
+	m_countText.setCharacterSize(20);
+	m_countText.setOutlineThickness(.5);
+	m_countText.setOutlineColor(sf::Color::White);
+	m_countText.setFillColor(sf::Color::White);
+	m_countText.setString(std::to_string(0));
+	//m_countText.setFillColor(sf::Color(255, 255, 255));
 
-	//m_alienNests.push_back(nestOne);
 }
 
 
@@ -289,21 +299,33 @@ void Game::update(double dt)
 	sf::Time deltaTime;
 
 	m_player->update(dt);
-	playerPosition = sf::Vector2f(m_player->getPos().x + 400, m_player->getPos().y + 400);
+	playerPosition = sf::Vector2f(m_player->getPos().x + 350, m_player->getPos().y + 200);
 	gameView.setCenter(playerPosition);
 	
 	for (int i = 0; i < m_workers.size(); i++)
 	{
 		m_workers[i]->update(dt, m_player->getPos());
+		
+		if (m_workers[i]->getCollision())
+		{
+			std::cout << m_workers.size() << std::endl;
+		}
 	}
+	//std::cout << m_count << std::endl;
+	for (int i = 0; i < m_alienNests.size(); i++)
+	{
+		m_alienNests[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_player->getRotation());
+	}
+	
 	int curX =  round(m_player->getPos().x / 50);
 	int curY = round(m_player->getPos().y / 50);
 
 	
 	collision(curX, curY);
+	workerWallCollision();
+	bulletWallCollision();
 	
-	
-	std::cout << m_player->getPos().x << ", " << m_player->getPos().y << std::endl;
+	//std::cout << m_player->getPos().x << ", " << m_player->getPos().y << std::endl;
 
 	
 	miniMapView.setCenter(m_player->getPos());
@@ -328,12 +350,15 @@ void Game::render()
 	
 	m_window.setView(gameView);
 	
-	miniMapRect.setPosition(miniMapView.getCenter().x + 86, miniMapView.getCenter().y - 230);
+	miniMapRect.setPosition(miniMapView.getCenter().x - 320, miniMapView.getCenter().y + 98);
+	m_workerUI.setPosition(miniMapView.getCenter().x - 300, miniMapView.getCenter().y - 170);
+	
+	m_countText.setPosition(m_workerUI.getPosition().x + 50, m_workerUI.getPosition().y + 5);
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {
 
-			if (m_tile[j][i]->getPosition().x > playerPosition.x - 700 && m_tile[j][i]->getPosition().x < playerPosition.x - 200
-				&& m_tile[j][i]->getPosition().y > playerPosition.y - 700 && m_tile[j][i]->getPosition().y < playerPosition.y - 200)
+			if (m_tile[j][i]->getPosition().x > playerPosition.x - 800 && m_tile[j][i]->getPosition().x < playerPosition.x
+				&& m_tile[j][i]->getPosition().y > playerPosition.y - 500 && m_tile[j][i]->getPosition().y < playerPosition.y)
 			{
 				m_tile[j][i]->render(m_window);
 			}
@@ -354,6 +379,8 @@ void Game::render()
 	}
 
 	m_player->render(m_window);
+	m_window.draw(m_countText);
+	m_window.draw(m_workerUI);
 	m_window.draw(miniMapRect);
 	m_window.setView(miniMapView);
 	
@@ -412,6 +439,81 @@ void Game::collision(int x, int y)
 		}
 	}
 }
+
+
+void Game::workerWallCollision()
+{
+	
+	for (int i = 0; i < m_workers.size(); i++)
+	{
+		int a = m_workers[i]->getTileX();
+		int b = m_workers[i]->getTileY();
+
+		if (m_tile[a][b - 1]->getObstacle())
+		{
+			m_workers[i]->changeDirection();
+		}
+		if (m_tile[a][b + 1]->getObstacle())
+		{
+			m_workers[i]->changeDirection();
+		}
+		if (m_tile[a - 1][b]->getObstacle())
+		{
+			m_workers[i]->changeDirection();
+		}
+		if (m_tile[a + 1][b]->getObstacle())
+		{
+			m_workers[i]->changeDirection();
+		}
+	}
+}
+
+void Game::bulletWallCollision()
+{
+	for (int i = 0; i < m_player->m_bullets.size(); i++)
+	{
+		int a = m_player->m_bullets[i]->getTileX();
+		int b = m_player->m_bullets[i]->getTileY();
+
+		if (m_tile[a][b - 1]->getObstacle())
+		{
+
+			if (m_player->m_bullets[i]->getPosition().y < m_tile[a][b - 1]->getPosition().y + 65)
+			{
+				m_player->m_bullets.erase(m_player->m_bullets.begin());
+			}
+			
+		}
+		if (m_tile[a][b + 1]->getObstacle())
+		{
+			if (m_player->m_bullets[i]->getPosition().y > m_tile[a][b + 1]->getPosition().y - 30)
+			{
+				m_player->m_bullets.erase(m_player->m_bullets.begin());
+			}
+		}
+		if (m_tile[a - 1][b]->getObstacle())
+		{
+			if (m_player->m_bullets[i]->getPosition().x < m_tile[a - 1][b]->getPosition().x + 65)
+			{
+				m_player->m_bullets.erase(m_player->m_bullets.begin());
+			}
+		}
+		if (m_tile[a + 1][b]->getObstacle())
+		{
+			if (m_player->m_bullets[i]->getPosition().x > m_tile[a + 1][b]->getPosition().x - 30)
+			{
+				m_player->m_bullets.erase(m_player->m_bullets.begin());
+			}
+		}
+
+		if (m_tile[a - 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle() || m_tile[a + 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle())
+		{
+			m_player->m_bullets.erase(m_player->m_bullets.begin());
+		}
+	}
+}
+
+
 
 void Game::breadthFirst(int posX, int posY) {
 
@@ -485,8 +587,8 @@ void Game::generateNests()
 
 	while (m_alienNests.size() < 3)
 	{
-		i = (rand() % 50) + 1;
-		j = (rand() % 50) + 1;
+		i = (rand() % 49) + 1;
+		j = (rand() % 49) + 1;
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest)
 		{
@@ -512,10 +614,15 @@ void Game::generateWorkers()
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker)
 		{
-			m_tile[i][j]->containsWorker = true;
-			worker[count] = new Worker(workerTexture, m_tile[i][j]->getPosition());
-			m_workers.push_back(worker[count]);
-			count++;
+			if (!m_tile[i][j - 1]->getObstacle() && !m_tile[i][j + 1]->getObstacle() &&
+				!m_tile[i - 1][j]->getObstacle() && !m_tile[i + 1][j]->getObstacle())
+			{
+				m_tile[i][j]->containsWorker = true;
+				worker[count] = new Worker(workerTexture, m_tile[i][j]->getPosition());
+				m_workers.push_back(worker[count]);
+				count++;
+			}
+			
 		}
 
 	}

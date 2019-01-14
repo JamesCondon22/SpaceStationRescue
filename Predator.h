@@ -1,17 +1,14 @@
 #pragma once
-#ifndef WORKER
-#define WORKER
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <ctime>
-#include <math.h>
-#include "Tile.h"
 
-class Worker
+
+
+class Predator
 {
 public:
-	Worker(sf::Texture & texture, sf::Vector2f pos);
-	~Worker();
+	Predator(sf::Texture & texture, sf::Vector2f pos);
+	~Predator();
 	void update(double dt, sf::Vector2f playerPosition);
 	void render(sf::RenderWindow & window);
 	sf::Vector2f getPos();
@@ -21,7 +18,6 @@ public:
 	void changeDirection();
 	int getTileX();
 	int getTileY();
-	bool getCollision();
 
 private:
 	sf::Vector2f m_position;
@@ -40,13 +36,6 @@ private:
 	int timer;
 	int m_timeCheck;
 	int m_random;
-	int m_count = 0;
-
-	bool increment = false;
-
-
 
 
 };
-
-#endif

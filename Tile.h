@@ -38,7 +38,7 @@ public:
 	int posY;
 	int weight = 0;
 	std::vector<int> costs;
-
+	
 	bool containsWorker = false;
 	bool containsNest = false;
 
