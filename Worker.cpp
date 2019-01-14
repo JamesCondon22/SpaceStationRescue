@@ -8,6 +8,7 @@ Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	m_timeCheck(5)
 	
 {
+
 	
 	m_rect.setOrigin(m_position.x + 15 / 2, m_position.y + 15 / 2);
 	m_rect.setTexture(&texture);
@@ -103,7 +104,7 @@ void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
 		&& playerPosition.y > m_rect.getPosition().y && playerPosition.y < m_rect.getPosition().y + 50)
 	{		
 		collected = true;
-		increment = true;
+		//increment = true;
 	}
 	
 }

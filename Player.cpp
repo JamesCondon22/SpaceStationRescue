@@ -19,6 +19,13 @@ Player::Player() :
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2);
 	m_rect.setPosition(m_position);
 
+	m_surroundingCircle.setRadius(m_radius);
+	m_surroundingCircle.setPosition(0, 0);
+	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
+	//std::cout << m_surroundingCircle.getOrigin().x << ", " << m_surroundingCircle.getOrigin().y << std::endl;
+	m_surroundingCircle.setPosition(m_position);
+	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
+
 }
 
 
@@ -28,7 +35,8 @@ Player::~Player()
 
 void Player::setPosition(float x, float y)
 {
-	m_rect.setPosition(x, y);
+	m_position = sf::Vector2f(x, y);
+	m_rect.setPosition(m_position);
 
 }
 
@@ -58,7 +66,7 @@ void Player::update(double dt)
 	}
 
 	//std::cout << currentBulletPosition.x << std::endl;
-	
+	m_surroundingCircle.setPosition(m_rect.getPosition());
 	//follow.setCenter(m_position.x, m_position.y);
 }
 
@@ -90,14 +98,14 @@ void Player::handleInput()
 		m_bulletCount = 0;
 		sf::Vector2f newPos = m_rect.getPosition();
 		
-		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rect.getRotation()));
+		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rect.getRotation(), true));
 	}
 }
 
 void Player::render(sf::RenderWindow & window)
 {
 	//window.setView(follow);
-
+	window.draw(m_surroundingCircle);
 	for (Bullet * bullet : m_bullets)
 	{
 		if (bullet)
@@ -150,4 +158,14 @@ sf::Vector2f Player::getPos()
 sf::Vector2f Player::getVel()
 {
 	return m_velocity;
+}
+
+int Player::getRadius()
+{
+	return m_radius;
+}
+
+double Player::getRotation()
+{
+	return m_rect.getRotation();
 }

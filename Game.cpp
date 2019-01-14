@@ -307,13 +307,13 @@ void Game::update(double dt)
 		
 		if (m_workers[i]->getCollision())
 		{
-			m_count++;
+			std::cout << m_workers.size() << std::endl;
 		}
 	}
-	std::cout << m_count << std::endl;
+	//std::cout << m_count << std::endl;
 	for (int i = 0; i < m_alienNests.size(); i++)
 	{
-		m_alienNests[i]->update(dt);
+		m_alienNests[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_player->getRotation());
 	}
 	
 	int curX =  round(m_player->getPos().x / 50);
