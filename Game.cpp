@@ -140,6 +140,7 @@ Game::Game()
 	generateWorkers();
 
 	m_player = new Player();
+	m_sweeper = new Sweeper();
 
 	m_countText.setFont(m_font);
 	m_countText.setCharacterSize(20);
@@ -331,6 +332,7 @@ void Game::update(double dt)
 	collision(curX, curY);
 	workerWallCollision();
 	bulletWallCollision();
+	m_sweeper->update(dt, m_player->getPos());
 	
 	if (containingTile != nullptr)
 	{
@@ -390,6 +392,7 @@ void Game::render()
 		m_workers[i]->render(m_window);
 	}
 
+	m_sweeper->render(m_window);
 	m_player->render(m_window);
 	m_window.draw(m_countText);
 	m_window.draw(m_workerUI);
@@ -407,6 +410,8 @@ void Game::render()
 	{
 		m_workers[i]->render(m_window);
 	}
+
+	m_sweeper->render(m_window);
 
 	m_window.display();
 
@@ -681,4 +686,9 @@ void Game::generateWorkers()
 		}
 
 	}
+}
+
+sf::Vector2f Game::getPlayerPos()
+{
+	return m_player->getPos();
 }

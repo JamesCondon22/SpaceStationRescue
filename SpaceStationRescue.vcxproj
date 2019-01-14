@@ -130,6 +130,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Sweeper.cpp" />
     <ClCompile Include="Predator.cpp" />
     <ClCompile Include="SweeperBots.cpp" />
     <ClCompile Include="Tile.cpp" />
@@ -142,12 +143,15 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Sweeper.h" />
     <ClInclude Include="Predator.h" />
     <ClInclude Include="SweeperBots.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Workers.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Enemyrocket.png" />
+    <Image Include="images\UFOsweeper.png" />
     <Image Include="images\worker.png" />
     <ClInclude Include="Worker.h" />
   </ItemGroup>

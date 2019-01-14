@@ -33,7 +33,7 @@ Player::Player() :
 	underLie.setOutlineColor(sf::Color::Black);
 	underLie.setSize(sf::Vector2f(150, 10));
 	underLie.setOutlineThickness(2);
-	underLie.setFillColor(sf::Color(0,0,0,40));
+	underLie.setFillColor(sf::Color(255,255,255,60));
 	//lifebar.setPosition(m_position);
 }
 
