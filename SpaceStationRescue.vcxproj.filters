@@ -8,6 +8,7 @@
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Workers.cpp" />
     <ClCompile Include="Worker.cpp" />
+    <ClCompile Include="Sweeper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="AlienNest.h" />
@@ -17,8 +18,10 @@
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Workers.h" />
     <ClInclude Include="Worker.h" />
+    <ClInclude Include="Sweeper.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="images\worker.png" />
+    <Image Include="Enemyrocket.png" />
   </ItemGroup>
 </Project>

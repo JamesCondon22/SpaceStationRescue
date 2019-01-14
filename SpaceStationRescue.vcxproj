@@ -129,6 +129,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Sweeper.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Workers.cpp" />
     <ClCompile Include="Worker.cpp" />
@@ -138,10 +139,12 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Sweeper.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Workers.h" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Enemyrocket.png" />
     <Image Include="images\worker.png" />
     <ClInclude Include="Worker.h" />
   </ItemGroup>

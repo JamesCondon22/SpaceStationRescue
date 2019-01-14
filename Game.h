@@ -9,6 +9,7 @@
 #include "Player.h"
 #include "AlienNest.h"
 #include "Worker.h"
+#include "Sweeper.h"
 
 #include <list>
 
@@ -17,6 +18,7 @@ class Game
 public:
 	Game();
 	void run();
+	sf::Vector2f getPlayerPos();
 protected:
 	int countB = 0;
 	void update(double dt);
@@ -29,6 +31,7 @@ protected:
 	void generateNests();
 	void generateWorkers();
 	void createMap();
+
 
 	void collision(int x, int y);
 	// main window
@@ -57,6 +60,7 @@ protected:
 	sf::Sprite miniMapSprite;
 	sf::Texture miniMapTexture;
 
+	Sweeper * m_sweeper;
 	Player * m_player;
 	std::vector<Worker*> m_workers;
 	std::vector<AlienNest*> m_alienNests;

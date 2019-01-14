@@ -135,6 +135,7 @@ Game::Game()
 	generateWorkers();
 
 	m_player = new Player();
+	m_sweeper = new Sweeper();
 
 	//AlienNest*  nestOne =  new AlienNest(nestTexture, m_tile[25][25]->getPosition());
 
@@ -518,4 +519,9 @@ void Game::generateWorkers()
 		}
 
 	}
+}
+
+sf::Vector2f Game::getPlayerPos()
+{
+	return m_player->getPos();
 }
