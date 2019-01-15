@@ -3,6 +3,11 @@
 
 double const Sweeper::DEG_TO_RAD = 3.14 / 180.0f;
 double const Sweeper::RAD_TO_DEG = 180.0f / 3.14;
+/// <summary>
+/// Constructor function
+/// </summary>
+/// <param name="texture"></param>
+/// <param name="position"></param>
 Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_position(0, 0),
 	m_texture(texture),
@@ -10,7 +15,8 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_speed(20),
 	m_timeCheck(8),
 	m_collected(false),
-	m_radius(150)
+	m_radius(150),
+	m_flee(false)
 
 {
 
@@ -46,15 +52,27 @@ void Sweeper::setPosition(float x, float y)
 }
 
 
-void Sweeper::update(double dt, sf::Vector2f playerPosition)
+void Sweeper::update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector2f workerPos)
 {
+	checkCollisionPlayer(playerPosition, rad);
+
 	if (!collected)
 	{
 		collisionPlayer(playerPosition);
 	}
 
-	//implimenting wander functionality
-	wander(dt);
+	//checking for flee detection
+	if (!m_flee)
+	{
+		KinematicFlee(playerPosition);
+	}
+	else
+	{
+		//implimenting wander functionality
+		wander(dt);
+	}
+	
+	
 
 	m_surroundingCircle.setPosition(m_sprite.getPosition().x, m_sprite.getPosition().y + 10);
 
@@ -97,6 +115,11 @@ sf::Vector2f Sweeper::getPos()
 	return m_rect.getPosition();
 }
 
+/// <summary>
+/// Actual collision with the player
+/// Checks the obj's bumping
+/// </summary>
+/// <param name="playerPosition"></param>
 void  Sweeper::collisionPlayer(sf::Vector2f & playerPosition)
 {
 	if (playerPosition.x > m_rect.getPosition().x && playerPosition.x < m_rect.getPosition().x + 25
@@ -105,6 +128,28 @@ void  Sweeper::collisionPlayer(sf::Vector2f & playerPosition)
 		m_collected = true;
 	}
 
+}
+
+/// <summary>
+/// Collision detection with the view of the sweeper to engage flee function
+/// </summary>
+/// <param name="position"></param>
+/// <param name="rad"></param>
+void Sweeper::checkCollisionPlayer(sf::Vector2f position, int rad)
+{
+	int x1 = position.x;
+	int y1 = position.y;
+	int x2 = m_position.x;
+	int y2 = m_position.y;
+
+	int radius1 = 150;
+	int radius2 = rad;
+
+	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
+	{
+		m_flee = true;
+		std::cout << "flee" << std::endl;
+	}
 }
 
 void Sweeper::render(sf::RenderWindow & window)

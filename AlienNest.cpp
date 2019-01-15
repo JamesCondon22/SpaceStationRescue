@@ -58,7 +58,6 @@ void AlienNest::checkCollision(sf::Vector2f position, int rad)
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
 	{
 		shoot = true;
-		std::cout << "collide" << std::endl;
 	}
 }
 

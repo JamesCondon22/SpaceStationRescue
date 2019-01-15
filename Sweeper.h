@@ -16,7 +16,7 @@ class Sweeper
 public:
 	Sweeper(sf::Texture texture, sf::Vector2f position);
 	~Sweeper();
-	void update(double dt, sf::Vector2f playerPosition);
+	void update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector2f workerPos);
 	void render(sf::RenderWindow & window);
 	sf::Vector2f getVelocity();
 	sf::Vector2f getPosition();
@@ -39,6 +39,8 @@ public:
 	int getTileY();
 	void KinematicFlee(sf::Vector2f enemyPosition);
 
+	void checkCollisionPlayer(sf::Vector2f position, int rad);
+
 
 private:
 	int id = 1;
@@ -60,6 +62,9 @@ private:
 	float m_rotation;
 	float m_maxRotation;
 	bool m_collected;
+
+	//collisionDetection
+	bool m_flee;
 	
 
 	sf::Text m_label;
