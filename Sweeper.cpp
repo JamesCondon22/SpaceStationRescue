@@ -16,7 +16,8 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_timeCheck(8),
 	m_collected(false),
 	m_radius(150),
-	m_flee(false)
+	m_flee(false),
+	m_maxSpeed(1)
 
 {
 
@@ -54,24 +55,27 @@ void Sweeper::setPosition(float x, float y)
 
 void Sweeper::update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector2f workerPos)
 {
-	checkCollisionPlayer(playerPosition, rad);
-
+	radiusCollisionPlayer(playerPosition, rad);
+	m_position = m_sprite.getPosition();
 	if (!collected)
 	{
 		collisionPlayer(playerPosition);
 	}
 
 	//checking for flee detection
-	if (!m_flee)
+	if (m_flee == true)
 	{
 		KinematicFlee(playerPosition);
 	}
-	else
+	
+	//checks how far the player is from the sweepers
+	distance(400, playerPosition);
+	if (m_flee == false)
 	{
 		//implimenting wander functionality
 		wander(dt);
+		std::cout << "flee is " << m_flee << std::endl;
 	}
-	
 	
 
 	m_surroundingCircle.setPosition(m_sprite.getPosition().x, m_sprite.getPosition().y + 10);
@@ -99,9 +103,9 @@ void Sweeper::wander(double dt)
 
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);
-	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
-	m_sprite.setPosition(m_rect.getPosition());
-	m_rect.setRotation(m_rotation - 90);
+	m_sprite.setPosition(m_sprite.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_sprite.getPosition().y + m_heading.y* m_speed * (dt / 1000));
+	m_sprite.setPosition(m_sprite.getPosition());
+	m_sprite.setRotation(m_rotation - 90);
 	m_sprite.setRotation(m_rect.getRotation());
 
 	//randomize rotation
@@ -135,12 +139,12 @@ void  Sweeper::collisionPlayer(sf::Vector2f & playerPosition)
 /// </summary>
 /// <param name="position"></param>
 /// <param name="rad"></param>
-void Sweeper::checkCollisionPlayer(sf::Vector2f position, int rad)
+void Sweeper::radiusCollisionPlayer(sf::Vector2f position, int rad)
 {
 	int x1 = position.x;
 	int y1 = position.y;
-	int x2 = m_position.x;
-	int y2 = m_position.y;
+	int x2 = m_sprite.getPosition().x;
+	int y2 = m_sprite.getPosition().y;
 
 	int radius1 = 150;
 	int radius2 = rad;
@@ -148,7 +152,21 @@ void Sweeper::checkCollisionPlayer(sf::Vector2f position, int rad)
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
 	{
 		m_flee = true;
-		std::cout << "flee" << std::endl;
+	}
+}
+
+void Sweeper::distance(int distance, sf::Vector2f position)
+{
+	int x1 = position.x;
+	int y1 = position.y;
+	int x2 = m_sprite.getPosition().x;
+	int y2 = m_sprite.getPosition().y;
+
+
+	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) > distance)
+	{
+		m_flee = false;
+		
 	}
 }
 
@@ -211,4 +229,28 @@ int Sweeper::getTileY()
 void Sweeper::changeDirection()
 {
 	m_speed = -m_speed;
+}
+
+void Sweeper::KinematicFlee(sf::Vector2f playerPos)
+{
+	m_position = m_sprite.getPosition();
+	m_velocity = playerPos - m_position;
+	m_velocity = normalise();
+	m_velocity = m_velocity * 0.5f;
+	m_rotation = getNewRotation(m_rotation, m_velocity);
+	m_position = m_position - m_velocity;
+	m_sprite.setPosition(m_position);
+	m_sprite.setRotation(m_rotation);
+
+}
+
+float Sweeper::getNewRotation(float currentRotation, sf::Vector2f velocity)
+{
+	if (length(velocity) > 0)
+	{
+		return (std::atan2(-m_velocity.x, m_velocity.y) * 180.0 / 3.141592653589793238463);
+	}
+	else {
+		return currentRotation;
+	}
 }

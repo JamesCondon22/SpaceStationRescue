@@ -38,8 +38,10 @@ public:
 	int getTileX();
 	int getTileY();
 	void KinematicFlee(sf::Vector2f enemyPosition);
+	float getNewRotation(float currentRotation, sf::Vector2f velocity);
 
-	void checkCollisionPlayer(sf::Vector2f position, int rad);
+	void radiusCollisionPlayer(sf::Vector2f position, int rad);
+	void distance(int distance, sf::Vector2f position);
 
 
 private:
@@ -81,6 +83,7 @@ private:
 	int m_random;
 
 	//Attack/flee range
+	bool firstDetection = false;
 	sf::CircleShape m_surroundingCircle;
 };
 
