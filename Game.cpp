@@ -319,25 +319,10 @@ void Game::update(double dt)
 		}
 	}
 
-	for (int i = 0; i < m_workers.size(); i++)
-	{
-		if (m_workers[i]->getCollected() == true && m_score[i] == false)
-		{
-			m_count++;
-			m_score[i] = true;
-			m_countText.setString(std::to_string(m_count));
-		}
-	}
+	// Calls scoring method see definition far below
+	scoring();
 
-	/*for (int i = 0; i < 20; i++)
-	{
-		if (m_score[i] == true)
-		{
-			m_count++;
-			m_score[i] = false;
-			m_countText.setString(std::to_string(m_count));
-		}
-	}*/
+
 	//std::cout << m_count << std::endl;
 	for (int i = 0; i < m_alienNests.size(); i++)
 	{
@@ -734,4 +719,18 @@ void Game::generateSweepers()
 sf::Vector2f Game::getPlayerPos()
 {
 	return m_player->getPos();
+}
+
+void Game::scoring()
+{
+	//scoring
+	for (int i = 0; i < m_workers.size(); i++)
+	{
+		if (m_workers[i]->getCollected() == true && m_score[i] == false)
+		{
+			m_count++;
+			m_score[i] = true;
+			m_countText.setString(std::to_string(m_count));
+		}
+	}
 }

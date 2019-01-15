@@ -33,6 +33,7 @@ protected:
 	void generateWorkers();
 	void generateSweepers();
 	void createMap();
+	void scoring();
 
 
 	void collision(int x, int y);

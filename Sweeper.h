@@ -83,7 +83,7 @@ private:
 	int m_random;
 
 	//Attack/flee range
-	bool firstDetection = false;
+	bool m_wander;
 	sf::CircleShape m_surroundingCircle;
 };
 
