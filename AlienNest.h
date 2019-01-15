@@ -40,6 +40,9 @@ private:
 	bool shoot = false;
 	bool alive = true;
 	bool hit = false;
+
+	sf::RectangleShape lifebar;
+	sf::RectangleShape underLie;
 };
 
 #endif

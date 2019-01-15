@@ -396,6 +396,7 @@ void Game::render()
 	m_player->render(m_window);
 	m_window.draw(m_countText);
 	m_window.draw(m_workerUI);
+	m_player->renderBars(m_window);
 	m_window.draw(miniMapRect);
 	m_window.setView(miniMapView);
 	
@@ -524,56 +525,25 @@ void Game::bulletWallCollision()
 			}
 		}
 
-		if (m_tile[a - 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle() || m_tile[a + 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle())
+		if (m_tile[a - 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle())
 		{
-			m_player->m_bullets.erase(m_player->m_bullets.begin());
-		}
-	}
-}
-
-void Game::bulletNestCollision(AlienNest *nest)
-{
-	for (int i = 0; i < m_player->m_bullets.size(); i++)
-	{
-		int a = m_player->m_bullets[i]->getTileX();
-		int b = m_player->m_bullets[i]->getTileY();
-
-		if (m_tile[a][b - 1]->containsNest)
-		{
-			containingTile = m_tile[a][b + 1];
-			if (m_player->m_bullets[i]->getPosition().y < m_tile[a][b - 1]->getPosition().y + 65)
-			{
-				m_player->m_bullets.erase(m_player->m_bullets.begin());
-			}
-
-		}
-		if (m_tile[a][b + 1]->containsNest)
-		{
-			containingTile = m_tile[a][b + 1];
-			if (m_player->m_bullets[i]->getPosition().y > m_tile[a][b + 1]->getPosition().y - 30)
+			if (m_player->m_bullets[i]->getPosition().x < m_tile[a - 1][b]->getPosition().x + 65 
+				&& m_player->m_bullets[i]->getPosition().y < m_tile[a][b - 1]->getPosition().y + 65)
 			{
 				m_player->m_bullets.erase(m_player->m_bullets.begin());
 			}
 		}
-		if (m_tile[a - 1][b]->containsNest)
+		if (m_tile[a + 1][b]->getObstacle() && m_tile[a][b + 1]->getObstacle())
 		{
-			containingTile = m_tile[a][b + 1];
-			if (m_player->m_bullets[i]->getPosition().x < m_tile[a - 1][b]->getPosition().x + 65)
-			{
-				m_player->m_bullets.erase(m_player->m_bullets.begin());
-			}
-		}
-		if (m_tile[a + 1][b]->containsNest)
-		{
-			containingTile = m_tile[a][b + 1];
-			if (m_player->m_bullets[i]->getPosition().x > m_tile[a + 1][b]->getPosition().x - 30)
+			if (m_player->m_bullets[i]->getPosition().y > m_tile[a][b + 1]->getPosition().y - 30
+				&& m_player->m_bullets[i]->getPosition().x > m_tile[a + 1][b]->getPosition().x - 30)
 			{
 				m_player->m_bullets.erase(m_player->m_bullets.begin());
 			}
 		}
 	}
-
 }
+
 
 void Game::breadthFirst(int posX, int posY) {
 

@@ -15,6 +15,7 @@ public:
 	void update(double dt);
 	void checkNests(AlienNest * nest);
 	void render(sf::RenderWindow & window);
+	void renderBars(sf::RenderWindow & window);
 	sf::Vector2f getVel();
 	void increaseRotation();
 	void decreaseRotation();
@@ -29,6 +30,8 @@ public:
 	double getRotation();
 	void handleInput();
 	int getRadius();
+	void animateShield();
+	bool getActivate();
 	std::vector<Bullet *> m_bullets;
 private:
 	sf::Vector2f m_position;
@@ -43,17 +46,26 @@ private:
 	sf::Vector2f m_heading;
 	bool collision = false;
 	sf::View follow;
-
-
+	sf::Clock m_clockOne;
+	sf::Clock m_clockTwo;
+	double m_time;
+	double m_timeTwo;
 
 	int m_bulletCount = 0;
 	int m_bulletTime = 30;
 	sf::Vector2f currentBulletPosition;
 	sf::CircleShape m_surroundingCircle;
+	sf::CircleShape m_shieldCircle;
 	int m_radius = 20;
-	int lives = 3;
+	double shieldRadius = 30;
+	int lives = 4;
 	sf::RectangleShape lifebar;
 	sf::RectangleShape underLie;
+	bool movingOut = false;
+	bool movingIn = true;
+	bool activateShield = false;
+	bool speedBoost = false;
+	double fader = 60;
 };
 
 #endif

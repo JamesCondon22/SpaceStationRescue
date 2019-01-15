@@ -7,7 +7,7 @@ Player::Player() :
 	m_velocity(0, 0),
 	m_rotation(0),
 	m_speed(0),
-	MAX_SPEED(150)
+	MAX_SPEED(100)
 {
 	if (!m_texture.loadFromFile("player.png")) {
 		//do something
@@ -24,6 +24,13 @@ Player::Player() :
 	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
 	m_surroundingCircle.setPosition(m_position);
 	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
+	
+	m_shieldCircle.setRadius(shieldRadius);
+	m_shieldCircle.setPosition(0, 0);
+	m_shieldCircle.setOrigin(m_shieldCircle.getRadius(), m_shieldCircle.getRadius());
+	m_shieldCircle.setPosition(m_position);
+	m_shieldCircle.setFillColor(sf::Color(0, 0, 255, 60));
+
 
 	lifebar.setOutlineColor(sf::Color::Black);
 	lifebar.setSize(sf::Vector2f(150, 10));
@@ -54,12 +61,67 @@ void Player::collide()
 	collision = true;
 }
 
+void Player::animateShield()
+{
+	if (shieldRadius < 20)
+	{
+		movingIn = false;
+		movingOut = true;
+		shieldRadius = 20;
+	}
+	if (shieldRadius > 30)
+	{
+		movingIn = true;
+		movingOut = false;
+		shieldRadius = 30;
+	}
+	if (shieldRadius >= 20 && shieldRadius <= 30 && movingIn)
+	{
+		shieldRadius -= 0.05;
+		m_shieldCircle.setRadius(shieldRadius);
+	}
+	if (shieldRadius >= 20 && shieldRadius <= 30 && movingOut)
+	{
+		shieldRadius += 0.05;
+		m_shieldCircle.setRadius(shieldRadius);
+	}
+	m_shieldCircle.setOrigin(m_shieldCircle.getRadius(), m_shieldCircle.getRadius());
+	//m_shieldCircle.rotate(10);
+}
 void Player::update(double dt)
 {
 	handleInput();
+	if (activateShield)
+	{
+		m_time += m_clockOne.restart().asMilliseconds();
+		if (m_time > 10000)
+		{
+			//activateShield = false;
+			fader -= 0.05;
+			m_shieldCircle.setFillColor(sf::Color(0, 0, 255, fader));
+			if (fader <= 0)
+			{
+				activateShield = false;
+			}
+		}
+	}
+	if (speedBoost)
+	{
+		MAX_SPEED = 200;
+		m_timeTwo += m_clockTwo.restart().asMilliseconds();
+		if (m_timeTwo > 15000)
+		{
+			speedBoost = false;
+			MAX_SPEED = 100;
+			m_speed = 100;
+		}
+	}
+	std::cout << m_speed << std::endl;
 
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);
+	
+
 	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
 	m_rect.setRotation(m_rotation);
 
@@ -73,15 +135,21 @@ void Player::update(double dt)
 			m_bullets.erase(m_bullets.begin());
 		}
 	}
-	m_surroundingCircle.setPosition(m_rect.getPosition());
+	m_shieldCircle.setPosition(m_rect.getPosition());
+	
+	if (activateShield)
+	{
+		animateShield();
+	}
+	
 }
 
 void Player::checkNests(AlienNest * nest)
 {
 	for (int i = 0; i < m_bullets.size(); i++)
 	{
-		if (m_bullets[i]->getPosition().x > nest->getPos().x&& m_bullets[i]->getPosition().x < nest->getPos().x + 100
-		&& m_bullets[i]->getPosition().y> nest->getPos().y&& m_bullets[i]->getPosition().y < nest->getPos().y + 100)
+		if (m_bullets[i]->getPosition().x > nest->getPos().x - 50 && m_bullets[i]->getPosition().x < nest->getPos().x + 100
+		&& m_bullets[i]->getPosition().y> nest->getPos().y - 50 && m_bullets[i]->getPosition().y < nest->getPos().y + 100)
 		{
 			m_bullets.erase(m_bullets.begin());
 			nest->killNest();
@@ -92,6 +160,11 @@ void Player::setLifeBarPosition(float x, float y)
 {
 	lifebar.setPosition(x, y);
 	underLie.setPosition(x, y);
+}
+
+bool Player::getActivate()
+{
+	return activateShield;
 }
 
 
@@ -115,6 +188,14 @@ void Player::handleInput()
 	{
 		decreaseSpeed();
 	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X) && !activateShield)
+	{
+		activateShield = true;
+	}
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && !speedBoost)
+	{
+		speedBoost = true;
+	}
 
 	m_bulletCount++;
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) &&
@@ -127,10 +208,20 @@ void Player::handleInput()
 	}
 }
 
+void Player::renderBars(sf::RenderWindow & window)
+{
+	window.draw(underLie);
+	window.draw(lifebar);
+}
+
+
 void Player::render(sf::RenderWindow & window)
 {
-	//window.setView(follow);
-	window.draw(m_surroundingCircle);
+	if (activateShield)
+	{
+		window.draw(m_shieldCircle);
+	}
+
 	for (Bullet * bullet : m_bullets)
 	{
 		if (bullet)
@@ -139,9 +230,8 @@ void Player::render(sf::RenderWindow & window)
 		}
 	}
 	window.draw(m_rect);
-	window.draw(underLie);
-	window.draw(lifebar);
 }
+
 
 void Player::increaseRotation()
 {
@@ -199,15 +289,24 @@ double Player::getRotation()
 
 void Player::updateLifeBar()
 {
-	lives--;
-	if (lives == 2)
+	if (!activateShield)
 	{
-		lifebar.setSize(sf::Vector2f(100, 10));
-		lifebar.setFillColor(sf::Color(255, 140, 0));
+		--lives;
+		if (lives == 3)
+		{
+			lifebar.setSize(sf::Vector2f(112.5, 10));
+			lifebar.setFillColor(sf::Color::Green);
+		}
+		if (lives == 2)
+		{
+			lifebar.setSize(sf::Vector2f(75, 10));
+			lifebar.setFillColor(sf::Color(255, 140, 0));
+		}
+		if (lives == 1)
+		{
+			lifebar.setSize(sf::Vector2f(37.5, 10));
+			lifebar.setFillColor(sf::Color::Red);
+		}
 	}
-	if (lives == 1)
-	{
-		lifebar.setSize(sf::Vector2f(50, 10));
-		lifebar.setFillColor(sf::Color::Red);
-	}
+	
 }

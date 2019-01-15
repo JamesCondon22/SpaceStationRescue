@@ -8,7 +8,7 @@ Bullet::Bullet(sf::Vector2f pos, float rotation, bool isPlayer) :
 	m_position(0,0),
 	m_velocity(0,0)
 {
-	m_speed = 2;
+	m_speed = 3;
 	m_life = 0;
 	if (isPlayer)
 	{
@@ -45,6 +45,7 @@ sf::Vector2f Bullet::getPosition()
 	return m_rect.getPosition();
 }
 
+
 void Bullet::update(double dt)
 {
 	m_heading = sf::Vector2f(cos(m_rotation * DEG_TO_RAD) * m_speed, sin(m_rotation * DEG_TO_RAD)) * m_speed;
@@ -53,7 +54,7 @@ void Bullet::update(double dt)
 
 	m_life++;
 
-	
+	m_surroundingCircle.setPosition(m_position);
 	m_rect.setPosition(m_position);
 }
 

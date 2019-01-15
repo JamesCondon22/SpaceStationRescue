@@ -20,6 +20,16 @@ AlienNest::AlienNest(sf::Texture & texture, sf::Vector2f pos) :
 	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
 	m_surroundingCircle.setPosition(m_position.x, m_position.y);
 	m_surroundingCircle.setFillColor(sf::Color(0,0,0,40));
+
+	lifebar.setOutlineColor(sf::Color::Black);
+	lifebar.setSize(sf::Vector2f(100, 10));
+	lifebar.setOutlineThickness(2);
+	lifebar.setFillColor(sf::Color::Green);
+
+	underLie.setOutlineColor(sf::Color::Black);
+	underLie.setSize(sf::Vector2f(100, 10));
+	underLie.setOutlineThickness(2);
+	underLie.setFillColor(sf::Color(255, 255, 255, 60));
 }
 
 
@@ -67,7 +77,8 @@ void AlienNest::update(double dt, sf::Vector2f position, int rad, double rot)
 	{
 		alive = false;
 	}
-	
+	underLie.setPosition(m_position.x - 50, m_position.y - 100);
+	lifebar.setPosition(m_position.x - 50, m_position.y - 100);
 }
 
 bool AlienNest::bulletPlayerCollision(sf::Vector2f position, int rad)
@@ -114,8 +125,22 @@ void AlienNest::circleCollision(sf::Vector2f position, int rad)
 
 void AlienNest::killNest()
 {
-  	lives--;
-	
+	--lives;
+	if (lives == 3)
+	{
+		lifebar.setSize(sf::Vector2f(75, 10));
+		lifebar.setFillColor(sf::Color::Green);
+	}
+	if (lives == 2)
+	{
+		lifebar.setSize(sf::Vector2f(50, 10));
+		lifebar.setFillColor(sf::Color(255, 140, 0));
+	}
+	if (lives == 1)
+	{
+		lifebar.setSize(sf::Vector2f(25, 10));
+		lifebar.setFillColor(sf::Color::Red);
+	}
 }
 
 
@@ -125,6 +150,8 @@ void AlienNest::render(sf::RenderWindow & window)
 	{
 		window.draw(m_surroundingCircle);
 		window.draw(m_rect);
+		window.draw(underLie);
+		window.draw(lifebar);
 	}
 	
 	if (shoot)
@@ -138,5 +165,8 @@ sf::Vector2f AlienNest::getPos()
 {
 	return m_rect.getPosition();
 }
+
+
+
 
 
