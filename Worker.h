@@ -22,6 +22,7 @@ public:
 	int getTileX();
 	int getTileY();
 	bool getCollision();
+	bool getCollected();
 
 private:
 	sf::Vector2f m_position;
@@ -43,7 +44,6 @@ private:
 	int m_count = 0;
 
 	bool increment = false;
-
 
 
 

@@ -16,7 +16,9 @@ static double const MS_PER_UPDATE = 10.0;
 /// </summary>
 /// 
 Game::Game()
-	: m_window(sf::VideoMode(1920, 1080, 32), "SFML Playground", sf::Style::Default)
+	: m_window(sf::VideoMode(1920, 1080, 32), "SFML Playground", sf::Style::Default),
+	m_score(false),
+	m_count(0)
 
 {
 
@@ -152,7 +154,7 @@ Game::Game()
 	m_countText.setOutlineThickness(.5);
 	m_countText.setOutlineColor(sf::Color::White);
 	m_countText.setFillColor(sf::Color::White);
-	m_countText.setString(std::to_string(0));
+	m_countText.setString(std::to_string(m_count));
 	//m_countText.setFillColor(sf::Color(255, 255, 255));
 
 }
@@ -316,6 +318,26 @@ void Game::update(double dt)
 			std::cout << m_workers.size() << std::endl;
 		}
 	}
+
+	for (int i = 0; i < m_workers.size(); i++)
+	{
+		if (m_workers[i]->getCollected() == true && m_score[i] == false)
+		{
+			m_count++;
+			m_score[i] = true;
+			m_countText.setString(std::to_string(m_count));
+		}
+	}
+
+	/*for (int i = 0; i < 20; i++)
+	{
+		if (m_score[i] == true)
+		{
+			m_count++;
+			m_score[i] = false;
+			m_countText.setString(std::to_string(m_count));
+		}
+	}*/
 	//std::cout << m_count << std::endl;
 	for (int i = 0; i < m_alienNests.size(); i++)
 	{
@@ -670,6 +692,7 @@ void Game::generateWorkers()
 				m_tile[i][j]->containsWorker = true;
 				worker[count] = new Worker(workerTexture, m_tile[i][j]->getPosition());
 				m_workers.push_back(worker[count]);
+				m_score.push_back(false);
 				count++;
 			}
 			

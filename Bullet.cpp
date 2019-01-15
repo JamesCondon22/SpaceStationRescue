@@ -61,8 +61,6 @@ void Bullet::seek(sf::Vector2f position, sf::Vector2f pos, double rot)
 	m_velocity = normalize(m_velocity);
 	m_velocity = m_velocity * 0.5f;
 	m_rotation = getNewOrientation(m_rotation, m_velocity);
-
-
 	m_position += m_velocity;
 	m_rect.setPosition(m_position);
 	m_rect.setRotation(m_rotation);

@@ -83,6 +83,7 @@ protected:
 	sf::RectangleShape m_workerUI;
 	sf::Text m_countText;
 
+	std::vector<bool>m_score;
 	int m_count = 0;
 };
 

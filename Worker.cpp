@@ -105,7 +105,6 @@ void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
 		&& playerPosition.y > m_rect.getPosition().y && playerPosition.y < m_rect.getPosition().y + 50)
 	{		
 		collected = true;
-		//increment = true;
 	}
 	
 }
@@ -123,5 +122,10 @@ int Worker::getTileY()
 void Worker::changeDirection()
 {
 	m_speed = -m_speed;
+}
+
+bool Worker::getCollected()
+{
+	return collected;
 }
 

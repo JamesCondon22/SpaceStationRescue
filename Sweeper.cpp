@@ -55,6 +55,11 @@ void Sweeper::setPosition(float x, float y)
 
 void Sweeper::update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector2f workerPos)
 {
+
+	m_sprite.setPosition(m_sprite.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_sprite.getPosition().y + m_heading.y* m_speed * (dt / 1000));
+	m_sprite.setPosition(m_sprite.getPosition());
+
+
 	radiusCollisionPlayer(playerPosition, rad);
 	m_position = m_sprite.getPosition();
 	if (!collected)
@@ -63,10 +68,10 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector
 	}
 
 	//checking for flee detection
-	if (m_flee == true)
+	/*if (m_flee == true)
 	{
 		KinematicFlee(playerPosition);
-	}
+	}*/
 	
 	//checks how far the player is from the sweepers
 	distance(400, playerPosition);
@@ -74,10 +79,9 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector
 	{
 		//implimenting wander functionality
 		wander(dt);
-		std::cout << "flee is " << m_flee << std::endl;
 	}
 	
-
+	
 	m_surroundingCircle.setPosition(m_sprite.getPosition().x, m_sprite.getPosition().y + 10);
 
 }
@@ -103,8 +107,6 @@ void Sweeper::wander(double dt)
 
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);
-	m_sprite.setPosition(m_sprite.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_sprite.getPosition().y + m_heading.y* m_speed * (dt / 1000));
-	m_sprite.setPosition(m_sprite.getPosition());
 	m_sprite.setRotation(m_rotation - 90);
 	m_sprite.setRotation(m_rect.getRotation());
 
@@ -236,12 +238,16 @@ void Sweeper::KinematicFlee(sf::Vector2f playerPos)
 	m_position = m_sprite.getPosition();
 	m_velocity = playerPos - m_position;
 	m_velocity = normalise();
-	m_velocity = m_velocity * 0.5f;
+	
+	
+	m_velocity = m_velocity * 0.2f;
+	
 	m_rotation = getNewRotation(m_rotation, m_velocity);
 	m_position = m_position - m_velocity;
 	m_sprite.setPosition(m_position);
 	m_sprite.setRotation(m_rotation);
 
+	
 }
 
 float Sweeper::getNewRotation(float currentRotation, sf::Vector2f velocity)
