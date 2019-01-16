@@ -85,6 +85,8 @@ private:
 	//Attack/flee range
 	bool m_wander;
 	sf::CircleShape m_surroundingCircle;
+	bool wallcollide;
+	bool m_wanderCollide;
 };
 
 #endif // !SWEEPER

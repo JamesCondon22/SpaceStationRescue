@@ -18,7 +18,10 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_radius(150),
 	m_flee(false),
 	m_maxSpeed(1),
-	m_wander(true)
+	m_wander(true),
+	wallcollide(false),
+	m_wanderCollide(false),
+	m_velocity(0.2,0.2)
 
 {
 
@@ -67,18 +70,23 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector
 	}
 
 	//checking for flee detection
-	if (m_flee == true)
+	if (m_flee)
 	{
 		KinematicFlee(playerPosition);
 	}
 	
+	
+	
 	//checks how far the player is from the sweepers
-	distance(400, playerPosition);
-	if (m_flee == false && m_wander == true)
-	{
+	distance(300, playerPosition);
+	
 		//implimenting wander functionality
-		wander(dt);		
+	if (m_wander)
+	{
+		wander(dt);
 	}
+		
+	
 	
 
 	m_position = m_position + m_velocity;
@@ -100,7 +108,7 @@ void Sweeper::wander(double dt)
 		m_rotation = m_random;
 		//timer = 0;
 		m_timeCheck += 5;
-		m_flee = false;
+		
 
 	}
 	//int clocktimer = m_clock.getElapsedTime().asSeconds();
@@ -114,12 +122,14 @@ void Sweeper::wander(double dt)
 	m_sprite.setRotation(m_rect.getRotation());*/
 
 	//new
-	m_heading.x = cos(m_rotation * DEG_TO_RAD);
-	m_heading.y = sin(m_rotation * DEG_TO_RAD);
-	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
-	m_sprite.setPosition(m_rect.getPosition());
+	/*m_velocity.x = cos(m_rotation * DEG_TO_RAD);
+	m_velocity.y = sin(m_rotation * DEG_TO_RAD);*/
+	m_velocity = normalise();
+	m_velocity = m_velocity * 0.2f;
+
 	m_rect.setRotation(m_rotation - 90);
 	m_sprite.setRotation(m_rect.getRotation());
+	
 
 	//randomize rotation
 	//repeat
@@ -164,8 +174,7 @@ void Sweeper::radiusCollisionPlayer(sf::Vector2f position, int rad)
 
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
 	{
-		m_flee = true;
-		m_wander = false;
+		
 	}
 }
 
@@ -179,8 +188,7 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) > distance)
 	{
-		m_flee = false;
-		m_wander == true;
+		
 		
 	}
 }
@@ -243,13 +251,9 @@ int Sweeper::getTileY()
 
 void Sweeper::changeDirection()
 {
-	if (m_flee && m_wander == false);
-	{
-		m_flee = false;
-		m_velocity = m_velocity * -1.0f;
-		m_wander = true;
-	}
 	
+	m_velocity = m_velocity * -0.2f;
+
 }
 
 void Sweeper::KinematicFlee(sf::Vector2f playerPos)
@@ -261,6 +265,9 @@ void Sweeper::KinematicFlee(sf::Vector2f playerPos)
 	m_velocity = m_velocity * 0.2f;
 	
 	m_rotation = getNewRotation(m_rotation, m_velocity);
+	wallcollide = false;
+	m_wanderCollide = false;
+	
 
 	
 }

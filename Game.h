@@ -5,7 +5,6 @@
 #include <fstream>
 
 #include "Tile.h"
-#include "Workers.h"
 #include "Player.h"
 #include "AlienNest.h"
 #include "Worker.h"
@@ -46,7 +45,6 @@ protected:
 	Tile *m_tile[50][50];
 	Tile *m_starttile;
 	Tile *m_goaltile;
-	Workers *m_worker;
 	sf::Mouse mouse;
 	sf::Font m_font;
 	bool Leftpressed = false;

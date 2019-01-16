@@ -121,7 +121,6 @@ Game::Game()
 
 	srand(time(NULL));
 
-	m_worker = new Workers(100,100,10);
 
 
 	for (int i = 0; i < 50; i++) {
@@ -386,7 +385,6 @@ void Game::render()
 		}
 	}
 
-	m_worker->render(m_window);
 
 	for (int i = 0; i < m_alienNests.size(); i++)
 	{
@@ -506,7 +504,7 @@ void Game::sweeperWallCollision()
 		int a = m_sweeper[i]->getTileX();
 		int b = m_sweeper[i]->getTileY();
 
-		if (m_tile[a][b - 1]->getObstacle())
+		if (m_tile[a][b - 2]->getObstacle())
 		{
 			m_sweeper[i]->changeDirection();
 		}
@@ -697,8 +695,8 @@ void Game::generateSweepers()
 
 	while (m_sweeper.size() < 1)
 	{
-		i = 25;//(rand() % 49) + 1;
-			j = 10;//(rand() % 49) + 1;
+		i = 5;//(rand() % 49) + 1;
+			j = 5;//(rand() % 49) + 1;
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker && !m_tile[i][i]->containsSweeper)
 		{
