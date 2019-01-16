@@ -2,7 +2,7 @@
 
 
 double const Player::DEG_TO_RAD = 3.14 / 180.0f;
-Player::Player() :
+Player::Player(sf::Font & font) :
 	m_position(0, 0),
 	m_velocity(0, 0),
 	m_rotation(0),
@@ -42,6 +42,20 @@ Player::Player() :
 	underLie.setOutlineThickness(2);
 	underLie.setFillColor(sf::Color(255,255,255,60));
 	//lifebar.setPosition(m_position);
+
+	m_lifeLabel.setFont(font);
+	m_lifeLabel.setCharacterSize(15);
+	m_lifeLabel.setOutlineThickness(1);
+	m_lifeLabel.setOutlineColor(sf::Color::White);
+	m_lifeLabel.setString("SHIELD READY\n    PRESS X");
+	m_lifeLabel.setFillColor(sf::Color(0, 0, 0));
+
+	m_boostLabel.setFont(font);
+	m_boostLabel.setCharacterSize(15);
+	m_boostLabel.setOutlineThickness(1);
+	m_boostLabel.setOutlineColor(sf::Color::White);
+	m_boostLabel.setString("BOOST READY\n    PRESS Z");
+	m_boostLabel.setFillColor(sf::Color(0, 0, 0));
 }
 
 
@@ -105,6 +119,7 @@ void Player::update(double dt)
 			}
 		}
 	}
+	std::cout << m_time << std::endl;
 	if (speedBoost)
 	{
 		MAX_SPEED = 200;
@@ -160,6 +175,8 @@ void Player::setLifeBarPosition(float x, float y)
 {
 	lifebar.setPosition(x, y);
 	underLie.setPosition(x, y);
+	m_lifeLabel.setPosition(lifebar.getPosition().x - 100, lifebar.getPosition().y - 10);
+	m_boostLabel.setPosition(m_lifeLabel.getPosition().x - 100, m_lifeLabel.getPosition().y);
 }
 
 bool Player::getActivate()
@@ -191,10 +208,14 @@ void Player::handleInput()
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::X) && !activateShield)
 	{
 		activateShield = true;
+		shieldUsed = true;
+		m_clockOne.restart() = sf::Time::Zero;
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) && !speedBoost)
 	{
 		speedBoost = true;
+		speedUsed = true;
+		m_clockTwo.restart() = sf::Time::Zero;
 	}
 
 	m_bulletCount++;
@@ -212,6 +233,10 @@ void Player::renderBars(sf::RenderWindow & window)
 {
 	window.draw(underLie);
 	window.draw(lifebar);
+	if (!shieldUsed)
+	window.draw(m_lifeLabel);
+	if(!speedUsed)
+	window.draw(m_boostLabel);
 }
 
 

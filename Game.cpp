@@ -22,7 +22,7 @@ Game::Game()
 
 	m_window.setVerticalSyncEnabled(true);
 	
-	if (!m_font.loadFromFile("mytype.ttf"))
+	if (!m_font.loadFromFile("images/bernhc.TTF"))
 	{
 		std::cout << "problem loading font" << std::endl;
 	}
@@ -139,16 +139,16 @@ Game::Game()
 	generateNests();
 	generateWorkers();
 
-	m_player = new Player();
+	m_player = new Player(m_font);
 	m_sweeper = new Sweeper();
 
 	m_countText.setFont(m_font);
 	m_countText.setCharacterSize(20);
-	m_countText.setOutlineThickness(.5);
+	//m_countText.setOutlineThickness(.5);
 	m_countText.setOutlineColor(sf::Color::White);
 	m_countText.setFillColor(sf::Color::White);
 	m_countText.setString(std::to_string(0));
-	//m_countText.setFillColor(sf::Color(255, 255, 255));
+	m_countText.setFillColor(sf::Color(255, 255, 255));
 
 }
 

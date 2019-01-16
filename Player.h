@@ -10,7 +10,7 @@
 class Player
 {
 public:
-	Player();
+	Player(sf::Font & font);
 	~Player();
 	void update(double dt);
 	void checkNests(AlienNest * nest);
@@ -65,7 +65,12 @@ private:
 	bool movingIn = true;
 	bool activateShield = false;
 	bool speedBoost = false;
+	bool speedUsed = false;
+	bool shieldUsed = false;
 	double fader = 60;
+	//text and labels 
+	sf::Text m_lifeLabel;
+	sf::Text m_boostLabel;
 };
 
 #endif

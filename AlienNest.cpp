@@ -46,8 +46,12 @@ void AlienNest::setPosition(float x, float y)
 
 void AlienNest::update(double dt, sf::Vector2f position, int rad, double rot)
 {
-	circleCollision(position, rad);
-	bulletPlayerCollision(position, rad);
+	if (alive)
+	{
+		circleCollision(position, rad);
+		bulletPlayerCollision(position, rad);
+	}
+	
 	//std::cout << lives << std::endl;
 	if (shoot)
 	{
