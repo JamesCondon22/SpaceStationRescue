@@ -2,7 +2,7 @@
 
 
 double const Player::DEG_TO_RAD = 3.14 / 180.0f;
-Player::Player(sf::Font & font) :
+Player::Player(sf::Font & font, sf::Vector2f pos) :
 	m_position(0, 0),
 	m_velocity(0, 0),
 	m_rotation(0),
@@ -15,7 +15,7 @@ Player::Player(sf::Font & font) :
 	
 	m_rect.setTexture(&m_texture);
 	m_rect.setSize(sf::Vector2f(30, 50));
-	m_position = sf::Vector2f(1250, 1250);
+	m_position = pos;
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2);
 	m_rect.setPosition(m_position);
 
@@ -41,7 +41,6 @@ Player::Player(sf::Font & font) :
 	underLie.setSize(sf::Vector2f(150, 10));
 	underLie.setOutlineThickness(2);
 	underLie.setFillColor(sf::Color(255,255,255,60));
-	//lifebar.setPosition(m_position);
 
 	m_lifeLabel.setFont(font);
 	m_lifeLabel.setCharacterSize(15);
@@ -119,7 +118,7 @@ void Player::update(double dt)
 			}
 		}
 	}
-	std::cout << m_time << std::endl;
+	
 	if (speedBoost)
 	{
 		MAX_SPEED = 200;
@@ -131,7 +130,7 @@ void Player::update(double dt)
 			m_speed = 100;
 		}
 	}
-	std::cout << m_speed << std::endl;
+
 
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);

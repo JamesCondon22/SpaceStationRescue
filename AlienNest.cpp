@@ -1,6 +1,10 @@
 #include "AlienNest.h"
 
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="texture"></param>
+/// <param name="pos"></param>
 AlienNest::AlienNest(sf::Texture & texture, sf::Vector2f pos) :
 	m_position(0, 0),
 	size(100)
@@ -36,14 +40,29 @@ AlienNest::AlienNest(sf::Texture & texture, sf::Vector2f pos) :
 AlienNest::~AlienNest()
 {
 }
-
+/// <summary>
+/// sets the nest position to the x and y values
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
 void AlienNest::setPosition(float x, float y)
 {
 	m_rect.setPosition(x, y);
 
 }
 
+Bullet * AlienNest::getBulletPos()
+{
+	return m_bullet;
+}
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="dt"></param>
+/// <param name="position"></param>
+/// <param name="rad"></param>
+/// <param name="rot"></param>
 void AlienNest::update(double dt, sf::Vector2f position, int rad, double rot)
 {
 	if (alive)
@@ -52,7 +71,6 @@ void AlienNest::update(double dt, sf::Vector2f position, int rad, double rot)
 		bulletPlayerCollision(position, rad);
 	}
 	
-	//std::cout << lives << std::endl;
 	if (shoot)
 	{
 		m_bullet->seek(position, m_position, rot);
@@ -81,10 +99,16 @@ void AlienNest::update(double dt, sf::Vector2f position, int rad, double rot)
 	{
 		alive = false;
 	}
+
 	underLie.setPosition(m_position.x - 50, m_position.y - 100);
 	lifebar.setPosition(m_position.x - 50, m_position.y - 100);
 }
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="position"></param>
+/// <param name="rad"></param>
+/// <returns></returns>
 bool AlienNest::bulletPlayerCollision(sf::Vector2f position, int rad)
 {
 	int x1 = position.x;
@@ -106,11 +130,20 @@ bool AlienNest::bulletPlayerCollision(sf::Vector2f position, int rad)
 	}
 }
 
-
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
 int AlienNest::getLives()
 {
 	return lives;
 }
+
+/// <summary>
+/// 
+/// </summary>
+/// <param name="position"></param>
+/// <param name="rad"></param>
 void AlienNest::circleCollision(sf::Vector2f position, int rad)
 {
 	int x1 = position.x;
@@ -126,7 +159,10 @@ void AlienNest::circleCollision(sf::Vector2f position, int rad)
 		shoot = true;
 	}
 }
-
+/// <summary>
+/// decrements the nests lives 
+/// changes the lifebar size and color
+/// </summary>
 void AlienNest::killNest()
 {
 	--lives;
@@ -146,8 +182,27 @@ void AlienNest::killNest()
 		lifebar.setFillColor(sf::Color::Red);
 	}
 }
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
+bool AlienNest::getShoot()
+{
+	return shoot;
+}
 
+/// <summary>
+/// 
+/// </summary>
+void AlienNest::setShoot()
+{
+	shoot = false;
+}
 
+/// <summary>
+/// 
+/// </summary>
+/// <param name="window"></param>
 void AlienNest::render(sf::RenderWindow & window)
 {
 	if (alive)
@@ -164,7 +219,10 @@ void AlienNest::render(sf::RenderWindow & window)
 	}
 	
 }
-
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
 sf::Vector2f AlienNest::getPos()
 {
 	return m_rect.getPosition();

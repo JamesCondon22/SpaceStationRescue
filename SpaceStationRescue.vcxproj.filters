@@ -8,7 +8,6 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="SweeperBots.cpp" />
     <ClCompile Include="Tile.cpp" />
-    <ClCompile Include="Workers.cpp" />
     <ClCompile Include="Worker.cpp" />
     <ClCompile Include="Sweeper.cpp" />
     <ClCompile Include="Predator.cpp" />
@@ -21,7 +20,6 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="SweeperBots.h" />
     <ClInclude Include="Tile.h" />
-    <ClInclude Include="Workers.h" />
     <ClInclude Include="Worker.h" />
     <ClInclude Include="Sweeper.h" />
     <ClInclude Include="Predator.h" />

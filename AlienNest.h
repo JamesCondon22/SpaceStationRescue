@@ -18,6 +18,10 @@ public:
 	void killNest();
 	int getLives();
 	bool getHit();
+	Bullet * m_bullet;
+	Bullet * getBulletPos();
+	bool getShoot();
+	void setShoot();
 	//bool circleCollision();
 private:
 	sf::Vector2f m_position;
@@ -36,7 +40,7 @@ private:
 	int m_bulletTime = 30;
 	sf::Vector2f currentBulletPosition;
 
-	Bullet * m_bullet;
+	
 	bool shoot = false;
 	bool alive = true;
 	bool hit = false;

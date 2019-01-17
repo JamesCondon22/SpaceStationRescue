@@ -10,7 +10,7 @@
 class Player
 {
 public:
-	Player(sf::Font & font);
+	Player(sf::Font & font, sf::Vector2f pos);
 	~Player();
 	void update(double dt);
 	void checkNests(AlienNest * nest);

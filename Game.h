@@ -5,8 +5,8 @@
 #include <fstream>
 
 #include "Tile.h"
-#include "Workers.h"
 #include "Player.h"
+#include "Predator.h"
 #include "AlienNest.h"
 #include "Worker.h"
 #include "Sweeper.h"
@@ -27,17 +27,21 @@ protected:
 	void processEvents();
 	void processGameEvents(sf::Event&);
 	void breadthFirst(int posx, int posy);
-	void addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue);
+	void addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue, std::pair<int, int>& prevpos);
 	void checkLowest(int lowest, int current);
 	void generateNests();
 	void generateWorkers();
+	void generatePredators();
 	void createMap();
-
+	void reset();
+	void iterateQueue();
 
 	void collision(int x, int y);
 	void workerWallCollision();
 	void bulletWallCollision();
+	void nestbulletWallCollision();
 	void bulletNestCollision(AlienNest *nest);
+	void getPath(int posX, int posY);
 	// main window
 	sf::RenderWindow m_window;
 	//std::vector<Tile*> m_tiles;
@@ -45,7 +49,6 @@ protected:
 	Tile *containingTile;
 	Tile *m_starttile;
 	Tile *m_goaltile;
-	Workers *m_worker;
 	sf::Mouse mouse;
 	sf::Font m_font;
 	bool Leftpressed = false;
@@ -67,8 +70,10 @@ protected:
 
 	Sweeper * m_sweeper;
 	Player * m_player;
+	//Predator * m_predator;
 	std::vector<Worker*> m_workers;
 	std::vector<AlienNest*> m_alienNests;
+	std::vector<Predator*> m_predators;
 	//SweeperBots bot;
 
 	int lastX = 25;
@@ -79,6 +84,7 @@ protected:
 	sf::Texture m_tileTexture;
 	sf::Texture nestTexture;
 	sf::Texture workerTexture;
+	sf::Texture m_predTexture;
 	sf::RectangleShape miniMapRect;
 	sf::RectangleShape m_workerUI;
 	sf::Text m_countText;
@@ -86,7 +92,13 @@ protected:
 	bool hitNest = false;
 	int m_count = 0;
 
-	
+	int curX;
+	int curY;
+	int prevX;
+	int prevY;
+
+	//std::list<Tile>::iterator m_iter;
+	std::list<Tile> queue;
 };
 
 #endif

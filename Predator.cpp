@@ -1,19 +1,26 @@
 #include "Predator.h"
 
 double const Predator::DEG_TO_RAD = 3.14 / 180.0f;
+double const Predator::RAD_TO_DEG = 180.0f / 3.14;
+
 Predator::Predator(sf::Texture & texture, sf::Vector2f pos) :
 	m_position(0, 0),
 	size(100),
-	m_speed(10),
-	m_timeCheck(5)
+	m_speed(10)
 
 {
-
-	m_rect.setOrigin(m_position.x + 15 / 2, m_position.y + 15 / 2);
+	m_rect.setSize(sf::Vector2f(30, 30));
+	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2);
 	m_rect.setTexture(&texture);
-	m_rect.setSize(sf::Vector2f(25, 50));
-	m_position = pos;
-	m_rect.setPosition(m_position.x + 20, m_position.y + 10);
+	
+	m_position = sf::Vector2f(pos.x, pos.y);
+	m_rect.setPosition(m_position.x, m_position.y);
+
+	m_surroundingCircle.setRadius(5);
+	m_surroundingCircle.setPosition(0, 0);
+	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
+	m_surroundingCircle.setPosition(m_position);
+	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
 
 }
 
@@ -28,55 +35,58 @@ void Predator::setPosition(float x, float y)
 }
 
 
-void Predator::update(double dt, sf::Vector2f playerPosition)
+void Predator::update(sf::Vector2f position)
 {
-	if (!collected)
-	{
-		collisionPlayer(playerPosition);
-	}
+	m_velocity = position - m_position;
+	m_velocity = normalize(m_velocity);
+	m_velocity = m_velocity * 0.3f;
+	m_rotation = getNewOrientation(m_rotation, m_velocity);
 
-	//implimenting wander functionality
-	wander(dt);
+	m_position += m_velocity;
 
-	int curX = round(m_sprite.getPosition().x / 50);
-	int curY = round(m_sprite.getPosition().y / 50);
+
+	m_surroundingCircle.setPosition(m_position);
+	m_rect.setPosition(m_position.x, m_position.y);
+	m_rect.setRotation(m_rotation);
 }
+sf::Vector2f Predator::normalize(sf::Vector2f vec)
+{
+	if (vec.x*vec.x + vec.y * vec.y != 0)
+	{
+		vec.x = vec.x / sqrt(vec.x*vec.x + vec.y * vec.y);
+		vec.y = vec.y / sqrt(vec.x*vec.x + vec.y * vec.y);
+	}
+	return vec;
+}
+
+float Predator::getNewOrientation(float curOrientation, sf::Vector2f velocity)
+{
+	if (length(velocity) > 0)
+	{
+		float rotation = atan2(-m_velocity.x, m_velocity.y) * RAD_TO_DEG;
+		return rotation;
+	}
+	else
+	{
+		return curOrientation;
+	}
+}
+
+float Predator::length(sf::Vector2f vel) {
+	return sqrt(vel.x * vel.x + vel.y * vel.y);
+}
+
 
 void Predator::wander(double dt)
 {
-	//start timer
-	//check timer
-	timer = m_clock.getElapsedTime().asSeconds();
 
-	if (timer >= m_timeCheck)
-	{
-
-		m_random = (rand() % -90 + 90);
-		m_rotation = m_random;
-		m_timeCheck += 5;
-
-	}
-	//random angle assigned
-	//rotation set to new angle
-
-	m_heading.x = cos(m_rotation * DEG_TO_RAD);
-	m_heading.y = sin(m_rotation * DEG_TO_RAD);
-	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
-	m_sprite.setPosition(m_rect.getPosition());
-	m_rect.setRotation(m_rotation - 90);
-	m_sprite.setRotation(m_rect.getRotation());
-
-	//randomize rotation
-	//repeat
 
 }
 
 void Predator::render(sf::RenderWindow & window)
 {
-	if (!collected) {
-		window.draw(m_rect);
-	}
-
+	window.draw(m_rect);
+	window.draw(m_surroundingCircle);
 }
 
 sf::Vector2f Predator::getPos()
@@ -84,15 +94,7 @@ sf::Vector2f Predator::getPos()
 	return m_rect.getPosition();
 }
 
-void  Predator::collisionPlayer(sf::Vector2f & playerPosition)
-{
-	if (playerPosition.x > m_rect.getPosition().x && playerPosition.x < m_rect.getPosition().x + 25
-		&& playerPosition.y > m_rect.getPosition().y && playerPosition.y < m_rect.getPosition().y + 50)
-	{
-		collected = true;
-	}
 
-}
 
 int Predator::getTileX()
 {
@@ -104,8 +106,24 @@ int Predator::getTileY()
 	return m_sprite.getPosition().y / 50;
 }
 
-void Predator::changeDirection()
+bool Predator::circleCollision(sf::Vector2f position, int rad)
 {
-	m_speed = -m_speed;
+	int x1 = position.x;
+	int y1 = position.y;
+	int x2 = m_position.x;
+	int y2 = m_position.y;
+
+	int radius1 = 5;
+	int radius2 = rad;
+
+	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
+
 

@@ -42,7 +42,10 @@ Game::Game()
 	{
 		std::cout << "problem loading texture" << std::endl;
 	}
-
+	if (!m_predTexture.loadFromFile("images/predator.png"))
+	{
+		std::cout << "problem loading texture" << std::endl;
+	}
 
 	miniMapSprite.setTexture(miniMapTexture);
 	miniMapSprite.setScale(2, 2);
@@ -114,9 +117,6 @@ Game::Game()
 
 	srand(time(NULL));
 
-	m_worker = new Workers(100,100,10);
-
-
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {	
 			if (map[i][j] == 0)
@@ -130,6 +130,7 @@ Game::Game()
 		}
 	}
 	
+
 	miniMapRect.setFillColor(sf::Color::Black);
 	miniMapRect.setSize(sf::Vector2f(178, 112));
 	
@@ -138,13 +139,13 @@ Game::Game()
 	m_workerUI.setPosition(gameView.getCenter());
 	generateNests();
 	generateWorkers();
+	generatePredators();
 
-	m_player = new Player(m_font);
+	m_player = new Player(m_font, m_tile[25][25]->getPosition());
 	m_sweeper = new Sweeper();
-
+	
 	m_countText.setFont(m_font);
 	m_countText.setCharacterSize(20);
-	//m_countText.setOutlineThickness(.5);
 	m_countText.setOutlineColor(sf::Color::White);
 	m_countText.setFillColor(sf::Color::White);
 	m_countText.setString(std::to_string(0));
@@ -264,17 +265,6 @@ void Game::processGameEvents(sf::Event& event)
 		}
 	}
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-	{
-		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 1250) {
-			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 1250) {
-				int x = mouse.getPosition(m_window).x / 50;
-				int y = mouse.getPosition(m_window).y / 50;
-				m_tile[x][y]->removeObstacle();
-			}
-		}
-	}
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
 		for (int i = 0; i < 50; i++) {
@@ -282,6 +272,7 @@ void Game::processGameEvents(sf::Event& event)
 
 				m_tile[j][i]->setCost(0);
 				m_tile[j][i]->setVisited(false);
+				m_tile[j][i]->setCurrentState(Blank);
 			}
 		}
 	}
@@ -290,6 +281,17 @@ void Game::processGameEvents(sf::Event& event)
 
 }
 
+void Game::reset()
+{
+	for (int i = 0; i < 50; i++) {
+		for (int j = 0; j < 50; j++) {
+
+			m_tile[j][i]->setCost(0);
+			m_tile[j][i]->setVisited(false);
+			m_tile[j][i]->setCurrentState(Blank);
+		}
+	}
+}
 /// <summary>
 /// Method to handle all game updates
 /// </summary>
@@ -322,27 +324,70 @@ void Game::update(double dt)
 			m_player->updateLifeBar();
 		}
 	}
-
+	
 	m_player->update(dt);
-
-	int curX =  round(m_player->getPos().x / 50);
-	int curY = round(m_player->getPos().y / 50);
+	int curPredX = round(m_predators[0]->getPos().x / 50);
+	int curPredY = round(m_predators[0]->getPos().y / 50);
+	
+	m_starttile = m_tile[curPredX][curPredY];
+	m_starttile->setStart();
+	
+	curX =  round(m_player->getPos().x / 50);
+	curY = round(m_player->getPos().y / 50);
 
 	
+	
+	
 	collision(curX, curY);
+	m_goaltile = m_tile[curX][curY];
+	m_goaltile->setGoal();
+
+	
+	breadthFirst(m_goaltile->getXpos(), m_goaltile->getYpos());
+	getPath(m_starttile->getXpos(), m_starttile->getYpos());
+	
+	if (curX != prevX){
+		reset();
+	}
+
+	if (curY != prevY){
+		reset();
+	}
+	prevX = curX;
+	prevY = curY;
+
+	//iterateQueue();
+	//m_predators[0]->update(m_tile[m_iter->getXpos()][m_iter->getYpos()]->getCircleVec());
 	workerWallCollision();
 	bulletWallCollision();
+	
+
 	m_sweeper->update(dt, m_player->getPos());
 	
 	if (containingTile != nullptr)
 	{
 		std::cout << containingTile->getPosition().x << ", " << containingTile->getPosition().y << std::endl;
 	}
+	nestbulletWallCollision();
 	
 	
 	
 	miniMapView.setCenter(m_player->getPos());
 	
+}
+
+void Game::iterateQueue()
+{
+
+	for (auto iter = queue.begin(); iter != queue.end();)
+	{
+		if (m_predators[0]->circleCollision(m_tile[iter->getXpos()][iter->getYpos()]->getCircleVec(), 5))
+		{
+			iter++;
+		}
+		
+		//m_iter = iter;
+	}
 }
 
 
@@ -375,12 +420,9 @@ void Game::render()
 				&& m_tile[j][i]->getPosition().y > playerPosition.y - 500 && m_tile[j][i]->getPosition().y < playerPosition.y)
 			{
 				m_tile[j][i]->render(m_window);
-			}
-			
+			}	
 		}
 	}
-
-	m_worker->render(m_window);
 
 	for (int i = 0; i < m_alienNests.size(); i++)
 	{
@@ -390,6 +432,11 @@ void Game::render()
 	for (int i = 0; i < m_workers.size(); i++)
 	{
 		m_workers[i]->render(m_window);
+	}
+
+	for (int i = 0; i < m_predators.size(); i++)
+	{
+		m_predators[i]->render(m_window);
 	}
 
 	m_sweeper->render(m_window);
@@ -421,7 +468,11 @@ void Game::render()
 	
 	
 }
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
 void Game::collision(int x, int y)
 {
 	
@@ -458,8 +509,9 @@ void Game::collision(int x, int y)
 		}
 	}
 }
-
-
+/// <summary>
+/// 
+/// </summary>
 void Game::workerWallCollision()
 {
 	
@@ -486,7 +538,41 @@ void Game::workerWallCollision()
 		}
 	}
 }
-
+/// <summary>
+/// 
+/// </summary>
+void Game::nestbulletWallCollision()
+{
+	for (int i = 0; i < m_alienNests.size(); i++)
+	{
+		int a = m_alienNests[i]->m_bullet->getTileX();
+		int b = m_alienNests[i]->m_bullet->getTileY();
+		
+		if (m_tile[a][b - 1]->getObstacle() && m_alienNests[i]->getShoot())
+		{	 
+			m_alienNests[i]->m_bullet->resetToNest(m_alienNests[i]->getPos());
+			m_alienNests[i]->setShoot();
+		}
+		if (m_tile[a][b + 1]->getObstacle() && m_alienNests[i]->getShoot())
+		{
+			m_alienNests[i]->m_bullet->resetToNest(m_alienNests[i]->getPos());
+			m_alienNests[i]->setShoot();
+		}
+		if (m_tile[a - 1][b]->getObstacle() && m_alienNests[i]->getShoot())
+		{
+			m_alienNests[i]->m_bullet->resetToNest(m_alienNests[i]->getPos());
+			m_alienNests[i]->setShoot();
+		}
+		if (m_tile[a + 1][b]->getObstacle() && m_alienNests[i]->getShoot())
+		{
+			m_alienNests[i]->m_bullet->resetToNest(m_alienNests[i]->getPos());
+			m_alienNests[i]->setShoot();
+		}
+	}
+}
+/// <summary>
+/// 
+/// </summary>
 void Game::bulletWallCollision()
 {
 	for (int i = 0; i < m_player->m_bullets.size(); i++)
@@ -525,10 +611,10 @@ void Game::bulletWallCollision()
 			}
 		}
 
-		if (m_tile[a - 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle())
+		/*if (m_tile[a - 1][b]->getObstacle() && m_tile[a][b + 1]->getObstacle())
 		{
-			if (m_player->m_bullets[i]->getPosition().x < m_tile[a - 1][b]->getPosition().x + 65 
-				&& m_player->m_bullets[i]->getPosition().y < m_tile[a][b - 1]->getPosition().y + 65)
+			if (m_player->m_bullets[i]->getPosition().x < m_tile[a - 1][b]->getPosition().x + 45 
+				&& m_player->m_bullets[i]->getPosition().y < m_tile[a][b - 1]->getPosition().y - 30)
 			{
 				m_player->m_bullets.erase(m_player->m_bullets.begin());
 			}
@@ -540,7 +626,7 @@ void Game::bulletWallCollision()
 			{
 				m_player->m_bullets.erase(m_player->m_bullets.begin());
 			}
-		}
+		}*/
 	}
 }
 
@@ -557,50 +643,86 @@ void Game::breadthFirst(int posX, int posY) {
 	{
 		auto gridPos = queue.front()->getGridPos();
 		auto costPos = gridPos;
+		auto prevPos = costPos;
 		auto cost = queue.front()->getCost();
 		auto rotation = 0.0f;
 
 
-		if (costPos.first > 0)
-		{
-			costPos.first--;
-			addToQueue(costPos, gridPos, cost, queue);
-		}
 		if (costPos.first < 49)
 		{
+			prevPos = costPos;
 			costPos.first++;
-			addToQueue(costPos, gridPos, cost, queue);
-		}
-
-		if (costPos.second > 0)
-		{
-			costPos.second--;
-			addToQueue(costPos, gridPos, cost, queue);
+			//m_tile[costPos.first][costPos.second]->setRotation(0);
+			addToQueue(costPos, gridPos, cost, queue, prevPos);
 		}
 		if (costPos.second < 49)
 		{
+			prevPos = costPos;
 			costPos.second++;
-			addToQueue(costPos, gridPos, cost, queue);
+			//m_tile[costPos.first][costPos.second]->setRotation(90);
+			addToQueue(costPos, gridPos, cost, queue, prevPos);
 		}
+		if (costPos.first > 0)
+		{
+			prevPos = costPos;
+			costPos.first--;
+			//m_tile[costPos.first][costPos.second]->setRotation(180);
+			addToQueue(costPos, gridPos, cost, queue, prevPos);
+		}
+		if (costPos.second > 0)
+		{
+			prevPos = costPos;
+			costPos.second--;
+			//m_tile[costPos.first][costPos.second]->setRotation(180);
+			addToQueue(costPos, gridPos, cost, queue, prevPos);
+		}
+		
+		
+	
+	/*	if (costPos.first > 0 && costPos.second > 0)
+		{
+			costPos.first--;
+			costPos.second--;
+			m_tile[costPos.first][costPos.second]->setRotation(225);
+		}
+		if (costPos.first > 0 && costPos.second < 49)
+		{
+			costPos.first--;
+			costPos.second++;
+			m_tile[costPos.first][costPos.second]->setRotation(225);
+		}
+		if (costPos.first < 49 && costPos.second > 0)
+		{
+			costPos.first++;
+			costPos.second--;
+			m_tile[costPos.first][costPos.second]->setRotation(135);
+		}
+		if (costPos.first < 49 && costPos.second < 49)
+		{
+			costPos.first++;
+			costPos.second++;
+			m_tile[costPos.first][costPos.second]->setRotation(180);
+		}*/
 		queue.pop_front();
 
 	}
 
 
 }
-void Game::addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue) {
+void Game::addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue, std::pair<int, int>& prevpos) {
 	if (!m_tile[currentPos.first][currentPos.second]->getVisited() && !m_tile[currentPos.first][currentPos.second]->getObstacle())
 	{
 		auto currentTop = (queue.front()->getGridPos());
-		m_tile[currentPos.first][currentPos.second]->setColor(sf::Color(255, 200 - (cost * 4), 215 - (cost * 2), 221 - (cost * 3)));
+		//m_tile[currentPos.first][currentPos.second]->setVectorPosition(currentTop);
+		//m_tile[currentPos.first][currentPos.second]->setColor(sf::Color(255, 200 - (cost * 4), 215 - (cost * 2), 221 - (cost * 3)));
 		m_tile[currentPos.first][currentPos.second]->setVisited(true);
+		m_tile[currentPos.first][currentPos.second]->setPrevious(prevpos);
 		m_tile[currentPos.first][currentPos.second]->setCost(cost + 1);
 		queue.push_back(m_tile[currentPos.first][currentPos.second]);
 
 	}
 	currentPos = pos;
 }
-
 void Game::checkLowest(int lowest, int current)
 {
 	if (current < lowest)
@@ -608,7 +730,9 @@ void Game::checkLowest(int lowest, int current)
 		current = lowest;
 	}
 }
-
+/// <summary>
+/// 
+/// </summary>
 void Game::generateNests()
 {
 	int i, j;
@@ -630,7 +754,9 @@ void Game::generateNests()
 
 	}
 }
-
+/// <summary>
+/// 
+/// </summary>
 void Game::generateWorkers()
 {
 	int i, j;
@@ -657,8 +783,65 @@ void Game::generateWorkers()
 
 	}
 }
+/// <summary>
+/// 
+/// </summary>
+void Game::generatePredators()
+{
+	int i, j;
+	int count = 0;
+	Predator*  pred[1];
 
+	while (m_predators.size() < 1)
+	{
+		i =  29 /*(rand() % 49) + 1*/;
+		j =  25 /*(rand() % 49) + 1*/;
+
+		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker)
+		{
+			if (!m_tile[i][j - 1]->getObstacle() && !m_tile[i][j + 1]->getObstacle() &&
+				!m_tile[i - 1][j]->getObstacle() && !m_tile[i + 1][j]->getObstacle())
+			{
+				m_tile[i][j]->containsWorker = true;
+				pred[count] = new Predator(m_predTexture, m_tile[i][j]->getPosition());
+				m_predators.push_back(pred[count]);
+				count++;
+			}
+
+		}
+
+	}
+}
+/// <summary>
+/// 
+/// </summary>
+/// <returns></returns>
 sf::Vector2f Game::getPlayerPos()
 {
 	return m_player->getPos();
+}
+/// <summary>
+/// 
+/// </summary>
+/// <param name="posX"></param>setVectorPosition
+/// <param name="posY"></param>
+void Game::getPath(int posX, int posY)
+{
+	queue.clear();
+
+	queue.push_back(*m_tile[posX][posY]);
+
+	auto iter = queue.begin();
+
+	while (iter->getCost() != 0 && m_tile[iter->m_previous.first][iter->m_previous.second]->getState() != Goal)
+	{
+		m_tile[iter->m_previous.first][iter->m_previous.second]->setPath();
+		queue.push_back(*m_tile[iter->m_previous.first][iter->m_previous.second]);
+	/*	if (iter->m_previous.second < iter->m_previous.seco + 1)
+		{
+			m_tile[iter->m_previous.first][iter->m_previous.second]->setRotation(90);
+		}*/
+		iter++;
+	}
+	//m_predators[0]->setPosition(m_tile[iter->m_previous.first][iter->m_previous.second]->getPosition().x, m_tile[iter->m_previous.first][iter->m_previous.second]->getPosition().y);
 }
