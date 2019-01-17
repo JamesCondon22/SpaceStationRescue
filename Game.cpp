@@ -504,7 +504,7 @@ void Game::sweeperWallCollision()
 		int a = m_sweeper[i]->getTileX();
 		int b = m_sweeper[i]->getTileY();
 
-		if (m_tile[a][b - 2]->getObstacle())
+		if (m_tile[a][b - 1]->getObstacle())
 		{
 			m_sweeper[i]->changeDirection();
 		}

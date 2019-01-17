@@ -20,8 +20,8 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_maxSpeed(1),
 	m_wander(true),
 	wallcollide(false),
-	m_wanderCollide(false),
-	m_velocity(0.2,0.2)
+	m_wanderCollide(false)
+	//m_velocity(0.2,0.2)
 
 {
 
@@ -103,9 +103,22 @@ void Sweeper::wander(double dt)
 
 	if (timer >= m_timeCheck)
 	{
+		int min = -2;
+		int max = 2;
+		float r = (float)rand() / (float)RAND_MAX;
+		m_random = min + r * (max - min);
+		m_velocity.x = m_random;
 
-		m_random = (rand() % -90 + 90);
-		m_rotation = m_random;
+		float random = 0;
+		int minSec = -2;
+		int maxSec = 2;
+		float rSec = (float)rand() / (float)RAND_MAX;
+		random = minSec + rSec * (maxSec - minSec);
+		m_velocity.y = random;
+
+		m_velocity.x = m_velocity.x * m_speed;
+		m_velocity.y = m_velocity.y * m_speed;
+		std::cout << "velocity x: " << m_velocity.x << "  velocity y: " << m_velocity.y << std::endl;
 		//timer = 0;
 		m_timeCheck += 5;
 		
@@ -124,6 +137,7 @@ void Sweeper::wander(double dt)
 	//new
 	/*m_velocity.x = cos(m_rotation * DEG_TO_RAD);
 	m_velocity.y = sin(m_rotation * DEG_TO_RAD);*/
+
 	m_velocity = normalise();
 	m_velocity = m_velocity * 0.2f;
 
@@ -172,9 +186,13 @@ void Sweeper::radiusCollisionPlayer(sf::Vector2f position, int rad)
 	int radius1 = 150;
 	int radius2 = rad;
 
-	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
+	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2) && wallcollide == false)
 	{
-		
+		m_flee = true;
+	}
+	else
+	{
+		m_flee = false;
 	}
 }
 
@@ -188,8 +206,9 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) > distance)
 	{
-		
-		
+		m_flee = true;
+		wallcollide = false;
+		std::cout << m_flee << std::endl;
 	}
 }
 
@@ -253,6 +272,7 @@ void Sweeper::changeDirection()
 {
 	
 	m_velocity = m_velocity * -0.2f;
+	wallcollide = true;
 
 }
 
@@ -265,7 +285,7 @@ void Sweeper::KinematicFlee(sf::Vector2f playerPos)
 	m_velocity = m_velocity * 0.2f;
 	
 	m_rotation = getNewRotation(m_rotation, m_velocity);
-	wallcollide = false;
+	//wallcollide = false;
 	m_wanderCollide = false;
 	
 

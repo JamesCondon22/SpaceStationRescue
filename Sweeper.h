@@ -80,7 +80,7 @@ private:
 	sf::Clock m_clock;
 	int timer;
 	int m_timeCheck;
-	int m_random;
+	float m_random;
 
 	//Attack/flee range
 	bool m_wander;
