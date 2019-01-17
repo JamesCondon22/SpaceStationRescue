@@ -47,6 +47,7 @@ void Worker::update(double dt, sf::Vector2f playerPosition)
 	if (!collected)
 	{
 		collisionPlayer(playerPosition);
+		//collisionSweeper();
 	}
 
 	//implimenting wander functionality
@@ -105,6 +106,20 @@ bool Worker::getCollision()
 	return increment;
 }
 
+void Worker::distance(int distance, sf::Vector2f position)
+{
+	int x1 = position.x;
+	int y1 = position.y;
+	int x2 = m_sprite.getPosition().x;
+	int y2 = m_sprite.getPosition().y;
+
+
+	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < distance)
+	{
+		collected = true;
+	}
+	
+}
 
 
 void  Worker::collisionPlayer(sf::Vector2f & playerPosition)

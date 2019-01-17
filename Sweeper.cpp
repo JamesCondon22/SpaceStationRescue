@@ -20,7 +20,8 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_maxSpeed(1),
 	m_wander(true),
 	wallcollide(false),
-	m_wanderCollide(false)
+	m_wanderCollide(false),
+	m_seeking(true)
 	//m_velocity(0.2,0.2)
 
 {
@@ -60,7 +61,7 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer, sf::
 {
 	
 
-	radiusCollisionSweeper(workerPos, radworker);
+	//radiusCollisionWorker(workerPos, radworker);
 	radiusCollisionPlayer(playerPosition, radPlayer);
 	m_position = m_sprite.getPosition();
 	if (!collected)
@@ -147,7 +148,7 @@ sf::Vector2f Sweeper::getPos()
 /// Checks the obj's bumping
 /// </summary>
 /// <param name="playerPosition"></param>
-void  Sweeper::collisionPlayer(sf::Vector2f & playerPosition)
+void  Sweeper::collisionPlayer(sf::Vector2f playerPosition)
 {
 	if (playerPosition.x > m_rect.getPosition().x && playerPosition.x < m_rect.getPosition().x + 25
 		&& playerPosition.y > m_rect.getPosition().y && playerPosition.y < m_rect.getPosition().y + 50)
@@ -182,7 +183,7 @@ void Sweeper::radiusCollisionPlayer(sf::Vector2f position, int rad)
 	}
 }
 
-void Sweeper::radiusCollisionSweeper(sf::Vector2f position, int rad)
+void Sweeper::radiusCollisionWorker(sf::Vector2f position, int rad)
 {
 	int x1 = position.x;
 	int y1 = position.y;
@@ -210,6 +211,11 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 	{
 		m_flee = true;
 		wallcollide = false;
+		m_seeking = false;
+	}
+	else
+	{
+		m_seeking = true;
 	}
 }
 
@@ -230,9 +236,12 @@ void Sweeper::seek(sf::Vector2f workerPos)
 	m_velocity = normalise();
 
 
-	m_velocity = m_velocity * 0.2f;
+	m_velocity = m_velocity * 0.5f;
 
 	m_rotation = getNewRotation(m_rotation, m_velocity);
+	//wallcollide = false;
+	//m_wanderCollide = false;
+
 }
 
 float Sweeper::getNewOrientation(float curOrientation, sf::Vector2f velocity)

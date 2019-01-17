@@ -322,14 +322,12 @@ void Game::update(double dt)
 	scoring();
 
 
-	//std::cout << m_count << std::endl;
 	for (int i = 0; i < m_alienNests.size(); i++)
 	{
 		m_alienNests[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_player->getRotation());
 		m_player->checkNests(m_alienNests[i]);
 		if (m_alienNests[i]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
 		{
-			std::cout << "collide" << std::endl;
 			m_player->updateLifeBar();
 		}
 	}
@@ -339,11 +337,26 @@ void Game::update(double dt)
 	int curX =  round(m_player->getPos().x / 50);
 	int curY = round(m_player->getPos().y / 50);
 
-	for (int count = 0; count < m_workers.size(); count++)
+	
+	for (int i = 0; i < m_sweeper.size(); i++)
 	{
-		for (int i = 0; i < m_sweeper.size(); i++)
+		m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_workers[0]->getPos(), m_workers[0]->getRadius());
+	}
+
+	for (int i = 0; i < m_workers.size(); i++)
+	{
+		for (int count = 0; count < m_sweeper.size(); count++)
 		{
-			m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_workers[count]->getPos(), m_workers[count]->getRadius());
+			sf::Vector2f position = m_sweeper[count]->getPos();
+			m_workers[i]->distance(75, position);
+		}
+	}
+
+	for (int i = 0; i < m_sweeper.size(); i++)
+	{
+		for (int count = 0; count < m_workers.size(); count++)
+		{
+			m_sweeper[i]->radiusCollisionWorker(m_workers[count]->getPos(), m_workers[count]->getRadius());
 		}
 	}
 	
@@ -499,7 +512,7 @@ void Game::workerWallCollision()
 		{
 			m_workers[i]->changeDirection();
 		}
-		if (m_tile[a][b + 1]->getObstacle())
+		if (m_tile[a][b + 2]->getObstacle())
 		{
 			m_workers[i]->changeDirection();
 		}
@@ -689,9 +702,9 @@ void Game::generateWorkers()
 {
 	int i, j;
 	int count = 0;
-	Worker*  worker[20];
+	Worker*  worker[10];
 
-	while (m_workers.size() < 20)
+	while (m_workers.size() < 10)
 	{
 		i = (rand() % 49) + 1;
 		j = (rand() % 49) + 1;
@@ -720,9 +733,9 @@ void Game::generateSweepers()
 {
 	int i, j;
 	int count = 0;
-	Sweeper*  sweeper[10];
+	Sweeper*  sweeper[5];
 
-	while (m_sweeper.size() < 10)
+	while (m_sweeper.size() < 5)
 	{
 		i = (rand() % 49) + 1;
 		j = (rand() % 49) + 1;

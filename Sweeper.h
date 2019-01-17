@@ -31,7 +31,7 @@ public:
 	void wander(double dt);
 	void changeDirection();
 	sf::Vector2f getPos();
-	void collisionPlayer(sf::Vector2f & playerPosition);
+	void collisionPlayer(sf::Vector2f playerPosition);
 	double static const DEG_TO_RAD;
 	double static const RAD_TO_DEG;
 
@@ -45,7 +45,7 @@ public:
 	void distance(int distance, sf::Vector2f position);
 	
 	//detecting for seek
-	void radiusCollisionSweeper(sf::Vector2f position, int rad);
+	void radiusCollisionWorker(sf::Vector2f position, int rad);
 
 
 private:
@@ -91,6 +91,7 @@ private:
 	float m_radius;
 	bool wallcollide;
 	bool m_wanderCollide;
+	bool m_seeking;
 };
 
 #endif // !SWEEPER

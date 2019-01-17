@@ -25,6 +25,7 @@ public:
 	bool getCollected();
 	void collisionSweeper(sf::Vector2f & SweeperPosition);
 	int getRadius();
+	void distance(int distance, sf::Vector2f position);
 
 private:
 	sf::Vector2f m_position;
