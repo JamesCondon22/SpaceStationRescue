@@ -39,10 +39,12 @@ protected:
 	void workerWallCollision();
 	void sweeperWallCollision();
 	void bulletWallCollision();
+	void bulletNestCollision(AlienNest *nest);
 	// main window
 	sf::RenderWindow m_window;
 	//std::vector<Tile*> m_tiles;
 	Tile *m_tile[50][50];
+	Tile *containingTile;
 	Tile *m_starttile;
 	Tile *m_goaltile;
 	sf::Mouse mouse;
@@ -83,7 +85,11 @@ protected:
 	sf::Text m_countText;
 
 	std::vector<bool>m_score;
+
+	bool hitNest = false;
 	int m_count = 0;
+
+	
 };
 
 #endif
