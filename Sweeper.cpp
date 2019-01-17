@@ -56,12 +56,12 @@ void Sweeper::setPosition(float x, float y)
 }
 
 
-void Sweeper::update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector2f workerPos)
+void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer, sf::Vector2f workerPos, int radworker)
 {
 	
 
-
-	radiusCollisionPlayer(playerPosition, rad);
+	radiusCollisionSweeper(workerPos, radworker);
+	radiusCollisionPlayer(playerPosition, radPlayer);
 	m_position = m_sprite.getPosition();
 	if (!collected)
 	{
@@ -123,19 +123,6 @@ void Sweeper::wander(double dt)
 		
 
 	}
-	//int clocktimer = m_clock.getElapsedTime().asSeconds();
-	//random angle assigned
-	//rotation set to new angle
-
-	//old
-	/*m_heading.x = cos(m_rotation * DEG_TO_RAD);
-	m_heading.y = sin(m_rotation * DEG_TO_RAD);
-	m_sprite.setRotation(m_rotation - 90);
-	m_sprite.setRotation(m_rect.getRotation());*/
-
-	//new
-	/*m_velocity.x = cos(m_rotation * DEG_TO_RAD);
-	m_velocity.y = sin(m_rotation * DEG_TO_RAD);*/
 
 	m_velocity = normalise();
 	m_velocity = m_velocity * 0.2f;
@@ -195,6 +182,22 @@ void Sweeper::radiusCollisionPlayer(sf::Vector2f position, int rad)
 	}
 }
 
+void Sweeper::radiusCollisionSweeper(sf::Vector2f position, int rad)
+{
+	int x1 = position.x;
+	int y1 = position.y;
+	int x2 = m_sprite.getPosition().x;
+	int y2 = m_sprite.getPosition().y;
+
+	int radius1 = 150;
+	int radius2 = rad;
+
+	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
+	{
+		seek(position);
+	}
+}
+
 void Sweeper::distance(int distance, sf::Vector2f position)
 {
 	int x1 = position.x;
@@ -220,12 +223,16 @@ void Sweeper::render(sf::RenderWindow & window)
 	
 }
 
-void Sweeper::seek()
+void Sweeper::seek(sf::Vector2f workerPos)
 {
 	//m_velocity = m_game->getPlayerPos() - m_position;
+	m_velocity = m_position + workerPos;
 	m_velocity = normalise();
-	m_velocity = m_velocity * m_maxSpeed;
-	m_rotation = getNewOrientation(m_rotation, m_velocity);
+
+
+	m_velocity = m_velocity * 0.2f;
+
+	m_rotation = getNewRotation(m_rotation, m_velocity);
 }
 
 float Sweeper::getNewOrientation(float curOrientation, sf::Vector2f velocity)

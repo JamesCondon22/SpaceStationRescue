@@ -1,16 +1,20 @@
-﻿  Sweeper.cpp
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(44): warning C4305: 'argument': truncation from 'double' to 'float'
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(102): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(181): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(182): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(183): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(184): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(201): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(202): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(203): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(204): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(237): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(262): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(267): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\sweeper.cpp(299): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+﻿  Game.cpp
+c:\users\gameuser\documents\spacestationrescue\game.cpp(63): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\gameuser\documents\spacestationrescue\game.cpp(122): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\game.cpp(182): warning C4244: '-=': conversion from 'const double' to 'sf::Int32', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\game.cpp(311): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(326): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(331): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\game.cpp(332): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\game.cpp(334): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(389): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(394): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(399): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(412): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(417): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(422): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(475): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(502): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(528): warning C4018: '<': signed/unsigned mismatch
+c:\users\gameuser\documents\spacestationrescue\game.cpp(725): warning C4018: '<': signed/unsigned mismatch
   SpaceStationRescue.vcxproj -> C:\Users\gameuser\Documents\SpaceStationRescue\Debug\SpaceStationRescue.exe

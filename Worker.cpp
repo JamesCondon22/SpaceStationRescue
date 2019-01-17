@@ -20,7 +20,6 @@ Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	m_surroundingCircle.setRadius(m_radius);
 	m_surroundingCircle.setPosition(0, 0);
 	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
-	//std::cout << m_surroundingCircle.getOrigin().x << ", " << m_surroundingCircle.getOrigin().y << std::endl;
 	m_surroundingCircle.setPosition(m_position);
 	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
 
@@ -55,6 +54,7 @@ void Worker::update(double dt, sf::Vector2f playerPosition)
 
 	int curX = round(m_sprite.getPosition().x / 50);
 	int curY = round(m_sprite.getPosition().y / 50);
+	m_surroundingCircle.setPosition(m_sprite.getPosition());
 }
 
 void Worker::wander(double dt)
@@ -90,6 +90,7 @@ void Worker::render(sf::RenderWindow & window)
 {
 	if (!collected) {
 		window.draw(m_sprite);
+		window.draw(m_surroundingCircle);
 	}
 	
 }
@@ -116,6 +117,18 @@ void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
 	
 }
 
+void  Worker::collisionSweeper(sf::Vector2f & sweeperPosition)
+{
+	if (sweeperPosition.x > m_rect.getPosition().x && sweeperPosition.x < m_rect.getPosition().x + 25
+		&& sweeperPosition.y > m_rect.getPosition().y && sweeperPosition.y < m_rect.getPosition().y + 50)
+	{
+		collected = true;
+	}
+
+}
+
+
+
 int Worker::getTileX()
 {
 	return m_sprite.getPosition().x / 50;
@@ -134,5 +147,10 @@ void Worker::changeDirection()
 bool Worker::getCollected()
 {
 	return collected;
+}
+
+int Worker::getRadius()
+{
+	return m_radius;
 }
 

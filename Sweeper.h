@@ -16,7 +16,7 @@ class Sweeper
 public:
 	Sweeper(sf::Texture texture, sf::Vector2f position);
 	~Sweeper();
-	void update(double dt, sf::Vector2f playerPosition, int rad, sf::Vector2f workerPos);
+	void update(double dt, sf::Vector2f playerPosition, int radPlayer, sf::Vector2f workerPos, int radworker);
 	void render(sf::RenderWindow & window);
 	sf::Vector2f getVelocity();
 	sf::Vector2f getPosition();
@@ -25,7 +25,7 @@ public:
 	float getNewOrientation(float currentOrientation, sf::Vector2f velocity);
 	sf::Vector2f normalise();
 	float length(sf::Vector2f vel);
-	void seek();
+	void seek(sf::Vector2f workerPos);
 	void checkBorders();
 	void setPosition(float x, float y);
 	void wander(double dt);
@@ -39,15 +39,18 @@ public:
 	int getTileY();
 	void KinematicFlee(sf::Vector2f enemyPosition);
 	float getNewRotation(float currentRotation, sf::Vector2f velocity);
-
+	
+	//detecting for flee
 	void radiusCollisionPlayer(sf::Vector2f position, int rad);
 	void distance(int distance, sf::Vector2f position);
+	
+	//detecting for seek
+	void radiusCollisionSweeper(sf::Vector2f position, int rad);
 
 
 private:
 	int id = 1;
 	float m_maxSpeed;
-	float m_radius;
 	float m_threshold;
 	int m_behaviour;
 	float m_orientation;
@@ -85,6 +88,7 @@ private:
 	//Attack/flee range
 	bool m_wander;
 	sf::CircleShape m_surroundingCircle;
+	float m_radius;
 	bool wallcollide;
 	bool m_wanderCollide;
 };
