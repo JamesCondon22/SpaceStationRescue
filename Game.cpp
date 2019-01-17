@@ -339,9 +339,12 @@ void Game::update(double dt)
 	int curX =  round(m_player->getPos().x / 50);
 	int curY = round(m_player->getPos().y / 50);
 
-	for (int i = 0; i < m_sweeper.size(); i++)
+	for (int count = 0; count < m_workers.size(); count++)
 	{
-		m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_workers[0]->getPos(), m_workers[0]->getRadius());
+		for (int i = 0; i < m_sweeper.size(); i++)
+		{
+			m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_workers[count]->getPos(), m_workers[count]->getRadius());
+		}
 	}
 	
 	collision(curX, curY);
@@ -717,12 +720,12 @@ void Game::generateSweepers()
 {
 	int i, j;
 	int count = 0;
-	Sweeper*  sweeper[1];
+	Sweeper*  sweeper[10];
 
-	while (m_sweeper.size() < 1)
+	while (m_sweeper.size() < 10)
 	{
-		i = 25;//(rand() % 49) + 1;
-			j = 5;//(rand() % 49) + 1;
+		i = (rand() % 49) + 1;
+		j = (rand() % 49) + 1;
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker && !m_tile[i][i]->containsSweeper)
 		{
