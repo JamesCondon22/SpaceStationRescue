@@ -35,7 +35,6 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_surroundingCircle.setRadius(m_radius);
 	m_surroundingCircle.setPosition(0, 0);
 	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
-	//std::cout << m_surroundingCircle.getOrigin().x << ", " << m_surroundingCircle.getOrigin().y << std::endl;
 	m_surroundingCircle.setPosition(m_position);
 	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
 
@@ -208,7 +207,6 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 	{
 		m_flee = true;
 		wallcollide = false;
-		std::cout << m_flee << std::endl;
 	}
 }
 
