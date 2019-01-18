@@ -2,7 +2,6 @@
 
 double const Worker::DEG_TO_RAD = 3.14 / 180.0f;
 Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
-	//m_position(0, 0),
 	size(100),
 	m_speed(10),
 	m_timeCheck(5),
@@ -24,8 +23,6 @@ Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
 
 	
-
-	//srand(time(0));
 }
 
 
@@ -38,7 +35,12 @@ void Worker::setPosition(float x, float y)
 	m_rect.setPosition(x, y);
 }
 
-
+/// <summary>
+/// Update function calls primary functions
+/// Takes a time and 2D vector
+/// </summary>
+/// <param name="dt"></param>
+/// <param name="playerPosition"></param>
 void Worker::update(double dt, sf::Vector2f playerPosition)
 {
 	if (!collected)
@@ -54,23 +56,31 @@ void Worker::update(double dt, sf::Vector2f playerPosition)
 	m_surroundingCircle.setPosition(m_rect.getPosition());
 }
 
+/// <summary>
+/// Wander function
+/// Causes the worker to meander around the screen at all times
+/// Changes the rotation based on time
+/// Takes a time
+/// </summary>
+/// <param name="dt"></param>
 void Worker::wander(double dt)
 {
 	//start timer
-	//check timer
 	timer = m_clock.getElapsedTime().asSeconds();
 
+	//check timer
 	if (timer >= m_timeCheck)
 	{
-		
+		//random angle assigned
+		//rotation set to new angle
+		//randomize rotation
 		m_random = (rand() % -90 + 90);
 		m_rotation = m_random;
 		m_timeCheck += 5;
 		
 	}
-	//random angle assigned
-	//rotation set to new angle
-	
+
+	//Assigning the new rotation to the player
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);
 	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
@@ -78,12 +88,12 @@ void Worker::wander(double dt)
 	m_rect.setRotation(m_rotation - 90);
 	m_sprite.setRotation(m_rect.getRotation());
 	
-	//randomize rotation
-	//repeat
-	
 }
 
-//
+/// <summary>
+/// basic render
+/// </summary>
+/// <param name="window"></param>
 void Worker::render(sf::RenderWindow & window)
 {
 	if (!collected && !m_swept) {
@@ -102,22 +112,11 @@ bool Worker::getCollision()
 	return increment;
 }
 
-/*void Worker::distance(int rad, sf::Vector2f position)
-{
-	int x1 = position.x;
-	int y1 = position.y;
-	int x2 = m_sprite.getPosition().x;
-	int y2 = m_sprite.getPosition().y;
-
-
-	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) <= ((m_radius + rad)))
-	{
-		collected = true;
-	}
-	
-}*/
-
-
+/// <summary>
+/// Checks collision with the player based on rectangles
+/// Takes a 2D vector
+/// </summary>
+/// <param name="playerPosition"></param>
 void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
 {
 	if (playerPosition.x > m_rect.getPosition().x && playerPosition.x < m_rect.getPosition().x + 25
@@ -128,6 +127,11 @@ void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
 	
 }
 
+/// <summary>
+/// Checks collision with the sweepers based on rectangles
+/// Takes a 2D vector
+/// </summary>
+/// <param name="sweeperPosition"></param>
 void  Worker::collisionSweeper(sf::Vector2f & sweeperPosition)
 {
 	if (sweeperPosition.x > m_rect.getPosition().x && sweeperPosition.x < m_rect.getPosition().x + 25
@@ -139,17 +143,25 @@ void  Worker::collisionSweeper(sf::Vector2f & sweeperPosition)
 }
 
 
-
+/// <summary>
+/// function to etirn current tile x coordinate
+/// </summary>
+/// <returns></returns>
 int Worker::getTileX()
 {
 	return m_rect.getPosition().x / 50;
 }
 
+/// <summary>
+/// function to etirn current tile y coordinate
+/// </summary>
+/// <returns></returns>
 int Worker::getTileY()
 {
 	return m_rect.getPosition().y / 50;
 }
 
+//rebounding
 void Worker::changeDirection()
 {
 	m_speed = -m_speed;

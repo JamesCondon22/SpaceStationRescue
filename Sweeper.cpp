@@ -21,11 +21,11 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_wander(true),
 	wallcollide(false),
 	m_wanderCollide(false),
-	m_seeking(true)
-	//m_velocity(0.2,0.2)
+	m_seeking(true),
+	m_velocity(0.2,0.2)
 
 {
-
+	//setting up the rectangle
 	m_rect.setOrigin(m_position.x + 15 / 2, m_position.y + 15 / 2);
 	m_rect.setTexture(&m_texture);
 	m_rect.setSize(sf::Vector2f(25, 25));
@@ -52,6 +52,14 @@ void Sweeper::setPosition(float x, float y)
 }
 
 
+/// <summary>
+/// Update function
+/// Calls all primary functions
+/// Takes the time, vector position, and integer
+/// </summary>
+/// <param name="dt"></param>
+/// <param name="playerPosition"></param>
+/// <param name="radPlayer"></param>
 void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer)
 {
 	
@@ -74,7 +82,7 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer)
 	//checks how far the player is from the sweepers
 	distance(300, playerPosition);
 	
-		//implimenting wander functionality
+	//implimenting wander functionality
 	if (m_wander)
 	{
 		wander(dt);
@@ -152,6 +160,7 @@ void  Sweeper::collisionPlayer(sf::Vector2f playerPosition)
 
 /// <summary>
 /// Collision detection with the view of the sweeper to engage flee function
+/// Takes a vector psition and an integer
 /// </summary>
 /// <param name="position"></param>
 /// <param name="rad"></param>
@@ -205,6 +214,7 @@ void Sweeper::radiusCollisionWorker(sf::Vector2f position, int rad, bool swept)
 
 /// <summary>
 /// Basic function that checks distance between two vector positions
+/// takes an integer and a 2d vector
 /// </summary>
 /// <param name="distance"></param>
 /// <param name="position"></param>
@@ -222,10 +232,6 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 		wallcollide = false;
 		m_seeking = false;
 	}
-	//else
-	//{
-	//	//m_seeking = true;
-	//}
 }
 
 
@@ -244,12 +250,12 @@ void Sweeper::render(sf::RenderWindow & window)
 
 /// <summary>
 /// seek Function that moves the sweeper towards the workers 
-/// takes a vector position
+/// takes a 2D vector
 /// </summary>
 /// <param name="workerPos"></param>
 void Sweeper::seek(sf::Vector2f workerPos)
 {
-	//m_velocity = m_game->getPlayerPos() - m_position;
+
 	m_velocity = workerPos - m_position;
 	m_velocity = normalise();
 
@@ -257,8 +263,6 @@ void Sweeper::seek(sf::Vector2f workerPos)
 	m_velocity = m_velocity * 0.2f;
 
 	m_rotation = getNewRotation(m_rotation, m_velocity);
-	//wallcollide = false;
-	//m_wanderCollide = false;
 
 }
 
