@@ -125,5 +125,4 @@ void checkCollision(sf::Vector2f pos)
 void Bullet::render(sf::RenderWindow & window)
 {
 	window.draw(m_rect);
-	window.draw(m_surroundingCircle);
 }

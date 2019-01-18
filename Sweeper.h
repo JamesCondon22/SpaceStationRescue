@@ -34,6 +34,7 @@ public:
 	void collisionPlayer(sf::Vector2f playerPosition);
 	double static const DEG_TO_RAD;
 	double static const RAD_TO_DEG;
+	int getScoreCount();
 
 	int getTileX();
 	int getTileY();
