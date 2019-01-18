@@ -1,5 +1,9 @@
 # SpaceStationRescue
 
+#Grade Split
+* James Condon 60%.
+* Conor O'Toole 40%.
+
 #Workers
 * Wandering.
 * Boundary collision.
@@ -66,7 +70,7 @@
 * On screen UI.
 * Maze blocks and regular blocks.
 
-#Other#
+#Other
 * Environment variable.
 * Doxygen.
 * End game sates.
