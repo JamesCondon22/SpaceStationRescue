@@ -65,3 +65,8 @@
 * vectorfield.
 * On screen UI.
 * Maze blocks and regular blocks.
+
+#Other#
+* Environment variable.
+* Doxygen.
+* End game sates.
