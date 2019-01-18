@@ -4,16 +4,21 @@
 #include <SFML/Graphics.hpp>
 #include "Bullet.h"
 #include "AlienNest.h"
+#include "Predator.h"
+#include "Sweeper.h"
 #include <iostream>
 
 
 class Player
 {
 public:
-	Player(sf::Font & font);
+	Player(sf::Font & font, sf::Vector2f pos);
 	~Player();
 	void update(double dt);
 	void checkNests(AlienNest * nest);
+	void checkPreds(Predator * pred);
+	void checkSweepers(Sweeper * sweep);
+	//void killPred(sf::Vector2f position);
 	void render(sf::RenderWindow & window);
 	void renderBars(sf::RenderWindow & window);
 	sf::Vector2f getVel();
@@ -33,6 +38,9 @@ public:
 	void animateShield();
 	bool getActivate();
 	std::vector<Bullet *> m_bullets;
+	int m_score = 0;
+	bool score;
+
 private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_velocity;
@@ -71,6 +79,7 @@ private:
 	//text and labels 
 	sf::Text m_lifeLabel;
 	sf::Text m_boostLabel;
+	
 };
 
 #endif

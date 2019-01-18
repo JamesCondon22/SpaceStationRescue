@@ -3,12 +3,26 @@
 double const Bullet::DEG_TO_RAD = 3.14 / 180.0f;
 double const Bullet::RAD_TO_DEG = 180.0f / 3.14;
 
-Bullet::Bullet(sf::Vector2f pos, float rotation, bool isPlayer) :
+Bullet::Bullet(sf::Vector2f pos, float rotation, bool isPlayer, bool isPred) :
 	m_rotation(rotation),
 	m_position(0,0),
 	m_velocity(0,0)
 {
-	m_speed = 3;
+	if (isPlayer)
+	{
+		m_speed = 3;
+	}
+	else if (isPred)
+	{
+		m_speed = 1;
+	}
+	else
+	{
+		m_speed = 3;
+	}
+	
+	
+	
 	m_life = 0;
 	if (isPlayer)
 	{
@@ -62,6 +76,7 @@ void Bullet::resetToNest(sf::Vector2f pos)
 {
 	m_position = pos;
 	m_rect.setPosition(m_position);
+	m_surroundingCircle.setPosition(m_position);
 }
 
 void Bullet::seek(sf::Vector2f position, sf::Vector2f pos, double rot)
@@ -76,6 +91,21 @@ void Bullet::seek(sf::Vector2f position, sf::Vector2f pos, double rot)
 
 	m_surroundingCircle.setPosition(m_position);
 	m_rect.setPosition(m_position.x , m_position.y);
+	m_rect.setRotation(m_rotation);
+}
+
+void Bullet::predSeek(sf::Vector2f position, sf::Vector2f pos, double rot)
+{
+	m_velocity = position - m_position;
+	m_velocity = normalize(m_velocity);
+	m_velocity = m_velocity * 0.2f;
+	m_rotation = getNewOrientation(m_rotation, m_velocity);
+
+	m_position += m_velocity;
+
+
+	m_surroundingCircle.setPosition(m_position);
+	m_rect.setPosition(m_position.x, m_position.y);
 	m_rect.setRotation(m_rotation);
 }
 

@@ -6,6 +6,7 @@
 
 #include "Tile.h"
 #include "Player.h"
+#include "Predator.h"
 #include "AlienNest.h"
 #include "Worker.h"
 #include "Sweeper.h"
@@ -26,20 +27,23 @@ protected:
 	void processEvents();
 	void processGameEvents(sf::Event&);
 	void breadthFirst(int posx, int posy);
-	void addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue);
+	void addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue, std::pair<int, int>& prevpos);
 	void checkLowest(int lowest, int current);
 	void generateNests();
 	void generateWorkers();
+	void generatePredators(AlienNest alien);
+	void reset();
+	void iterateQueue(double dt, int i);
 	void generateSweepers();
-	void createMap();
 	void scoring();
-
-
 	void collision(int x, int y);
 	void workerWallCollision();
 	void sweeperWallCollision();
 	void bulletWallCollision();
-	void bulletNestCollision(AlienNest *nest);
+	void nestbulletWallCollision();
+	void predbulletWallCollision();
+	void checkDirections();
+	void getPath(int posX, int posY);
 	// main window
 	sf::RenderWindow m_window;
 	//std::vector<Tile*> m_tiles;
@@ -70,6 +74,7 @@ protected:
 	Player * m_player;
 	std::vector<Worker*> m_workers;
 	std::vector<AlienNest*> m_alienNests;
+	std::vector<Predator*> m_predators;
 
 	int lastX = 25;
 	int lastY = 25;
@@ -79,6 +84,7 @@ protected:
 	sf::Texture m_tileTexture;
 	sf::Texture nestTexture;
 	sf::Texture workerTexture;
+	sf::Texture m_predTexture;
 	sf::Texture sweeperTexture;
 	sf::RectangleShape miniMapRect;
 	sf::RectangleShape m_workerUI;
@@ -89,7 +95,18 @@ protected:
 	bool hitNest = false;
 	int m_count = 0;
 
-	
+	int curX;
+	int curY;
+	int prevX;
+	int prevY;
+
+	std::list<Tile> queue;
+	sf::Clock m_clock;
+	double m_time = 0;
+
+	bool predSpawned;
+	bool m_winner = false;
+	sf::Text m_finishtext;
 };
 
 #endif

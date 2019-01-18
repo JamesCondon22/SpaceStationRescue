@@ -2,12 +2,13 @@
 
 
 double const Player::DEG_TO_RAD = 3.14 / 180.0f;
-Player::Player(sf::Font & font) :
+Player::Player(sf::Font & font, sf::Vector2f pos) :
 	m_position(0, 0),
 	m_velocity(0, 0),
 	m_rotation(0),
 	m_speed(0),
-	MAX_SPEED(100)
+	MAX_SPEED(100),
+	score(false)
 {
 	if (!m_texture.loadFromFile("player.png")) {
 		//do something
@@ -15,7 +16,7 @@ Player::Player(sf::Font & font) :
 	
 	m_rect.setTexture(&m_texture);
 	m_rect.setSize(sf::Vector2f(30, 50));
-	m_position = sf::Vector2f(1250, 1250);
+	m_position = pos;
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2);
 	m_rect.setPosition(m_position);
 
@@ -41,7 +42,6 @@ Player::Player(sf::Font & font) :
 	underLie.setSize(sf::Vector2f(150, 10));
 	underLie.setOutlineThickness(2);
 	underLie.setFillColor(sf::Color(255,255,255,60));
-	//lifebar.setPosition(m_position);
 
 	m_lifeLabel.setFont(font);
 	m_lifeLabel.setCharacterSize(15);
@@ -119,7 +119,6 @@ void Player::update(double dt)
 			}
 		}
 	}
-	//std::cout << m_time << std::endl;
 	if (speedBoost)
 	{
 		MAX_SPEED = 200;
@@ -131,7 +130,6 @@ void Player::update(double dt)
 			m_speed = 100;
 		}
 	}
-	//std::cout << m_speed << std::endl;
 
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);
@@ -168,6 +166,34 @@ void Player::checkNests(AlienNest * nest)
 		{
 			m_bullets.erase(m_bullets.begin());
 			nest->killNest();
+		}
+	}
+}
+
+void Player::checkPreds(Predator * pred)
+{
+	for (int i = 0; i < m_bullets.size(); i++)
+	{
+		if (m_bullets[i]->getPosition().x > pred->getPos().x - 25 && m_bullets[i]->getPosition().x < pred->getPos().x + 50
+			&& m_bullets[i]->getPosition().y> pred->getPos().y - 25 && m_bullets[i]->getPosition().y < pred->getPos().y + 50)
+		{
+			m_bullets.erase(m_bullets.begin());
+			
+		}
+	}
+}
+
+void Player::checkSweepers(Sweeper * sweep)
+{
+	for (int i = 0; i < m_bullets.size(); i++)
+	{
+		if (m_bullets[i]->getPosition().x > sweep->getPos().x - 25 && m_bullets[i]->getPosition().x < sweep->getPos().x + 50
+			&& m_bullets[i]->getPosition().y> sweep->getPos().y - 25 && m_bullets[i]->getPosition().y < sweep->getPos().y + 50)
+		{
+			m_bullets.erase(m_bullets.begin());
+			sweep->kill();
+			m_score + sweep->getScoreCount();
+			score = true;
 		}
 	}
 }
@@ -225,7 +251,7 @@ void Player::handleInput()
 		m_bulletCount = 0;
 		sf::Vector2f newPos = m_rect.getPosition();
 		
-		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rect.getRotation(), true));
+		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rotation, true, false));
 	}
 }
 

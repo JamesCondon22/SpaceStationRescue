@@ -48,7 +48,7 @@ public:
 	//detecting for seek
 	void radiusCollisionWorker(sf::Vector2f position, int rad, bool swept);
 
-
+	void kill();
 private:
 	int id = 1;
 	float m_maxSpeed;
@@ -96,6 +96,7 @@ private:
 
 	//score
 	int m_scoreCount = 0;
+	bool alive = true;
 };
 
 #endif // !SWEEPER

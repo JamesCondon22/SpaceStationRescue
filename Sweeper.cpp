@@ -14,7 +14,6 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	size(100),
 	m_speed(20),
 	m_timeCheck(8),
-	m_collected(false),
 	m_radius(150),
 	m_flee(false),
 	m_maxSpeed(1),
@@ -63,7 +62,7 @@ void Sweeper::setPosition(float x, float y)
 void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer)
 {
 	
-
+	if (alive) {
 	radiusCollisionPlayer(playerPosition, radPlayer);
 	m_position = m_rect.getPosition();
 	if (!collected)
@@ -92,7 +91,10 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer)
 	m_position = m_position + m_velocity;
 	m_rect.setPosition(m_position);
 	m_surroundingCircle.setPosition(m_rect.getPosition().x, m_rect.getPosition().y + 10);
-
+		m_position = m_position + m_velocity;
+		m_sprite.setPosition(m_position);
+		m_surroundingCircle.setPosition(m_sprite.getPosition().x, m_sprite.getPosition().y + 10);
+	}
 }
 
 void Sweeper::wander(double dt)
@@ -118,7 +120,7 @@ void Sweeper::wander(double dt)
 
 		m_velocity.x = m_velocity.x * m_speed;
 		m_velocity.y = m_velocity.y * m_speed;
-		std::cout << "velocity x: " << m_velocity.x << "  velocity y: " << m_velocity.y << std::endl;
+		//std::cout << "velocity x: " << m_velocity.x << "  velocity y: " << m_velocity.y << std::endl;
 		//timer = 0;
 		m_timeCheck += 5;
 		
@@ -135,6 +137,11 @@ void Sweeper::wander(double dt)
 	//randomize rotation
 	//repeat
 
+}
+
+void Sweeper::kill()
+{
+	alive = false;
 }
 
 
@@ -155,7 +162,6 @@ void  Sweeper::collisionPlayer(sf::Vector2f playerPosition)
 	{
 		m_collected = true;
 	}
-
 }
 
 /// <summary>
@@ -241,11 +247,12 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 /// <param name="window"></param>
 void Sweeper::render(sf::RenderWindow & window)
 {
-	if (!m_collected)
+	if (alive)
 	{
 		window.draw(m_rect);
 	}
 	
+
 }
 
 /// <summary>

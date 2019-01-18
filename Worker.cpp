@@ -22,7 +22,6 @@ Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	m_surroundingCircle.setPosition(m_position);
 	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
 
-	
 }
 
 
@@ -84,9 +83,9 @@ void Worker::wander(double dt)
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);
 	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
-	m_sprite.setPosition(m_rect.getPosition());
+	//m_sprite.setPosition(m_rect.getPosition());
 	m_rect.setRotation(m_rotation - 90);
-	m_sprite.setRotation(m_rect.getRotation());
+	//m_sprite.setRotation(m_rect.getRotation());
 	
 }
 
@@ -96,10 +95,10 @@ void Worker::wander(double dt)
 /// <param name="window"></param>
 void Worker::render(sf::RenderWindow & window)
 {
+
 	if (!collected && !m_swept) {
 		window.draw(m_rect);
 	}
-	
 }
 
 sf::Vector2f Worker::getPos()

@@ -45,6 +45,10 @@ Game::Game()
 		std::cout << "problem loading texture" << std::endl;
 	}
 
+	if (!m_predTexture.loadFromFile("images/predator.png"))
+	{
+		std::cout << "problem loading texture" << std::endl;
+	}
 	if (!sweeperTexture.loadFromFile("UFOsweeper.png"))
 	{
 		std::cout << "problem loading UFO texture" << std::endl;
@@ -121,8 +125,6 @@ Game::Game()
 
 	srand(time(NULL));
 
-
-
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {	
 			if (map[i][j] == 0)
@@ -136,6 +138,7 @@ Game::Game()
 		}
 	}
 	
+
 	miniMapRect.setFillColor(sf::Color::Black);
 	miniMapRect.setSize(sf::Vector2f(178, 112));
 	
@@ -144,16 +147,22 @@ Game::Game()
 	m_workerUI.setPosition(gameView.getCenter());
 	generateNests();
 	generateWorkers();
+
+	m_player = new Player(m_font, m_tile[25][25]->getPosition());
+
 	generateSweepers();
-
-
-	m_player = new Player(m_font);
 
 	m_countText.setFont(m_font);
 	m_countText.setCharacterSize(20);
 	m_countText.setOutlineColor(sf::Color::White);
 	m_countText.setFillColor(sf::Color::White);
 	m_countText.setString(std::to_string(m_count));
+
+	m_finishtext.setFont(m_font);
+	m_finishtext.setCharacterSize(40);
+	m_finishtext.setOutlineThickness(3);
+	m_finishtext.setPosition(sf::Vector2f(200, 200));
+	
 
 }
 
@@ -269,17 +278,6 @@ void Game::processGameEvents(sf::Event& event)
 		}
 	}
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sf::Keyboard::isKeyPressed(sf::Keyboard::X))
-	{
-		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 1250) {
-			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 1250) {
-				int x = mouse.getPosition(m_window).x / 50;
-				int y = mouse.getPosition(m_window).y / 50;
-				m_tile[x][y]->removeObstacle();
-			}
-		}
-	}
-
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 	{
 		for (int i = 0; i < 50; i++) {
@@ -287,6 +285,7 @@ void Game::processGameEvents(sf::Event& event)
 
 				m_tile[j][i]->setCost(0);
 				m_tile[j][i]->setVisited(false);
+				m_tile[j][i]->setCurrentState(Blank);
 			}
 		}
 	}
@@ -295,6 +294,17 @@ void Game::processGameEvents(sf::Event& event)
 
 }
 
+void Game::reset()
+{
+	for (int i = 0; i < 50; i++) {
+		for (int j = 0; j < 50; j++) {
+
+			m_tile[j][i]->setCost(0);
+			m_tile[j][i]->setVisited(false);
+			m_tile[j][i]->setCurrentState(Blank);
+		}
+	}
+}
 /// <summary>
 /// Method to handle all game updates
 /// </summary>
@@ -303,81 +313,153 @@ void Game::update(double dt)
 {
 	sf::Time deltaTime;
 
-	
+
 	playerPosition = sf::Vector2f(m_player->getPos().x + 350, m_player->getPos().y + 200);
 	gameView.setCenter(playerPosition);
-	
-	for (int i = 0; i < m_workers.size(); i++)
-	{
-		m_workers[i]->update(dt, m_player->getPos());
-		
-		if (m_workers[i]->getCollision())
+	if (!m_winner) {
+		/*for (int i = 0; i < m_workers.size(); i++)
 		{
-			std::cout << m_workers.size() << std::endl;
-		}
-	}
 
-	// Calls scoring method see definition far below
-	scoring();
+			if (m_workers[i]->getCollision())
+			{
+				std::cout << m_workers.size() << std::endl;
+			}
+		}*/
+
+		// Calls scoring method see definition far below
+		scoring();
 
 
-	for (int i = 0; i < m_alienNests.size(); i++)
-	{
-		m_alienNests[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_player->getRotation());
-		m_player->checkNests(m_alienNests[i]);
-		if (m_alienNests[i]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
+
+
+		//std::cout << m_count << std::endl;
+		for (int i = 0; i < m_alienNests.size(); i++)
 		{
-			m_player->updateLifeBar();
+			m_alienNests[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_player->getRotation());
+			m_player->checkNests(m_alienNests[i]);
+			if (m_alienNests[i]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
+			{
+				m_player->updateLifeBar();
+			}
+			if (!predSpawned)
+			{
+				generatePredators(*m_alienNests[i]);
+			}
+
 		}
-	}
 
-	m_player->update(dt);
+		m_player->update(dt);
+		int curPredX = round(m_predators[0]->getPos().x / 50);
+		int curPredY = round(m_predators[0]->getPos().y / 50);
 
-	int curX =  round(m_player->getPos().x / 50);
-	int curY = round(m_player->getPos().y / 50);
+		m_starttile = m_tile[curPredX][curPredY];
+		m_starttile->setStart();
 
-	
-	//Updates the sweeper bots for flee, seek and collection
-	for (int i = 0; i < m_sweeper.size(); i++)
-	{
-		m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius());
-		for (int count = 0; count < m_workers.size(); count++)
+
+		//Updates the sweeper bots for flee, seek and collection
+		for (int i = 0; i < m_sweeper.size(); i++)
 		{
-			m_sweeper[i]->radiusCollisionWorker(m_workers[count]->getPos(), m_workers[count]->getRadius(), m_workers[count]->m_swept);
+			m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius());
+			for (int count = 0; count < m_workers.size(); count++)
+			{
+				m_sweeper[i]->radiusCollisionWorker(m_workers[count]->getPos(), m_workers[count]->getRadius(), m_workers[count]->m_swept);
+				m_player->checkSweepers(m_sweeper[i]);
+				if (m_player->score == true)
+				{
+					m_count += m_player->m_score;
+					m_player->score = false;
+				}
+			}
 		}
-	}
 
 
-	//Detection for sweepers on worker end
-	for (int i = 0; i < m_workers.size(); i++)
-	{
-		for (int count = 0; count < m_sweeper.size(); count++)
+		//Detection for sweepers on worker end
+		for (int i = 0; i < m_workers.size(); i++)
 		{
-			sf::Vector2f pos = m_sweeper[count]->getPos();
-			m_workers[i]->collisionSweeper(pos);
+			m_workers[i]->update(dt, m_player->getPos());
+			for (int count = 0; count < m_sweeper.size(); count++)
+			{
+				sf::Vector2f pos = m_sweeper[count]->getPos();
+				m_workers[i]->collisionSweeper(pos);
+			}
 		}
-	}
-	
-	//Collision for all obj's on screen
-	collision(curX, curY);
-	workerWallCollision();
-	bulletWallCollision();
-	sweeperWallCollision();
 
-	
-	
-	
-	if (containingTile != nullptr)
-	{
-		std::cout << containingTile->getPosition().x << ", " << containingTile->getPosition().y << std::endl;
+		int curX = round(m_player->getPos().x / 50);
+		int curY = round(m_player->getPos().y / 50);
+
+
+			
+
+
+		collision(curX, curY);
+		m_goaltile = m_tile[curX][curY];
+		m_goaltile->setGoal();
+
+
+		breadthFirst(m_goaltile->getXpos(), m_goaltile->getYpos());
+		getPath(m_starttile->getXpos(), m_starttile->getYpos());
+
+		if (curX != prevX) {
+			reset();
+		}
+
+		if (curY != prevY) {
+			reset();
+		}
+		prevX = curX;
+		prevY = curY;
+
+		for (int i = 0; i < m_predators.size(); i++)
+		{
+			//iterateQueue(dt, i);
+			m_player->checkPreds(m_predators[i]);
+
+			if (m_predators[i]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
+			{
+				m_player->updateLifeBar();
+			}
+		}
+
+		workerWallCollision();
+		bulletWallCollision();
+		sweeperWallCollision();
+		predbulletWallCollision();
+		nestbulletWallCollision();
 	}
-	
-	
+
+	miniMapView.setCenter(m_player->getPos());
+
+
+	if (m_count >= 10)
+	{
+		m_winner = true;
+	}
+
+
 	//Adjusting the minimap to be relative to the player
 	miniMapView.setCenter(m_player->getPos());
-	
+
+		
 }
 
+
+void Game::iterateQueue(double dt, int count)
+{
+
+	for (auto iter = queue.begin(); iter != queue.end();)
+	{
+		
+			m_predators[count]->update(dt, m_tile[iter->getXpos()][iter->getYpos()]->getCircleVec(), m_player->getPos());
+			iter++;
+		
+		
+	}
+}
+
+void Game::checkDirections()
+{
+
+}
 
 
 
@@ -392,13 +474,12 @@ void Game::update(double dt)
 /// </summary>
 void Game::render()
 {
+
 	m_window.clear(sf::Color::Black);
-	
 	m_window.setView(gameView);
-	
 	miniMapRect.setPosition(miniMapView.getCenter().x - 320, miniMapView.getCenter().y + 98);
 	m_workerUI.setPosition(miniMapView.getCenter().x - 300, miniMapView.getCenter().y - 170);
-	
+
 	m_countText.setPosition(m_workerUI.getPosition().x + 50, m_workerUI.getPosition().y + 5);
 	m_player->setLifeBarPosition(m_workerUI.getPosition().x + 450, m_workerUI.getPosition().y + 5);
 	for (int i = 0; i < 50; i++) {
@@ -409,10 +490,8 @@ void Game::render()
 			{
 				m_tile[j][i]->render(m_window);
 			}
-			
 		}
 	}
-
 
 	for (int i = 0; i < m_alienNests.size(); i++)
 	{
@@ -422,6 +501,10 @@ void Game::render()
 	for (int i = 0; i < m_workers.size(); i++)
 	{
 		m_workers[i]->render(m_window);
+	}
+	for (int i = 0; i < m_predators.size(); i++)
+	{
+		m_predators[i]->render(m_window);
 	}
 
 	for (int i = 0; i < m_sweeper.size(); i++)
@@ -433,26 +516,40 @@ void Game::render()
 	m_window.draw(m_countText);
 	m_window.draw(m_workerUI);
 	m_player->renderBars(m_window);
-	m_window.draw(miniMapRect);
-	m_window.setView(miniMapView);
-	
-	m_window.draw(miniMapSprite);
-	m_player->render(m_window);
-	for (int i = 0; i < m_alienNests.size(); i++)
-	{
-		m_alienNests[i]->render(m_window);
-	}
 
-	for (int i = 0; i < m_workers.size(); i++)
+	if (m_winner)
 	{
-		m_workers[i]->render(m_window);
+		m_window.clear(sf::Color::White);
+		m_finishtext.setOutlineColor(sf::Color::Black);
+		m_finishtext.setFillColor(sf::Color::Red);
+		m_finishtext.setString("YOU WIN");
+		//m_finishtext.setPosition(sf::Vector2f(50, 100));
+		m_finishtext.setPosition(miniMapView.getCenter().x - 50, miniMapView.getCenter().y - 50);
+		m_window.draw(m_finishtext);
 	}
-
-	for (int i = 0; i < m_sweeper.size(); i++)
+	if (!m_winner)
 	{
-		m_sweeper[i]->render(m_window);
-	}
+		m_window.draw(miniMapRect);
+		m_window.setView(miniMapView);
 
+		m_window.draw(miniMapSprite);
+		m_player->render(m_window);
+		for (int i = 0; i < m_alienNests.size(); i++)
+		{
+			m_alienNests[i]->render(m_window);
+		}
+
+		for (int i = 0; i < m_workers.size(); i++)
+		{
+			m_workers[i]->render(m_window);
+		}
+
+		for (int i = 0; i < m_sweeper.size(); i++)
+		{
+			m_sweeper[i]->render(m_window);
+		}
+
+	}
 	m_window.display();
 
 	
@@ -460,7 +557,11 @@ void Game::render()
 	
 	
 }
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
 void Game::collision(int x, int y)
 {
 	
@@ -497,8 +598,9 @@ void Game::collision(int x, int y)
 		}
 	}
 }
-
-
+/// <summary>
+/// 
+/// </summary>
 void Game::workerWallCollision()
 {
 	
@@ -525,6 +627,75 @@ void Game::workerWallCollision()
 		}
 	}
 }
+/// <summary>
+/// 
+/// </summary>
+void Game::nestbulletWallCollision()
+{
+	for (int i = 0; i < m_alienNests.size(); i++)
+	{
+		int a = m_alienNests[i]->m_bullet->getTileX();
+		int b = m_alienNests[i]->m_bullet->getTileY();
+		
+		if (m_tile[a][b - 1]->getObstacle() && m_alienNests[i]->getShoot())
+		{	 
+			m_alienNests[i]->m_bullet->resetToNest(m_alienNests[i]->getPos());
+			m_alienNests[i]->setShoot();
+		}
+		if (m_tile[a][b + 1]->getObstacle() && m_alienNests[i]->getShoot())
+		{
+			m_alienNests[i]->m_bullet->resetToNest(m_alienNests[i]->getPos());
+			m_alienNests[i]->setShoot();
+		}
+		if (m_tile[a - 1][b]->getObstacle() && m_alienNests[i]->getShoot())
+		{
+			m_alienNests[i]->m_bullet->resetToNest(m_alienNests[i]->getPos());
+			m_alienNests[i]->setShoot();
+		}
+		if (m_tile[a + 1][b]->getObstacle() && m_alienNests[i]->getShoot())
+		{
+			m_alienNests[i]->m_bullet->resetToNest(m_alienNests[i]->getPos());
+			m_alienNests[i]->setShoot();
+		}
+	}
+}
+/// <summary>
+/// 
+/// </summary>
+void Game::predbulletWallCollision()
+{
+	for (int i = 0; i < m_predators.size(); i++)
+	{
+		int a = m_predators[i]->m_bullet->getTileX();
+		int b = m_predators[i]->m_bullet->getTileY();
+
+		if (m_tile[a][b - 1]->getObstacle())
+		{
+			m_predators[i]->m_bullet->resetToNest(m_predators[i]->getPos());
+			//m_predators[i]->setShoot();
+		}
+		if (m_tile[a][b + 1]->getObstacle())
+		{
+			m_predators[i]->m_bullet->resetToNest(m_predators[i]->getPos());
+			//m_predators[i]->setShoot();
+		}
+		if (m_tile[a - 1][b]->getObstacle())
+		{
+			m_predators[i]->m_bullet->resetToNest(m_predators[i]->getPos());
+			//m_predators[i]->setShoot();
+		}
+		if (m_tile[a + 1][b]->getObstacle())
+		{
+			m_predators[i]->m_bullet->resetToNest(m_predators[i]->getPos());
+			//m_predators[i]->setShoot();
+		}
+	}
+}
+
+/// <summary>
+/// 
+/// </summary>
+
 
 void Game::sweeperWallCollision()
 {
@@ -590,23 +761,6 @@ void Game::bulletWallCollision()
 				m_player->m_bullets.erase(m_player->m_bullets.begin());
 			}
 		}
-
-		if (m_tile[a - 1][b]->getObstacle() && m_tile[a][b - 1]->getObstacle())
-		{
-			if (m_player->m_bullets[i]->getPosition().x < m_tile[a - 1][b]->getPosition().x + 65 
-				&& m_player->m_bullets[i]->getPosition().y < m_tile[a][b - 1]->getPosition().y + 65)
-			{
-				m_player->m_bullets.erase(m_player->m_bullets.begin());
-			}
-		}
-		if (m_tile[a + 1][b]->getObstacle() && m_tile[a][b + 1]->getObstacle())
-		{
-			if (m_player->m_bullets[i]->getPosition().y > m_tile[a][b + 1]->getPosition().y - 30
-				&& m_player->m_bullets[i]->getPosition().x > m_tile[a + 1][b]->getPosition().x - 30)
-			{
-				m_player->m_bullets.erase(m_player->m_bullets.begin());
-			}
-		}
 	}
 }
 
@@ -623,50 +777,54 @@ void Game::breadthFirst(int posX, int posY) {
 	{
 		auto gridPos = queue.front()->getGridPos();
 		auto costPos = gridPos;
+		auto prevPos = costPos;
 		auto cost = queue.front()->getCost();
 		auto rotation = 0.0f;
 
 
-		if (costPos.first > 0)
-		{
-			costPos.first--;
-			addToQueue(costPos, gridPos, cost, queue);
-		}
 		if (costPos.first < 49)
 		{
+			prevPos = costPos;
 			costPos.first++;
-			addToQueue(costPos, gridPos, cost, queue);
-		}
-
-		if (costPos.second > 0)
-		{
-			costPos.second--;
-			addToQueue(costPos, gridPos, cost, queue);
+			addToQueue(costPos, gridPos, cost, queue, prevPos);
 		}
 		if (costPos.second < 49)
 		{
+			prevPos = costPos;
 			costPos.second++;
-			addToQueue(costPos, gridPos, cost, queue);
+			addToQueue(costPos, gridPos, cost, queue, prevPos);
 		}
+		if (costPos.first > 0)
+		{
+			prevPos = costPos;
+			costPos.first--;
+			addToQueue(costPos, gridPos, cost, queue, prevPos);
+		}
+		if (costPos.second > 0)
+		{
+			prevPos = costPos;
+			costPos.second--;
+			addToQueue(costPos, gridPos, cost, queue, prevPos);
+		}
+
 		queue.pop_front();
 
 	}
 
 
 }
-void Game::addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue) {
+void Game::addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue, std::pair<int, int>& prevpos) {
 	if (!m_tile[currentPos.first][currentPos.second]->getVisited() && !m_tile[currentPos.first][currentPos.second]->getObstacle())
 	{
 		auto currentTop = (queue.front()->getGridPos());
-		m_tile[currentPos.first][currentPos.second]->setColor(sf::Color(255, 200 - (cost * 4), 215 - (cost * 2), 221 - (cost * 3)));
 		m_tile[currentPos.first][currentPos.second]->setVisited(true);
+		m_tile[currentPos.first][currentPos.second]->setPrevious(prevpos);
 		m_tile[currentPos.first][currentPos.second]->setCost(cost + 1);
 		queue.push_back(m_tile[currentPos.first][currentPos.second]);
 
 	}
 	currentPos = pos;
 }
-
 void Game::checkLowest(int lowest, int current)
 {
 	if (current < lowest)
@@ -674,7 +832,9 @@ void Game::checkLowest(int lowest, int current)
 		current = lowest;
 	}
 }
-
+/// <summary>
+/// 
+/// </summary>
 void Game::generateNests()
 {
 	int i, j;
@@ -696,14 +856,16 @@ void Game::generateNests()
 
 	}
 }
-
+/// <summary>
+/// 
+/// </summary>
 void Game::generateWorkers()
 {
 	int i, j;
 	int count = 0;
-	Worker*  worker[10];
+	Worker*  worker[15];
 
-	while (m_workers.size() < 10)
+	while (m_workers.size() < 15)
 	{
 		i = (rand() % 49) + 1;
 		j = (rand() % 49) + 1;
@@ -724,7 +886,17 @@ void Game::generateWorkers()
 
 	}
 }
-
+/// <summary>
+/// 
+/// </summary>
+void Game::generatePredators(AlienNest alien)
+{
+	
+	Predator *pred = new Predator(m_predTexture, alien.getPos());
+	m_predators.push_back(pred);
+	predSpawned = true;
+	
+}
 
 
 
@@ -758,6 +930,28 @@ void Game::generateSweepers()
 sf::Vector2f Game::getPlayerPos()
 {
 	return m_player->getPos();
+}
+/// <summary>
+/// 
+/// </summary>
+/// <param name="posX"></param>setVectorPosition
+/// <param name="posY"></param>
+void Game::getPath(int posX, int posY)
+{
+	queue.clear();
+
+	queue.push_back(*m_tile[posX][posY]);
+
+	auto iter = queue.begin();
+
+	while (iter->getCost() != 0 && m_tile[iter->m_previous.first][iter->m_previous.second]->getState() != Goal)
+	{
+		m_tile[iter->m_previous.first][iter->m_previous.second]->setPath();
+		queue.push_back(*m_tile[iter->m_previous.first][iter->m_previous.second]);
+
+		iter++;
+	}
+
 }
 
 void Game::scoring()
