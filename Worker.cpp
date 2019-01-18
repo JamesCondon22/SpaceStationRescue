@@ -13,7 +13,7 @@ Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	
 	m_rect.setOrigin(m_position.x + 15 / 2, m_position.y + 15 / 2);
 	m_rect.setTexture(&texture);
-	m_rect.setSize(sf::Vector2f(25, 50));
+	m_rect.setSize(sf::Vector2f(20, 20));
 	m_position = pos;
 	m_rect.setPosition(m_position.x + 20 , m_position.y + 10);
 
@@ -23,9 +23,6 @@ Worker::Worker(sf::Texture & texture, sf::Vector2f pos) :
 	m_surroundingCircle.setPosition(m_position);
 	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
 
-	m_sprite.setTexture(texture);
-	m_sprite.setScale(0.1, 0.1);
-	m_sprite.setPosition(m_position.x + 18, m_position.y + 20);
 	
 
 	//srand(time(0));
@@ -52,9 +49,9 @@ void Worker::update(double dt, sf::Vector2f playerPosition)
 	//implimenting wander functionality
 	wander(dt);
 
-	int curX = round(m_sprite.getPosition().x / 50);
-	int curY = round(m_sprite.getPosition().y / 50);
-	m_surroundingCircle.setPosition(m_sprite.getPosition());
+	int curX = round(m_rect.getPosition().x / 50);
+	int curY = round(m_rect.getPosition().y / 50);
+	m_surroundingCircle.setPosition(m_rect.getPosition());
 }
 
 void Worker::wander(double dt)
@@ -86,11 +83,11 @@ void Worker::wander(double dt)
 	
 }
 
+//
 void Worker::render(sf::RenderWindow & window)
 {
 	if (!collected && !m_swept) {
-		window.draw(m_sprite);
-		window.draw(m_surroundingCircle);
+		window.draw(m_rect);
 	}
 	
 }

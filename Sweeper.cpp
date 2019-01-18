@@ -175,6 +175,14 @@ void Sweeper::radiusCollisionPlayer(sf::Vector2f position, int rad)
 	}
 }
 
+/// <summary>
+/// Checks range for worker to seek them at range
+/// Also sets collision
+/// Adds to the count of workers collected by the sweeper
+/// </summary>
+/// <param name="position"></param>
+/// <param name="rad"></param>
+/// <param name="swept"></param>
 void Sweeper::radiusCollisionWorker(sf::Vector2f position, int rad, bool swept)
 {
 	int x1 = position.x;
@@ -188,13 +196,18 @@ void Sweeper::radiusCollisionWorker(sf::Vector2f position, int rad, bool swept)
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2) && swept == false)
 	{
 		seek(position);
-		if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < radius2)
+		if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < 75)
 		{
 			m_scoreCount++;
 		}
 	}
 }
 
+/// <summary>
+/// Basic function that checks distance between two vector positions
+/// </summary>
+/// <param name="distance"></param>
+/// <param name="position"></param>
 void Sweeper::distance(int distance, sf::Vector2f position)
 {
 	int x1 = position.x;
@@ -215,16 +228,25 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 	//}
 }
 
+
+/// <summary>
+/// simple render
+/// </summary>
+/// <param name="window"></param>
 void Sweeper::render(sf::RenderWindow & window)
 {
 	if (!m_collected)
 	{
 		window.draw(m_rect);
-		window.draw(m_surroundingCircle);
 	}
 	
 }
 
+/// <summary>
+/// seek Function that moves the sweeper towards the workers 
+/// takes a vector position
+/// </summary>
+/// <param name="workerPos"></param>
 void Sweeper::seek(sf::Vector2f workerPos)
 {
 	//m_velocity = m_game->getPlayerPos() - m_position;
@@ -253,6 +275,11 @@ float Sweeper::getNewOrientation(float curOrientation, sf::Vector2f velocity)
 	}
 }
 
+/// <summary>
+/// Math function for movement
+/// Normalises a vector
+/// </summary>
+/// <returns></returns>
 sf::Vector2f Sweeper::normalise()
 {
 	float length = sqrt((m_velocity.x * m_velocity.x) + (m_velocity.y * m_velocity.y));
@@ -262,22 +289,26 @@ sf::Vector2f Sweeper::normalise()
 		return m_velocity;
 }
 
-// Returns the length of the vector
+/// Returns the length of the vector
 float Sweeper::length(sf::Vector2f vel) {
 	return sqrt(vel.x * vel.x + vel.y * vel.y);
 }
 
+//returns tile xPosition of an obj
 int Sweeper::getTileX()
 {
 	return m_rect.getPosition().x / 50;
 }
 
+//return tile yPosition of an obj
 int Sweeper::getTileY()
 {
 	return m_rect.getPosition().y / 50;
 }
 
-
+/// <summary>
+/// Used for rebounding off of walls
+/// </summary>
 void Sweeper::changeDirection()
 {
 	
@@ -286,6 +317,12 @@ void Sweeper::changeDirection()
 
 }
 
+/// <summary>
+/// Flee function
+/// Used to flee from the player charachter at range
+/// Takes a vector position
+/// </summary>
+/// <param name="playerPos"></param>
 void Sweeper::KinematicFlee(sf::Vector2f playerPos)
 {
 	m_velocity =  m_position - playerPos;
@@ -295,7 +332,6 @@ void Sweeper::KinematicFlee(sf::Vector2f playerPos)
 	m_velocity = m_velocity * 0.2f;
 	
 	m_rotation = getNewRotation(m_rotation, m_velocity);
-	//wallcollide = false;
 	m_wanderCollide = false;
 	
 
@@ -311,4 +347,13 @@ float Sweeper::getNewRotation(float currentRotation, sf::Vector2f velocity)
 	else {
 		return currentRotation;
 	}
+}
+
+/// <summary>
+/// Just a function to pass on the score to the player
+/// </summary>
+/// <returns></returns>
+int Sweeper::getScoreCount()
+{
+	return m_scoreCount;
 }

@@ -21,7 +21,7 @@ Game::Game()
 	m_count(0)
 
 {
-
+	// All textures loading in
 	m_window.setVerticalSyncEnabled(true);
 	
 	if (!m_font.loadFromFile("images/bernhc.TTF"))
@@ -151,7 +151,6 @@ Game::Game()
 
 	m_countText.setFont(m_font);
 	m_countText.setCharacterSize(20);
-	//m_countText.setOutlineThickness(.5);
 	m_countText.setOutlineColor(sf::Color::White);
 	m_countText.setFillColor(sf::Color::White);
 	m_countText.setString(std::to_string(m_count));
@@ -338,6 +337,7 @@ void Game::update(double dt)
 	int curY = round(m_player->getPos().y / 50);
 
 	
+	//Updates the sweeper bots for flee, seek and collection
 	for (int i = 0; i < m_sweeper.size(); i++)
 	{
 		m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius());
@@ -347,12 +347,8 @@ void Game::update(double dt)
 		}
 	}
 
-	/*for (int i = 0; i < m_workers.size(); i++)
-	{
-			m_sweeper[i]->radiusCollisionWorker(workerPos, radworker, swept);
-		}*/
 
-
+	//Detection for sweepers on worker end
 	for (int i = 0; i < m_workers.size(); i++)
 	{
 		for (int count = 0; count < m_sweeper.size(); count++)
@@ -362,6 +358,7 @@ void Game::update(double dt)
 		}
 	}
 	
+	//Collision for all obj's on screen
 	collision(curX, curY);
 	workerWallCollision();
 	bulletWallCollision();
@@ -376,7 +373,7 @@ void Game::update(double dt)
 	}
 	
 	
-	
+	//Adjusting the minimap to be relative to the player
 	miniMapView.setCenter(m_player->getPos());
 	
 }
