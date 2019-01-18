@@ -252,7 +252,7 @@ void Game::processGameEvents(sf::Event& event)
 					//m_goaltile->changeColor();
 				}
 				m_goaltile = m_tile[x][y];
-				std::cout << x << "," << y;
+				//std::cout << x << "," << y;
 				//m_tile[x][y]->setGoal();
 				breadthFirst(m_goaltile->getXpos(), m_goaltile->getYpos());
 
@@ -343,20 +343,25 @@ void Game::update(double dt)
 		m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_workers[0]->getPos(), m_workers[0]->getRadius());
 	}
 
-	for (int i = 0; i < m_workers.size(); i++)
+	/*for (int i = 0; i < m_workers.size(); i++)
 	{
 		for (int count = 0; count < m_sweeper.size(); count++)
 		{
 			sf::Vector2f position = m_sweeper[count]->getPos();
-			m_workers[i]->distance(75, position);
+			m_workers[i]->distance(50, position);
+			if (m_workers[i]->collected == true)
+			{
+				std::cout << i << std::endl;
+			}
 		}
-	}
+	}*/
 
-	for (int i = 0; i < m_sweeper.size(); i++)
+	for (int i = 0; i < m_workers.size(); i++)
 	{
-		for (int count = 0; count < m_workers.size(); count++)
+		for (int count = 0; count < m_sweeper.size(); count++)
 		{
-			m_sweeper[i]->radiusCollisionWorker(m_workers[count]->getPos(), m_workers[count]->getRadius());
+			sf::Vector2f pos = m_sweeper[count]->getPos();
+			m_workers[i]->collisionSweeper(pos);
 		}
 	}
 	
@@ -702,12 +707,12 @@ void Game::generateWorkers()
 {
 	int i, j;
 	int count = 0;
-	Worker*  worker[10];
+	Worker*  worker[1];
 
-	while (m_workers.size() < 10)
+	while (m_workers.size() < 1)
 	{
-		i = (rand() % 49) + 1;
-		j = (rand() % 49) + 1;
+		i = 25;//(rand() % 49) + 1;
+		j = 10;//(rand() % 49) + 1;
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker)
 		{
@@ -733,12 +738,12 @@ void Game::generateSweepers()
 {
 	int i, j;
 	int count = 0;
-	Sweeper*  sweeper[5];
+	Sweeper*  sweeper[1];
 
-	while (m_sweeper.size() < 5)
+	while (m_sweeper.size() < 1)
 	{
-		i = (rand() % 49) + 1;
-		j = (rand() % 49) + 1;
+		i = 25; //(rand() % 49) + 1;
+		j = 5;//(rand() % 49) + 1;
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker && !m_tile[i][i]->containsSweeper)
 		{

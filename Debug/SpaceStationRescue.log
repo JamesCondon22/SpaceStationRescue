@@ -7,11 +7,11 @@ c:\users\gameuser\documents\spacestationrescue\worker.cpp(78): warning C4244: '=
 c:\users\gameuser\documents\spacestationrescue\worker.cpp(79): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 c:\users\gameuser\documents\spacestationrescue\worker.cpp(80): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 c:\users\gameuser\documents\spacestationrescue\worker.cpp(82): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\worker.cpp(111): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\worker.cpp(112): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\worker.cpp(113): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\worker.cpp(114): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\worker.cpp(149): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\worker.cpp(137): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\worker.cpp(138): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\worker.cpp(139): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\worker.cpp(140): warning C4244: 'initializing': conversion from 'const float' to 'int', possible loss of data
 c:\users\gameuser\documents\spacestationrescue\worker.cpp(154): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
-c:\users\gameuser\documents\spacestationrescue\worker.cpp(169): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\worker.cpp(159): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+c:\users\gameuser\documents\spacestationrescue\worker.cpp(174): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
   SpaceStationRescue.vcxproj -> C:\Users\gameuser\Documents\SpaceStationRescue\Debug\SpaceStationRescue.exe

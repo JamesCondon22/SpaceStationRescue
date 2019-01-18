@@ -25,7 +25,8 @@ public:
 	bool getCollected();
 	void collisionSweeper(sf::Vector2f & SweeperPosition);
 	int getRadius();
-	void distance(int distance, sf::Vector2f position);
+	void distance(int rad, sf::Vector2f position);
+	bool collected = false;
 
 private:
 	sf::Vector2f m_position;
@@ -36,7 +37,7 @@ private:
 	sf::RectangleShape m_rect;
 	int m_rotation;
 	double static const DEG_TO_RAD;
-	bool collected = false;
+
 	sf::Texture m_texture;
 	sf::Sprite m_sprite;
 

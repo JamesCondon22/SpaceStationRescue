@@ -106,7 +106,7 @@ bool Worker::getCollision()
 	return increment;
 }
 
-void Worker::distance(int distance, sf::Vector2f position)
+/*void Worker::distance(int rad, sf::Vector2f position)
 {
 	int x1 = position.x;
 	int y1 = position.y;
@@ -114,12 +114,12 @@ void Worker::distance(int distance, sf::Vector2f position)
 	int y2 = m_sprite.getPosition().y;
 
 
-	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < distance)
+	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) <= ((m_radius + rad)))
 	{
 		collected = true;
 	}
 	
-}
+}*/
 
 
 void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
@@ -134,11 +134,16 @@ void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
 
 void  Worker::collisionSweeper(sf::Vector2f & sweeperPosition)
 {
-	if (sweeperPosition.x > m_rect.getPosition().x && sweeperPosition.x < m_rect.getPosition().x + 25
-		&& sweeperPosition.y > m_rect.getPosition().y && sweeperPosition.y < m_rect.getPosition().y + 50)
+	int x1 = sweeperPosition.x;
+	int y1 = sweeperPosition.y;
+	int x2 = m_sprite.getPosition().x;
+	int y2 = m_sprite.getPosition().y;
+
+
+	/*if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < ((m_radius + 50)))
 	{
 		collected = true;
-	}
+	}*/
 
 }
 

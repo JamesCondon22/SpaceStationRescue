@@ -119,7 +119,7 @@ void Player::update(double dt)
 			}
 		}
 	}
-	std::cout << m_time << std::endl;
+	//std::cout << m_time << std::endl;
 	if (speedBoost)
 	{
 		MAX_SPEED = 200;
@@ -131,7 +131,7 @@ void Player::update(double dt)
 			m_speed = 100;
 		}
 	}
-	std::cout << m_speed << std::endl;
+	//std::cout << m_speed << std::endl;
 
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);

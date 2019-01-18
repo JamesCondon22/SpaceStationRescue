@@ -61,7 +61,7 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer, sf::
 {
 	
 
-	//radiusCollisionWorker(workerPos, radworker);
+	radiusCollisionWorker(workerPos, radworker);
 	radiusCollisionPlayer(playerPosition, radPlayer);
 	m_position = m_sprite.getPosition();
 	if (!collected)
@@ -86,8 +86,6 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer, sf::
 		wander(dt);
 	}
 		
-	
-	
 
 	m_position = m_position + m_velocity;
 	m_sprite.setPosition(m_position);
@@ -213,10 +211,10 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 		wallcollide = false;
 		m_seeking = false;
 	}
-	else
-	{
-		m_seeking = true;
-	}
+	//else
+	//{
+	//	//m_seeking = true;
+	//}
 }
 
 void Sweeper::render(sf::RenderWindow & window)
@@ -232,11 +230,11 @@ void Sweeper::render(sf::RenderWindow & window)
 void Sweeper::seek(sf::Vector2f workerPos)
 {
 	//m_velocity = m_game->getPlayerPos() - m_position;
-	m_velocity = m_position + workerPos;
+	m_velocity = workerPos - m_position;
 	m_velocity = normalise();
 
 
-	m_velocity = m_velocity * 0.5f;
+	m_velocity = m_velocity * 0.2f;
 
 	m_rotation = getNewRotation(m_rotation, m_velocity);
 	//wallcollide = false;
