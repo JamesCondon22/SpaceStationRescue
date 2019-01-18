@@ -61,19 +61,27 @@ Player::Player(sf::Font & font, sf::Vector2f pos) :
 Player::~Player()
 {
 }
-
+/// <summary>
+/// sets the rectangle position to the x and y position 
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
 void Player::setPosition(float x, float y)
 {
 	m_position = sf::Vector2f(x, y);
 	m_rect.setPosition(m_position);
 
 }
-
+/// <summary>
+/// sets the collision
+/// </summary>
 void Player::collide()
 {
 	collision = true;
 }
-
+/// <summary>
+/// animation for the shield 
+/// </summary>
 void Player::animateShield()
 {
 	if (shieldRadius < 20)
@@ -99,26 +107,34 @@ void Player::animateShield()
 		m_shieldCircle.setRadius(shieldRadius);
 	}
 	m_shieldCircle.setOrigin(m_shieldCircle.getRadius(), m_shieldCircle.getRadius());
-	//m_shieldCircle.rotate(10);
 }
+
+/// <summary>
+/// updates the player 
+/// </summary>
+/// <param name="dt"></param>
 void Player::update(double dt)
 {
 	handleInput();
+	//if the shield is activated
 	if (activateShield)
 	{
+		//starts the timer 
 		m_time += m_clockOne.restart().asMilliseconds();
+		//checks if the timer is more than 10 seconds 
 		if (m_time > 10000)
 		{
-			//activateShield = false;
+			//starts the fading of the shield 
 			fader -= 0.05;
 			m_shieldCircle.setFillColor(sf::Color(0, 0, 255, fader));
 			if (fader <= 0)
 			{
+				//shield is deleted 
 				activateShield = false;
 			}
 		}
 	}
-	
+	//sets the speed boost to a new max_speed 
 	if (speedBoost)
 	{
 		MAX_SPEED = 200;
@@ -131,7 +147,6 @@ void Player::update(double dt)
 		}
 	}
 
-
 	m_heading.x = cos(m_rotation * DEG_TO_RAD);
 	m_heading.y = sin(m_rotation * DEG_TO_RAD);
 	
@@ -139,16 +154,18 @@ void Player::update(double dt)
 	m_rect.setPosition(m_rect.getPosition().x + m_heading.x * m_speed * (dt / 1000), m_rect.getPosition().y + m_heading.y* m_speed * (dt / 1000));
 	m_rect.setRotation(m_rotation);
 
+	//creates the bullets and updates 
 	for (Bullet * bullet : m_bullets)
 	{
 		bullet->getPosition();
 		bullet->update(dt);
-
+		//erases bullet after a certain time length
 		if (bullet->m_life > bullet->max_life)
 		{
 			m_bullets.erase(m_bullets.begin());
 		}
 	}
+	//updates the shield position 
 	m_shieldCircle.setPosition(m_rect.getPosition());
 	
 	if (activateShield)
@@ -157,7 +174,11 @@ void Player::update(double dt)
 	}
 	
 }
-
+/// <summary>
+/// checks if bullets have collided with nest
+/// if there is collision the bullets are deleted and the nest life is updated
+/// </summary>
+/// <param name="nest"></param>
 void Player::checkNests(AlienNest * nest)
 {
 	for (int i = 0; i < m_bullets.size(); i++)
@@ -170,7 +191,11 @@ void Player::checkNests(AlienNest * nest)
 		}
 	}
 }
-
+/// <summary>
+/// checks if bullets have collided with predators
+/// if there is collision the bullets are deleted and the predator is reset
+/// </summary>
+/// <param name="nest"></param>
 void Player::checkPreds(Predator * pred)
 {
 	for (int i = 0; i < m_bullets.size(); i++)
@@ -179,11 +204,15 @@ void Player::checkPreds(Predator * pred)
 			&& m_bullets[i]->getPosition().y> pred->getPos().y - 25 && m_bullets[i]->getPosition().y < pred->getPos().y + 50)
 		{
 			m_bullets.erase(m_bullets.begin());
-			
+			pred->reset();
 		}
 	}
 }
-
+/// <summary>
+/// checks the collision for the sweepers ansd the bullets 
+/// erases the bullet upon collision and kills the sweeper bot 
+/// </summary>
+/// <param name="sweep"></param>
 void Player::checkSweepers(Sweeper * sweep)
 {
 	for (int i = 0; i < m_bullets.size(); i++)
@@ -196,6 +225,12 @@ void Player::checkSweepers(Sweeper * sweep)
 		}
 	}
 }
+/// <summary>
+/// sets the lifebar position to the x and y positions passed 
+/// adjusts the positions accordingly 
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
 void Player::setLifeBarPosition(float x, float y)
 {
 	lifebar.setPosition(x, y);
@@ -203,13 +238,18 @@ void Player::setLifeBarPosition(float x, float y)
 	m_lifeLabel.setPosition(lifebar.getPosition().x - 100, lifebar.getPosition().y - 10);
 	m_boostLabel.setPosition(m_lifeLabel.getPosition().x - 100, m_lifeLabel.getPosition().y);
 }
-
+/// <summary>
+/// checks if the shield is activated 
+/// </summary>
+/// <returns></returns>
 bool Player::getActivate()
 {
 	return activateShield;
 }
 
-
+/// <summary>
+/// where all the inputs are handled 
+/// </summary>
 void Player::handleInput()
 {
 
@@ -253,7 +293,10 @@ void Player::handleInput()
 		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rotation, true, false));
 	}
 }
-
+/// <summary>
+/// renders the life bars and the text for the power ups 
+/// </summary>
+/// <param name="window"></param>
 void Player::renderBars(sf::RenderWindow & window)
 {
 	window.draw(underLie);
@@ -264,7 +307,10 @@ void Player::renderBars(sf::RenderWindow & window)
 	window.draw(m_boostLabel);
 }
 
-
+/// <summary>
+/// renders the bullets, rectagle and shield   
+/// </summary>
+/// <param name="window"></param>
 void Player::render(sf::RenderWindow & window)
 {
 	if (activateShield)
@@ -282,7 +328,9 @@ void Player::render(sf::RenderWindow & window)
 	window.draw(m_rect);
 }
 
-
+/// <summary>
+/// adds to the rotation
+/// </summary>
 void Player::increaseRotation()
 {
 	m_rotation += 1;
@@ -291,7 +339,9 @@ void Player::increaseRotation()
 		m_rotation = 0;
 	}
 }
-
+/// <summary>
+/// takes from the rotation
+/// </summary>
 void Player::decreaseRotation()
 {
 	m_rotation -= 1;
@@ -300,7 +350,9 @@ void Player::decreaseRotation()
 		m_rotation = 359.0;
 	}
 }
-
+/// <summary>
+/// increases the players speed 
+/// </summary>
 void Player::increaseSpeed()
 {
 	if (m_speed < MAX_SPEED)
@@ -308,7 +360,9 @@ void Player::increaseSpeed()
 		m_speed += 1;
 	}
 }
-
+/// <summary>
+/// decreases the players speed 
+/// </summary>
 void Player::decreaseSpeed()
 {
 	if (m_speed > 0)
@@ -316,47 +370,99 @@ void Player::decreaseSpeed()
 		m_speed -= 1;
 	}
 }
-
+/// <summary>
+/// returns the player position 
+/// </summary>
+/// <returns></returns>
 sf::Vector2f Player::getPos()
 {
 	return m_rect.getPosition();
 }
-
+/// <summary>
+/// returns the players velocity 
+/// </summary>
+/// <returns></returns>
 sf::Vector2f Player::getVel()
 {
 	return m_velocity;
 }
-
+/// <summary>
+/// returns the player radius 
+/// </summary>
+/// <returns></returns>
 int Player::getRadius()
 {
 	return m_radius;
 }
-
+/// <summary>
+/// returns the current rotation of the player
+/// </summary>
+/// <returns></returns>
 double Player::getRotation()
 {
 	return m_rect.getRotation();
 }
-
+/// <summary>
+/// updates the lifebar depending on the amount of lives 
+/// </summary>
 void Player::updateLifeBar()
 {
 	if (!activateShield)
 	{
 		--lives;
-		if (lives == 3)
+		if (lives == 9)
 		{
-			lifebar.setSize(sf::Vector2f(112.5, 10));
+			lifebar.setSize(sf::Vector2f(135, 10));
 			lifebar.setFillColor(sf::Color::Green);
 		}
-		if (lives == 2)
+		if (lives == 8)
+		{
+			lifebar.setSize(sf::Vector2f(120, 10));
+			lifebar.setFillColor(sf::Color::Green);
+		}
+		if (lives == 7)
+		{
+			lifebar.setSize(sf::Vector2f(105, 10));
+			lifebar.setFillColor(sf::Color::Green);
+		}
+		if (lives == 6)
+		{
+			lifebar.setSize(sf::Vector2f(90, 10));
+			lifebar.setFillColor(sf::Color::Green);
+		}
+		if (lives == 5)
 		{
 			lifebar.setSize(sf::Vector2f(75, 10));
 			lifebar.setFillColor(sf::Color(255, 140, 0));
 		}
+		if (lives == 4)
+		{
+			lifebar.setSize(sf::Vector2f(60, 10));
+			lifebar.setFillColor(sf::Color(255, 140, 0));
+		}
+		if (lives == 3)
+		{
+			lifebar.setSize(sf::Vector2f(45, 10));
+			lifebar.setFillColor(sf::Color::Green);
+		}
+		if (lives == 2)
+		{
+			lifebar.setSize(sf::Vector2f(30, 10));
+			lifebar.setFillColor(sf::Color::Red);
+		}
 		if (lives == 1)
 		{
-			lifebar.setSize(sf::Vector2f(37.5, 10));
+			lifebar.setSize(sf::Vector2f(15, 10));
 			lifebar.setFillColor(sf::Color::Red);
 		}
 	}
 	
+}
+/// <summary>
+/// returns the players current lives 
+/// </summary>
+/// <returns></returns>
+int Player::getLives()
+{
+	return lives;
 }

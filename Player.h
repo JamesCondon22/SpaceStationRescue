@@ -37,6 +37,7 @@ public:
 	int getRadius();
 	void animateShield();
 	bool getActivate();
+	int getLives();
 	std::vector<Bullet *> m_bullets;
 private:
 	sf::Vector2f m_position;
@@ -63,7 +64,7 @@ private:
 	sf::CircleShape m_shieldCircle;
 	int m_radius = 20;
 	double shieldRadius = 30;
-	int lives = 4;
+	int lives = 10;
 	sf::RectangleShape lifebar;
 	sf::RectangleShape underLie;
 	bool movingOut = false;

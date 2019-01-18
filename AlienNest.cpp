@@ -1,7 +1,7 @@
 #include "AlienNest.h"
 
 /// <summary>
-/// 
+/// initialises the alien nest class and passes a texture and an initial position
 /// </summary>
 /// <param name="texture"></param>
 /// <param name="pos"></param>
@@ -10,7 +10,7 @@ AlienNest::AlienNest(sf::Texture & texture, sf::Vector2f pos) :
 	size(100)
 {
 	
-
+	//sets the rectangles origin and position
 	m_rect.setOrigin(m_position.x + 150 / 2, m_position.y + 150 / 2);
 	m_rect.setTexture(&texture);
 	m_rect.setSize(sf::Vector2f(150, 150));
@@ -19,17 +19,18 @@ AlienNest::AlienNest(sf::Texture & texture, sf::Vector2f pos) :
 	
 	m_bullet = new Bullet(m_position, 0, false, false);
 
+	//sets the nests radius 
 	m_surroundingCircle.setRadius(m_radius);
 	m_surroundingCircle.setPosition(0,0);
 	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
 	m_surroundingCircle.setPosition(m_position.x, m_position.y);
 	m_surroundingCircle.setFillColor(sf::Color(0,0,0,40));
 
+	//sets the lifebars rectangles 
 	lifebar.setOutlineColor(sf::Color::Black);
 	lifebar.setSize(sf::Vector2f(100, 10));
 	lifebar.setOutlineThickness(2);
 	lifebar.setFillColor(sf::Color::Green);
-
 	underLie.setOutlineColor(sf::Color::Black);
 	underLie.setSize(sf::Vector2f(100, 10));
 	underLie.setOutlineThickness(2);
@@ -50,14 +51,33 @@ void AlienNest::setPosition(float x, float y)
 	m_rect.setPosition(x, y);
 
 }
-
+/// <summary>
+/// returns the bullet position
+/// </summary>
+/// <returns></returns>
 Bullet * AlienNest::getBulletPos()
 {
 	return m_bullet;
 }
+/// <summary>
+/// gets if the predator has been spawned at the nest 
+/// </summary>
+/// <returns></returns>
+bool AlienNest::getSpawn()
+{
+	return sweeperspawned;
+}
+/// <summary>
+/// sets the spawning to be true if the predator has spawned
+/// </summary>
+void AlienNest::setSpawn()
+{
+	sweeperspawned = true;
+}
 
 /// <summary>
-/// 
+/// passes the players position and radius into the update 
+/// updates the alien nest
 /// </summary>
 /// <param name="dt"></param>
 /// <param name="position"></param>
@@ -65,24 +85,28 @@ Bullet * AlienNest::getBulletPos()
 /// <param name="rot"></param>
 void AlienNest::update(double dt, sf::Vector2f position, int rad, double rot)
 {
+	//only checks the collision if the nest is alive 
 	if (alive)
 	{
 		circleCollision(position, rad);
 		bulletPlayerCollision(position, rad);
 	}
-	
+	//calls the bullet to seek the player position
 	if (shoot)
 	{
 		m_bullet->seek(position, m_position, rot);
+		//updates the clock time 
 		m_time += m_clock.restart().asMilliseconds();
-		if (m_time > 5000)
-		{
+		//checks if time is more than 5 seconds 
+		if (m_time > 5000){
+			//resets the bullet to the nest position
 			shoot = false;
 			m_bullet->resetToNest(m_rect.getPosition());
 			m_time = 0;
 		}
-		if (hit)
-		{
+		//checks hit
+		if (hit){
+			//resets the bullet to the nest
 			hit = false;
 			shoot = false;
 			m_bullet->resetToNest(m_rect.getPosition());
@@ -92,19 +116,21 @@ void AlienNest::update(double dt, sf::Vector2f position, int rad, double rot)
 	}
 	else
 	{
+		//resets the clock to zero
 		m_clock.restart() = sf::Time::Zero;
 	}
-
+	//checks the nests lives 
 	if (lives <= 0)
 	{
 		alive = false;
 	}
-
+	//updates the lifebar position
 	underLie.setPosition(m_position.x - 50, m_position.y - 100);
 	lifebar.setPosition(m_position.x - 50, m_position.y - 100);
 }
 /// <summary>
-/// 
+/// checks if the bullet and the player are colliding 
+/// passes the player position and radius
 /// </summary>
 /// <param name="position"></param>
 /// <param name="rad"></param>
@@ -118,9 +144,10 @@ bool AlienNest::bulletPlayerCollision(sf::Vector2f position, int rad)
 
 	int radius1 = rad;
 	int radius2 = 10;
-
+	//distance formula 
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
 	{
+		//sets hit detection 
 		hit = true;
 		return true;
 	}
@@ -131,7 +158,7 @@ bool AlienNest::bulletPlayerCollision(sf::Vector2f position, int rad)
 }
 
 /// <summary>
-/// 
+/// returns the nests lives 
 /// </summary>
 /// <returns></returns>
 int AlienNest::getLives()
@@ -140,7 +167,7 @@ int AlienNest::getLives()
 }
 
 /// <summary>
-/// 
+/// distance formula to check if the player is within the nests line of sight 
 /// </summary>
 /// <param name="position"></param>
 /// <param name="rad"></param>
@@ -183,7 +210,7 @@ void AlienNest::killNest()
 	}
 }
 /// <summary>
-/// 
+/// returns if the nest has shot 
 /// </summary>
 /// <returns></returns>
 bool AlienNest::getShoot()
@@ -192,7 +219,7 @@ bool AlienNest::getShoot()
 }
 
 /// <summary>
-/// 
+/// sets the shoot 
 /// </summary>
 void AlienNest::setShoot()
 {
@@ -200,7 +227,8 @@ void AlienNest::setShoot()
 }
 
 /// <summary>
-/// 
+/// renders the nest only draws under certain conditions 
+/// only drawn if alive, bullet is only drawn if shot 
 /// </summary>
 /// <param name="window"></param>
 void AlienNest::render(sf::RenderWindow & window)
@@ -220,7 +248,7 @@ void AlienNest::render(sf::RenderWindow & window)
 	
 }
 /// <summary>
-/// 
+/// returns the nest position
 /// </summary>
 /// <returns></returns>
 sf::Vector2f AlienNest::getPos()

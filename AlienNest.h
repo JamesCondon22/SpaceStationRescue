@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 #include "Bullet.h"
 #include <iostream>
+
 class AlienNest
 {
 public:
@@ -17,36 +18,39 @@ public:
 	bool bulletPlayerCollision(sf::Vector2f position, int rad);
 	void killNest();
 	int getLives();
-	bool getHit();
 	Bullet * m_bullet;
 	Bullet * getBulletPos();
 	bool getShoot();
 	void setShoot();
-	//bool circleCollision();
+	bool getSpawn();
+	void setSpawn();
+	bool sweeperspawned = false;
 private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_velocity;
-	int size;
 	sf::RectangleShape m_rect;
 	sf::CircleShape m_surroundingCircle;
 
-	//bool alive = false;
-	int shotsTaken = 0;
+	int size;
 	int lives = 4;
 	int m_radius = 150;
+	
 	double m_time = 0;
 	sf::Clock m_clock;
+	
+	//all bullet variables
 	int m_bulletCount = 0;
 	int m_bulletTime = 30;
 	sf::Vector2f currentBulletPosition;
 
-	
 	bool shoot = false;
 	bool alive = true;
 	bool hit = false;
-
+	
+	//lifebar rect
 	sf::RectangleShape lifebar;
 	sf::RectangleShape underLie;
+	
 };
 
 #endif

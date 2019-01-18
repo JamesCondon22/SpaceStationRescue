@@ -2,7 +2,12 @@
 
 double const Predator::DEG_TO_RAD = 3.14 / 180.0f;
 double const Predator::RAD_TO_DEG = 180.0f / 3.14;
-
+/// <summary>
+/// initialises the predator passes a texture 
+/// passes the predators initial position 
+/// </summary>
+/// <param name="texture"></param>
+/// <param name="pos"></param>
 Predator::Predator(sf::Texture & texture, sf::Vector2f pos) :
 	m_position(0, 0),
 	size(100),
@@ -12,13 +17,13 @@ Predator::Predator(sf::Texture & texture, sf::Vector2f pos) :
 {
 
 	
-
+	spawningPosition = pos;
 	m_rect.setSize(sf::Vector2f(50, 50));
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2);
 	m_rect.setTexture(&texture);
 	
 	m_position = sf::Vector2f(pos.x, pos.y);
-	spawningPosition = m_position;
+	
 	m_rect.setPosition(m_position.x, m_position.y);
 
 	m_bullet = new Bullet(m_position, 0, false, true);
@@ -34,14 +39,18 @@ Predator::Predator(sf::Texture & texture, sf::Vector2f pos) :
 Predator::~Predator()
 {
 }
-
+/// <summary>
+/// sets the predator predator position to the x and y values passed
+/// </summary>
+/// <param name="x"></param>
+/// <param name="y"></param>
 void Predator::setPosition(float x, float y)
 {
 	m_rect.setPosition(x, y);
 }
 
 /// <summary>
-/// 
+/// upasses a the next node position and the player position 
 /// </summary>
 /// <param name="dt"></param>
 /// <param name="position"></param>
@@ -54,25 +63,30 @@ void Predator::update(double dt, sf::Vector2f position, sf::Vector2f playPos)
 	m_velocity = m_velocity * 0.3f;
 	m_rotation = getNewOrientation(m_rotation, m_velocity);
 
-
+	//checks for the disance formula 
 	if (circleCollision(playPos, 200) && !shoot)
 	{
 		m_bullet->resetToNest(m_rect.getPosition());
 		shoot = true;	
 	}
-
+	//checks if the bullet is shot 
 	if (shoot)
 	{
+		//updates the predator bullet to seek the player 
 		m_bullet->predSeek(playPos, m_position, m_rotation);
+		//upadtes the time 
 		m_time += m_clock.restart().asMilliseconds();
+		//checks if the time is more than 5 seconds 
 		if (m_time > 5000)
 		{
+			//resets shoot and timer 
 			shoot = false;
-			
 			m_time = 0;
 		}
+		//checks if the predator is hit 
 		if (hit)
 		{
+			//resets bullet 
 			hit = false;
 			m_bullet->resetToNest(m_rect.getPosition());
 			shoot = false;
@@ -91,7 +105,7 @@ void Predator::update(double dt, sf::Vector2f position, sf::Vector2f playPos)
 	
 }
 /// <summary>
-/// 
+/// normalize function 
 /// </summary>
 /// <param name="vec"></param>
 /// <returns></returns>
@@ -105,7 +119,8 @@ sf::Vector2f Predator::normalize(sf::Vector2f vec)
 	return vec;
 }
 /// <summary>
-/// 
+/// sets the new Orientation of the predator  
+/// uses the velocity and the current orientation to set the new one 
 /// </summary>
 /// <param name="curOrientation"></param>
 /// <param name="velocity"></param>
@@ -123,7 +138,7 @@ float Predator::getNewOrientation(float curOrientation, sf::Vector2f velocity)
 	}
 }
 /// <summary>
-/// 
+/// length formula 
 /// </summary>
 /// <param name="vel"></param>
 /// <returns></returns>
@@ -131,7 +146,8 @@ float Predator::length(sf::Vector2f vel) {
 	return sqrt(vel.x * vel.x + vel.y * vel.y);
 }
 /// <summary>
-/// 
+/// funtion to the check the distance the predator is from the player 
+/// returns true if in a certain distance 
 /// </summary>
 /// <param name="position"></param>
 /// <param name="distance"></param>
@@ -156,7 +172,8 @@ bool Predator::circleCollision(sf::Vector2f position, int distance)
 }
 
 /// <summary>
-/// 
+/// checks for collision between the player and the enemy bullet 
+/// passes the position and radius of the player
 /// </summary>
 /// <param name="position"></param>
 /// <param name="rad"></param>
@@ -183,34 +200,47 @@ bool Predator::bulletPlayerCollision(sf::Vector2f position, int rad)
 }
 
 
-void Predator::wander(double dt)
-{
-
-
-}
-
+/// <summary>
+/// renders the bullet and sprite 
+/// </summary>
+/// <param name="window"></param>
 void Predator::render(sf::RenderWindow & window)
 {
 	m_bullet->render(window);
 	window.draw(m_rect);
-	//window.draw(m_surroundingCircle);
 }
-
+/// <summary>
+/// gets the position of the rectangle 
+/// </summary>
+/// <returns></returns>
 sf::Vector2f Predator::getPos()
 {
 	return m_rect.getPosition();
 }
 
 
-
+/// <summary>
+/// gets the tile X positions 
+/// </summary>
+/// <returns></returns>
 int Predator::getTileX()
 {
 	return m_sprite.getPosition().x / 50;
 }
-
+/// <summary>
+/// gets the tile Y position 
+/// </summary>
+/// <returns></returns>
 int Predator::getTileY()
 {
 	return m_sprite.getPosition().y / 50;
+}
+/// <summary>
+/// resets the predator to the spawning position 
+/// </summary>
+void Predator::reset()
+{
+	m_rect.setPosition(spawningPosition);
 }
 
 

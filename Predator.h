@@ -22,7 +22,7 @@ public:
 	float getNewOrientation(float curOrientation, sf::Vector2f velocity);
 	float length(sf::Vector2f vel);
 	bool circleCollision(sf::Vector2f position, int distance);
-
+	void reset();
 	Bullet * m_bullet;
 private:
 	sf::Vector2f m_position;

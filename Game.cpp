@@ -160,7 +160,7 @@ Game::Game()
 
 	m_finishtext.setFont(m_font);
 	m_finishtext.setCharacterSize(40);
-	m_finishtext.setOutlineThickness(3);
+	
 	m_finishtext.setPosition(sf::Vector2f(200, 200));
 	
 
@@ -225,75 +225,11 @@ void Game::processEvents()
 void Game::processGameEvents(sf::Event& event)
 {
 
-	if (!sf::Mouse::isButtonPressed(sf::Mouse::Left))
-	{
-		Leftpressed = false;
-	}
-	if (!sf::Mouse::isButtonPressed(sf::Mouse::Right))
-	{
-		Rightpressed = false;
-	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && !Leftpressed)
-	{
-		Leftpressed = true;
-		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 2500) {
-			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 2500) {
-				int x = mouse.getPosition(m_window).x / 50;
-				int y = mouse.getPosition(m_window).y / 50;
-				if (m_starttile != NULL)
-				{
-					m_starttile->changeColor();
-
-					m_starttile = m_tile[x][y];
-				}
-				m_tile[x][y]->setStart();
-			}
-		}
-	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && !Rightpressed) {
-		Rightpressed = true;
-		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 2500) {
-			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 2500) {
-				int x = mouse.getPosition(m_window).x / 50;
-				int y = mouse.getPosition(m_window).y / 50;
-				if (m_goaltile != NULL) {
-					//m_goaltile->changeColor();
-				}
-				m_goaltile = m_tile[x][y];
-				std::cout << x << "," << y;
-				//m_tile[x][y]->setGoal();
-				breadthFirst(m_goaltile->getXpos(), m_goaltile->getYpos());
-
-			}
-		}
-	}
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
-	{
-       		if (mouse.getPosition(m_window).x > 0 && mouse.getPosition(m_window).x < 2500) {
-			if (mouse.getPosition(m_window).y > 0 && mouse.getPosition(m_window).y < 2500) {
-				int x = mouse.getPosition(m_window).x / 50;
-				int y = mouse.getPosition(m_window).y / 50;
-				m_tile[x][y]->setObstacle();
-			}
-		}
-	}
-
-	if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
-	{
-		for (int i = 0; i < 50; i++) {
-			for (int j = 0; j < 50; j++) {
-
-				m_tile[j][i]->setCost(0);
-				m_tile[j][i]->setVisited(false);
-				m_tile[j][i]->setCurrentState(Blank);
-			}
-		}
-	}
-	
-
 
 }
-
+/// <summary>
+/// resets the tile maze 
+/// </summary>
 void Game::reset()
 {
 	for (int i = 0; i < 50; i++) {
@@ -313,10 +249,12 @@ void Game::update(double dt)
 {
 	sf::Time deltaTime;
 
-	
+	//sets the position for the centre of the game view 
 	playerPosition = sf::Vector2f(m_player->getPos().x + 350, m_player->getPos().y + 200);
 	gameView.setCenter(playerPosition);
-	if (!m_winner) {
+
+	//only updates if the player hasnt won or lost 
+	if (!m_winner || !m_gameover) {
 		for (int i = 0; i < m_workers.size(); i++)
 		{
 			m_workers[i]->update(dt, m_player->getPos());
@@ -330,32 +268,29 @@ void Game::update(double dt)
 		// Calls scoring method see definition far below
 		scoring();
 
-
-		//std::cout << m_count << std::endl;
 		for (int i = 0; i < m_alienNests.size(); i++)
 		{
+			//updates the alien nests 
 			m_alienNests[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_player->getRotation());
-			m_player->checkNests(m_alienNests[i]);
+			m_player->checkNests(m_alienNests[i]);//checks bullet collision with the nests 
+			//checks the collision between the bullet and the player 
 			if (m_alienNests[i]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
 			{
+				//updates the lifebar 
 				m_player->updateLifeBar();
 			}
-			if (!predSpawned)
-			{
-				generatePredators(*m_alienNests[i]);
-			}
-
-
 		}
 
 		m_player->update(dt);
+		//sets the current position of the predators 
 		int curPredX = round(m_predators[0]->getPos().x / 50);
 		int curPredY = round(m_predators[0]->getPos().y / 50);
 
+		//sets the start tile 
 		m_starttile = m_tile[curPredX][curPredY];
 		m_starttile->setStart();
 
-
+		//sets the players tile position
 		int curX = round(m_player->getPos().x / 50);
 		int curY = round(m_player->getPos().y / 50);
 
@@ -365,74 +300,77 @@ void Game::update(double dt)
 			m_player->checkSweepers(m_sweeper[i]);
 		}
 
+		//checks the collsion of the player and the walls 
 		collision(curX, curY);
+		//sets the goal tile 
 		m_goaltile = m_tile[curX][curY];
 		m_goaltile->setGoal();
 
-
+		//performs the breadth first search passes the goal tile positions
 		breadthFirst(m_goaltile->getXpos(), m_goaltile->getYpos());
+		//calls the shortest path function
 		getPath(m_starttile->getXpos(), m_starttile->getYpos());
 
+		//resets if the player has changed tile 
 		if (curX != prevX) {
 			reset();
 		}
-
 		if (curY != prevY) {
 			reset();
 		}
+		//sets the previous 
 		prevX = curX;
 		prevY = curY;
 
-		for (int i = 0; i < m_predators.size(); i++)
+		
+		//calls the predator update
+		iterateQueue(dt);
+		//checks the predator and the bullet 
+		m_player->checkPreds(m_predators[0]);
+		//calls the player and the bullet collision 
+		if (m_predators[0]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
 		{
-			iterateQueue(dt, i);
-			m_player->checkPreds(m_predators[i]);
-			
-			if (m_predators[i]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
-			{
-				m_player->updateLifeBar();
-			}
+			m_player->updateLifeBar();
 		}
-
+		
+		//collisions with walls 
 		workerWallCollision();
 		bulletWallCollision();
 		sweeperWallCollision();
-
 		nestbulletWallCollision();
+
 	}
-	
+	//centres the minimap 
 	miniMapView.setCenter(m_player->getPos());
 	
-
+	//checks win condtiion
 	if (m_count >= 10)
 	{
 		m_winner = true;
 	}
+	//checks lose condition
+	if (m_player->getLives() <= 0)
+	{
+		m_gameover = true;
+	}
 	
 }
-
-void Game::iterateQueue(double dt, int count)
+/// <summary>
+/// iterates throuugh the queue and passes a delta time and count 
+/// calls the predator updates passing the position of the next tile in the queue 
+/// increments the iterator 
+/// </summary>
+/// <param name="dt"></param>
+/// <param name="count"></param>
+void Game::iterateQueue(double dt)
 {
 
 	for (auto iter = queue.begin(); iter != queue.end();)
 	{
-		
-			m_predators[count]->update(dt, m_tile[iter->getXpos()][iter->getYpos()]->getCircleVec(), m_player->getPos());
-			iter++;
-		
-		
+			m_predators[0]->update(dt, m_tile[iter->getXpos()][iter->getYpos()]->getCircleVec(), m_player->getPos());
+			iter++;	
 	}
 }
-
-void Game::checkDirections()
-{
-
-}
-
-
-
-
-
 
 
 /// <summary>
@@ -444,15 +382,17 @@ void Game::render()
 {
 
 	m_window.clear(sf::Color::Black);
+	//renders the gameview 
 	m_window.setView(gameView);
+	//upodates the UI positions  
 	miniMapRect.setPosition(miniMapView.getCenter().x - 320, miniMapView.getCenter().y + 98);
 	m_workerUI.setPosition(miniMapView.getCenter().x - 300, miniMapView.getCenter().y - 170);
-
 	m_countText.setPosition(m_workerUI.getPosition().x + 50, m_workerUI.getPosition().y + 5);
 	m_player->setLifeBarPosition(m_workerUI.getPosition().x + 450, m_workerUI.getPosition().y + 5);
+	//renders the tiles 
 	for (int i = 0; i < 50; i++) {
 		for (int j = 0; j < 50; j++) {
-
+			//only render what tiles are on the gamescreen 
 			if (m_tile[j][i]->getPosition().x > playerPosition.x - 800 && m_tile[j][i]->getPosition().x < playerPosition.x
 				&& m_tile[j][i]->getPosition().y > playerPosition.y - 500 && m_tile[j][i]->getPosition().y < playerPosition.y)
 			{
@@ -481,6 +421,7 @@ void Game::render()
 	}
 
 	m_player->render(m_window);
+	//renders the UI
 	m_window.draw(m_countText);
 	m_window.draw(m_workerUI);
 	m_player->renderBars(m_window);
@@ -489,9 +430,17 @@ void Game::render()
 	{
 		m_window.clear(sf::Color::White);
 		m_finishtext.setOutlineColor(sf::Color::Black);
+		m_finishtext.setOutlineThickness(3);
 		m_finishtext.setFillColor(sf::Color::Red);
 		m_finishtext.setString("YOU WIN");
-		//m_finishtext.setPosition(sf::Vector2f(50, 100));
+		m_finishtext.setPosition(miniMapView.getCenter().x - 50, miniMapView.getCenter().y - 50);
+		m_window.draw(m_finishtext);
+	}
+	if (m_gameover)
+	{
+		m_window.clear(sf::Color::Black);
+		m_finishtext.setFillColor(sf::Color::White);
+		m_finishtext.setString("YOU LOSE");
 		m_finishtext.setPosition(miniMapView.getCenter().x - 50, miniMapView.getCenter().y - 50);
 		m_window.draw(m_finishtext);
 	}
@@ -518,15 +467,14 @@ void Game::render()
 		}
 
 	}
+	
+	
 	m_window.display();
-
-	
-	
-	
 	
 }
 /// <summary>
-/// 
+/// collsion for the player and the walls 
+/// passes the x and y tile positions 
 /// </summary>
 /// <param name="x"></param>
 /// <param name="y"></param>
@@ -567,7 +515,8 @@ void Game::collision(int x, int y)
 	}
 }
 /// <summary>
-/// 
+/// collision for the workers and the walls 
+/// if collision is detected the workers change direction 
 /// </summary>
 void Game::workerWallCollision()
 {
@@ -596,7 +545,9 @@ void Game::workerWallCollision()
 	}
 }
 /// <summary>
-/// 
+/// collision for the nest bullets and the walls 
+/// if the collision is detected the bullet is reset
+/// shoot bool is set to false 
 /// </summary>
 void Game::nestbulletWallCollision()
 {
@@ -628,10 +579,9 @@ void Game::nestbulletWallCollision()
 	}
 }
 /// <summary>
-/// 
+/// collision for the sweeper bots and the walls 
+/// if collision is detected the sweepers change direction 
 /// </summary>
-
-
 void Game::sweeperWallCollision()
 {
 
@@ -658,7 +608,10 @@ void Game::sweeperWallCollision()
 		}
 	}
 }
-
+/// <summary>
+/// collision for the bullets and the walls 
+/// erases the bullets from the vector if they collide with the walls 
+/// </summary>
 void Game::bulletWallCollision()
 {
 	for (int i = 0; i < m_player->m_bullets.size(); i++)
@@ -699,7 +652,11 @@ void Game::bulletWallCollision()
 	}
 }
 
-
+/// <summary>
+/// breadth first search 
+/// </summary>
+/// <param name="posX"></param>
+/// <param name="posY"></param>
 void Game::breadthFirst(int posX, int posY) {
 
 
@@ -748,6 +705,14 @@ void Game::breadthFirst(int posX, int posY) {
 
 
 }
+/// <summary>
+/// adds each node to the back of the queue
+/// </summary>
+/// <param name="currentPos"></param>
+/// <param name="pos"></param>
+/// <param name="cost"></param>
+/// <param name="queue"></param>
+/// <param name="prevpos"></param>
 void Game::addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos, int& cost, std::list<Tile*>& queue, std::pair<int, int>& prevpos) {
 	if (!m_tile[currentPos.first][currentPos.second]->getVisited() && !m_tile[currentPos.first][currentPos.second]->getObstacle())
 	{
@@ -760,6 +725,11 @@ void Game::addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos,
 	}
 	currentPos = pos;
 }
+/// <summary>
+/// checks for the lowest 
+/// </summary>
+/// <param name="lowest"></param>
+/// <param name="current"></param>
 void Game::checkLowest(int lowest, int current)
 {
 	if (current < lowest)
@@ -768,7 +738,9 @@ void Game::checkLowest(int lowest, int current)
 	}
 }
 /// <summary>
-/// 
+/// generates the nests at a random position in the maze 
+/// only spawns if there are no obstacles or nests already in that position 
+/// spwans predator in the nest 
 /// </summary>
 void Game::generateNests()
 {
@@ -785,6 +757,11 @@ void Game::generateNests()
 		{
 			m_tile[i][j]->containsNest = true;
 			nest[count] = new AlienNest(nestTexture, m_tile[i][j]->getPosition());
+
+			if (!nest[count]->getSpawn())
+			{
+				generatePredators(*nest[count]);
+			}
 			m_alienNests.push_back(nest[count]);
 			count++;
 		}
@@ -792,7 +769,9 @@ void Game::generateNests()
 	}
 }
 /// <summary>
-/// 
+/// generates the workers at random positions in the maze 
+/// only places them at a position that doesnt contain a worker, obstacle, nest 
+/// doesnts spawn on top of wall obstacles 
 /// </summary>
 void Game::generateWorkers()
 {
@@ -822,7 +801,7 @@ void Game::generateWorkers()
 	}
 }
 /// <summary>
-/// 
+/// generates the predator and pushes into vector 
 /// </summary>
 void Game::generatePredators(AlienNest alien)
 {
@@ -830,7 +809,7 @@ void Game::generatePredators(AlienNest alien)
 	Predator *pred = new Predator(m_predTexture, alien.getPos());
 	m_predators.push_back(pred);
 	predSpawned = true;
-	
+	alien.setSpawn();
 }
 
 
@@ -861,15 +840,20 @@ void Game::generateSweepers()
 
 	}
 }
-
+/// <summary>
+/// gets the player position
+/// </summary>
+/// <returns></returns>
 sf::Vector2f Game::getPlayerPos()
 {
 	return m_player->getPos();
 }
+
 /// <summary>
-/// 
+/// gets the Path travelled by the predator AI 
+/// passes the starting x and y positions 
 /// </summary>
-/// <param name="posX"></param>setVectorPosition
+/// <param name="posX"></param>
 /// <param name="posY"></param>
 void Game::getPath(int posX, int posY)
 {
