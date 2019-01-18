@@ -12,6 +12,7 @@ public:
 	void update(double dt, sf::Vector2f position, sf::Vector2f playPos);
 	void render(sf::RenderWindow & window);
 	bool bulletPlayerCollision(sf::Vector2f position, int rad);
+	//void killPred(sf::Vector2f position);
 	sf::Vector2f getPos();
 	void setPosition(float x, float y);
 	void wander(double dt);
@@ -21,6 +22,7 @@ public:
 	float getNewOrientation(float curOrientation, sf::Vector2f velocity);
 	float length(sf::Vector2f vel);
 	bool circleCollision(sf::Vector2f position, int distance);
+
 	Bullet * m_bullet;
 private:
 	sf::Vector2f m_position;
@@ -47,9 +49,10 @@ private:
 	sf::CircleShape m_surroundingCircle;
 	int m_bulletCount = 0;
 	int m_bulletTime = 300;
-
+	sf::Vector2f spawningPosition;
 	bool shoot = false;
 	sf::Clock m_clock;
 	double m_time = 0;
+	bool hit = false;
 
 };

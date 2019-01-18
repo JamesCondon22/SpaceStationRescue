@@ -22,6 +22,9 @@ public:
 	int getTileX();
 	int getTileY();
 	bool getCollision();
+	bool getCollected();
+	void collisionSweeper(sf::Vector2f & SweeperPosition);
+	int getRadius();
 
 private:
 	sf::Vector2f m_position;
@@ -44,9 +47,10 @@ private:
 
 	bool increment = false;
 
-
-
-
+	//radius range
+	sf::CircleShape m_surroundingCircle;
+	float m_radius;
+	
 };
 
 #endif

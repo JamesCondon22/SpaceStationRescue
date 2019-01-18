@@ -13,11 +13,12 @@ Predator::Predator(sf::Texture & texture, sf::Vector2f pos) :
 
 	
 
-	m_rect.setSize(sf::Vector2f(30, 30));
+	m_rect.setSize(sf::Vector2f(50, 50));
 	m_rect.setOrigin(m_rect.getSize().x / 2, m_rect.getSize().y / 2);
 	m_rect.setTexture(&texture);
 	
 	m_position = sf::Vector2f(pos.x, pos.y);
+	spawningPosition = m_position;
 	m_rect.setPosition(m_position.x, m_position.y);
 
 	m_bullet = new Bullet(m_position, 0, false, true);
@@ -39,7 +40,12 @@ void Predator::setPosition(float x, float y)
 	m_rect.setPosition(x, y);
 }
 
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="dt"></param>
+/// <param name="position"></param>
+/// <param name="playPos"></param>
 void Predator::update(double dt, sf::Vector2f position, sf::Vector2f playPos)
 {
 	
@@ -51,27 +57,31 @@ void Predator::update(double dt, sf::Vector2f position, sf::Vector2f playPos)
 
 	if (circleCollision(playPos, 200) && !shoot)
 	{
+		m_bullet->resetToNest(m_rect.getPosition());
 		shoot = true;	
 	}
 
 	if (shoot)
 	{
-		m_bullet->predSeek(playPos, m_rect.getPosition(), m_rotation);
+		m_bullet->predSeek(playPos, m_position, m_rotation);
 		m_time += m_clock.restart().asMilliseconds();
 		if (m_time > 5000)
 		{
 			shoot = false;
+			
 			m_time = 0;
 		}
-		if (bulletPlayerCollision(playPos, 20))
+		if (hit)
 		{
+			hit = false;
 			m_bullet->resetToNest(m_rect.getPosition());
+			shoot = false;
 		}
 	}
 	else
 	{
 		m_clock.restart() = sf::Time::Zero;
-		m_bullet->resetToNest(m_rect.getPosition());
+		
 	}
 
 	m_position += m_velocity;
@@ -80,6 +90,11 @@ void Predator::update(double dt, sf::Vector2f position, sf::Vector2f playPos)
 	m_rect.setRotation(m_rotation);
 	
 }
+/// <summary>
+/// 
+/// </summary>
+/// <param name="vec"></param>
+/// <returns></returns>
 sf::Vector2f Predator::normalize(sf::Vector2f vec)
 {
 	if (vec.x*vec.x + vec.y * vec.y != 0)
@@ -89,13 +104,17 @@ sf::Vector2f Predator::normalize(sf::Vector2f vec)
 	}
 	return vec;
 }
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="curOrientation"></param>
+/// <param name="velocity"></param>
+/// <returns></returns>
 float Predator::getNewOrientation(float curOrientation, sf::Vector2f velocity)
 {
 	if (length(velocity) > 0)
 	{
 		float rotation = atan2(-velocity.x, velocity.y) * RAD_TO_DEG;
-		//rotation + 90;
 		return rotation;
 	}
 	else
@@ -103,11 +122,20 @@ float Predator::getNewOrientation(float curOrientation, sf::Vector2f velocity)
 		return curOrientation;
 	}
 }
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="vel"></param>
+/// <returns></returns>
 float Predator::length(sf::Vector2f vel) {
 	return sqrt(vel.x * vel.x + vel.y * vel.y);
 }
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="position"></param>
+/// <param name="distance"></param>
+/// <returns></returns>
 bool Predator::circleCollision(sf::Vector2f position, int distance)
 {
 	int x1 = position.x;
@@ -118,6 +146,7 @@ bool Predator::circleCollision(sf::Vector2f position, int distance)
 
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < distance)
 	{
+		
 		return true;
 	}
 	else
@@ -144,7 +173,7 @@ bool Predator::bulletPlayerCollision(sf::Vector2f position, int rad)
 
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
 	{
-		//hit = true;
+		hit = true;
 		return true;
 	}
 	else
@@ -162,16 +191,9 @@ void Predator::wander(double dt)
 
 void Predator::render(sf::RenderWindow & window)
 {
-	/*for (Bullet * bullet : m_bullets)
-	{
-		if (bullet)
-		{
-			bullet->render(window);
-		}
-	}*/
 	m_bullet->render(window);
 	window.draw(m_rect);
-	window.draw(m_surroundingCircle);
+	//window.draw(m_surroundingCircle);
 }
 
 sf::Vector2f Predator::getPos()

@@ -47,6 +47,7 @@ public:
 
 	bool containsWorker = false;
 	bool containsNest = false;
+	bool containsSweeper = false;
 
 
 private:

@@ -14,7 +14,7 @@ Bullet::Bullet(sf::Vector2f pos, float rotation, bool isPlayer, bool isPred) :
 	}
 	else if (isPred)
 	{
-		m_speed = 0.5f;
+		m_speed = 1;
 	}
 	else
 	{
@@ -24,7 +24,7 @@ Bullet::Bullet(sf::Vector2f pos, float rotation, bool isPlayer, bool isPred) :
 	
 	
 	m_life = 0;
-	if (isPlayer || isPred)
+	if (isPlayer)
 	{
 		m_texture.loadFromFile("bullet.png");
 	}
@@ -98,7 +98,7 @@ void Bullet::predSeek(sf::Vector2f position, sf::Vector2f pos, double rot)
 {
 	m_velocity = position - m_position;
 	m_velocity = normalize(m_velocity);
-	m_velocity = m_velocity * 0.3f;
+	m_velocity = m_velocity * 0.2f;
 	m_rotation = getNewOrientation(m_rotation, m_velocity);
 
 	m_position += m_velocity;
@@ -155,5 +155,5 @@ void checkCollision(sf::Vector2f pos)
 void Bullet::render(sf::RenderWindow & window)
 {
 	window.draw(m_rect);
-	window.draw(m_surroundingCircle);
+	//window.draw(m_surroundingCircle);
 }

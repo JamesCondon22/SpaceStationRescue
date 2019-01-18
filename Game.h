@@ -32,15 +32,15 @@ protected:
 	void generateNests();
 	void generateWorkers();
 	void generatePredators(AlienNest alien);
-	void createMap();
 	void reset();
 	void iterateQueue(double dt, int i);
-
+	void generateSweepers();
+	void scoring();
 	void collision(int x, int y);
 	void workerWallCollision();
+	void sweeperWallCollision();
 	void bulletWallCollision();
 	void nestbulletWallCollision();
-	void bulletNestCollision(AlienNest *nest);
 	void checkDirections();
 	void getPath(int posX, int posY);
 	// main window
@@ -69,13 +69,11 @@ protected:
 	sf::Sprite miniMapSprite;
 	sf::Texture miniMapTexture;
 
-	Sweeper * m_sweeper;
+	std::vector<Sweeper*> m_sweeper;
 	Player * m_player;
-	//Predator * m_predator;
 	std::vector<Worker*> m_workers;
 	std::vector<AlienNest*> m_alienNests;
 	std::vector<Predator*> m_predators;
-	//SweeperBots bot;
 
 	int lastX = 25;
 	int lastY = 25;
@@ -86,9 +84,12 @@ protected:
 	sf::Texture nestTexture;
 	sf::Texture workerTexture;
 	sf::Texture m_predTexture;
+	sf::Texture sweeperTexture;
 	sf::RectangleShape miniMapRect;
 	sf::RectangleShape m_workerUI;
 	sf::Text m_countText;
+
+	std::vector<bool>m_score;
 
 	bool hitNest = false;
 	int m_count = 0;
@@ -98,12 +99,13 @@ protected:
 	int prevX;
 	int prevY;
 
-	//std::list<Tile>::iterator m_iter;
 	std::list<Tile> queue;
 	sf::Clock m_clock;
 	double m_time = 0;
 
 	bool predSpawned;
+	bool m_winner = false;
+	sf::Text m_finishtext;
 };
 
 #endif

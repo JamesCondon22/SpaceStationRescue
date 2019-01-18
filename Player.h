@@ -4,6 +4,8 @@
 #include <SFML/Graphics.hpp>
 #include "Bullet.h"
 #include "AlienNest.h"
+#include "Predator.h"
+#include "Sweeper.h"
 #include <iostream>
 
 
@@ -14,6 +16,9 @@ public:
 	~Player();
 	void update(double dt);
 	void checkNests(AlienNest * nest);
+	void checkPreds(Predator * pred);
+	void checkSweepers(Sweeper * sweep);
+	//void killPred(sf::Vector2f position);
 	void render(sf::RenderWindow & window);
 	void renderBars(sf::RenderWindow & window);
 	sf::Vector2f getVel();

@@ -170,6 +170,32 @@ void Player::checkNests(AlienNest * nest)
 		}
 	}
 }
+
+void Player::checkPreds(Predator * pred)
+{
+	for (int i = 0; i < m_bullets.size(); i++)
+	{
+		if (m_bullets[i]->getPosition().x > pred->getPos().x - 25 && m_bullets[i]->getPosition().x < pred->getPos().x + 50
+			&& m_bullets[i]->getPosition().y> pred->getPos().y - 25 && m_bullets[i]->getPosition().y < pred->getPos().y + 50)
+		{
+			m_bullets.erase(m_bullets.begin());
+			
+		}
+	}
+}
+
+void Player::checkSweepers(Sweeper * sweep)
+{
+	for (int i = 0; i < m_bullets.size(); i++)
+	{
+		if (m_bullets[i]->getPosition().x > sweep->getPos().x - 25 && m_bullets[i]->getPosition().x < sweep->getPos().x + 50
+			&& m_bullets[i]->getPosition().y> sweep->getPos().y - 25 && m_bullets[i]->getPosition().y < sweep->getPos().y + 50)
+		{
+			m_bullets.erase(m_bullets.begin());
+			sweep->kill();
+		}
+	}
+}
 void Player::setLifeBarPosition(float x, float y)
 {
 	lifebar.setPosition(x, y);
