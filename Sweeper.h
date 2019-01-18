@@ -16,7 +16,7 @@ class Sweeper
 public:
 	Sweeper(sf::Texture texture, sf::Vector2f position);
 	~Sweeper();
-	void update(double dt, sf::Vector2f playerPosition, int radPlayer, sf::Vector2f workerPos, int radworker);
+	void update(double dt, sf::Vector2f playerPosition, int radPlayer);
 	void render(sf::RenderWindow & window);
 	sf::Vector2f getVelocity();
 	sf::Vector2f getPosition();
@@ -45,7 +45,7 @@ public:
 	void distance(int distance, sf::Vector2f position);
 	
 	//detecting for seek
-	void radiusCollisionWorker(sf::Vector2f position, int rad);
+	void radiusCollisionWorker(sf::Vector2f position, int rad, bool swept);
 
 
 private:
@@ -92,6 +92,9 @@ private:
 	bool wallcollide;
 	bool m_wanderCollide;
 	bool m_seeking;
+
+	//score
+	int m_scoreCount = 0;
 };
 
 #endif // !SWEEPER

@@ -47,7 +47,6 @@ void Worker::update(double dt, sf::Vector2f playerPosition)
 	if (!collected)
 	{
 		collisionPlayer(playerPosition);
-		//collisionSweeper();
 	}
 
 	//implimenting wander functionality
@@ -89,7 +88,7 @@ void Worker::wander(double dt)
 
 void Worker::render(sf::RenderWindow & window)
 {
-	if (!collected) {
+	if (!collected && !m_swept) {
 		window.draw(m_sprite);
 		window.draw(m_surroundingCircle);
 	}
@@ -134,16 +133,11 @@ void  Worker::collisionPlayer(sf::Vector2f & playerPosition)
 
 void  Worker::collisionSweeper(sf::Vector2f & sweeperPosition)
 {
-	int x1 = sweeperPosition.x;
-	int y1 = sweeperPosition.y;
-	int x2 = m_sprite.getPosition().x;
-	int y2 = m_sprite.getPosition().y;
-
-
-	/*if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < ((m_radius + 50)))
+	if (sweeperPosition.x > m_rect.getPosition().x && sweeperPosition.x < m_rect.getPosition().x + 25
+		&& sweeperPosition.y > m_rect.getPosition().y && sweeperPosition.y < m_rect.getPosition().y + 25)
 	{
-		collected = true;
-	}*/
+		m_swept = true;
+	}
 
 }
 
@@ -151,12 +145,12 @@ void  Worker::collisionSweeper(sf::Vector2f & sweeperPosition)
 
 int Worker::getTileX()
 {
-	return m_sprite.getPosition().x / 50;
+	return m_rect.getPosition().x / 50;
 }
 
 int Worker::getTileY()
 {
-	return m_sprite.getPosition().y / 50;
+	return m_rect.getPosition().y / 50;
 }
 
 void Worker::changeDirection()

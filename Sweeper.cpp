@@ -28,7 +28,7 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 
 	m_rect.setOrigin(m_position.x + 15 / 2, m_position.y + 15 / 2);
 	m_rect.setTexture(&m_texture);
-	m_rect.setSize(sf::Vector2f(25, 50));
+	m_rect.setSize(sf::Vector2f(25, 25));
 	m_position = position;
 	m_rect.setPosition(m_position.x + 20, m_position.y + 10);
 
@@ -38,11 +38,6 @@ Sweeper::Sweeper(sf::Texture texture, sf::Vector2f position) :
 	m_surroundingCircle.setOrigin(m_surroundingCircle.getRadius(), m_surroundingCircle.getRadius());
 	m_surroundingCircle.setPosition(m_position);
 	m_surroundingCircle.setFillColor(sf::Color(0, 0, 0, 40));
-
-	//assigning sprite textures
-	m_sprite.setTexture(m_texture);
-	m_sprite.setScale(0.1, 0.1);
-	m_sprite.setPosition(m_position.x + 18, m_position.y + 20);
 
 }
 
@@ -57,13 +52,12 @@ void Sweeper::setPosition(float x, float y)
 }
 
 
-void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer, sf::Vector2f workerPos, int radworker)
+void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer)
 {
 	
 
-	radiusCollisionWorker(workerPos, radworker);
 	radiusCollisionPlayer(playerPosition, radPlayer);
-	m_position = m_sprite.getPosition();
+	m_position = m_rect.getPosition();
 	if (!collected)
 	{
 		collisionPlayer(playerPosition);
@@ -88,8 +82,8 @@ void Sweeper::update(double dt, sf::Vector2f playerPosition, int radPlayer, sf::
 		
 
 	m_position = m_position + m_velocity;
-	m_sprite.setPosition(m_position);
-	m_surroundingCircle.setPosition(m_sprite.getPosition().x, m_sprite.getPosition().y + 10);
+	m_rect.setPosition(m_position);
+	m_surroundingCircle.setPosition(m_rect.getPosition().x, m_rect.getPosition().y + 10);
 
 }
 
@@ -165,8 +159,8 @@ void Sweeper::radiusCollisionPlayer(sf::Vector2f position, int rad)
 {
 	int x1 = position.x;
 	int y1 = position.y;
-	int x2 = m_sprite.getPosition().x;
-	int y2 = m_sprite.getPosition().y;
+	int x2 = m_rect.getPosition().x;
+	int y2 = m_rect.getPosition().y;
 
 	int radius1 = 150;
 	int radius2 = rad;
@@ -181,19 +175,23 @@ void Sweeper::radiusCollisionPlayer(sf::Vector2f position, int rad)
 	}
 }
 
-void Sweeper::radiusCollisionWorker(sf::Vector2f position, int rad)
+void Sweeper::radiusCollisionWorker(sf::Vector2f position, int rad, bool swept)
 {
 	int x1 = position.x;
 	int y1 = position.y;
-	int x2 = m_sprite.getPosition().x;
-	int y2 = m_sprite.getPosition().y;
+	int x2 = m_rect.getPosition().x;
+	int y2 = m_rect.getPosition().y;
 
 	int radius1 = 150;
 	int radius2 = rad;
 
-	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2))
+	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < (radius1 + radius2) && swept == false)
 	{
 		seek(position);
+		if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) < radius2)
+		{
+			m_scoreCount++;
+		}
 	}
 }
 
@@ -201,8 +199,8 @@ void Sweeper::distance(int distance, sf::Vector2f position)
 {
 	int x1 = position.x;
 	int y1 = position.y;
-	int x2 = m_sprite.getPosition().x;
-	int y2 = m_sprite.getPosition().y;
+	int x2 = m_rect.getPosition().x;
+	int y2 = m_rect.getPosition().y;
 
 
 	if (sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)) > distance)
@@ -221,7 +219,7 @@ void Sweeper::render(sf::RenderWindow & window)
 {
 	if (!m_collected)
 	{
-		window.draw(m_sprite);
+		window.draw(m_rect);
 		window.draw(m_surroundingCircle);
 	}
 	
@@ -271,12 +269,12 @@ float Sweeper::length(sf::Vector2f vel) {
 
 int Sweeper::getTileX()
 {
-	return m_sprite.getPosition().x / 50;
+	return m_rect.getPosition().x / 50;
 }
 
 int Sweeper::getTileY()
 {
-	return m_sprite.getPosition().y / 50;
+	return m_rect.getPosition().y / 50;
 }
 
 

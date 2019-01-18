@@ -340,21 +340,18 @@ void Game::update(double dt)
 	
 	for (int i = 0; i < m_sweeper.size(); i++)
 	{
-		m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_workers[0]->getPos(), m_workers[0]->getRadius());
+		m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius());
+		for (int count = 0; count < m_workers.size(); count++)
+		{
+			m_sweeper[i]->radiusCollisionWorker(m_workers[count]->getPos(), m_workers[count]->getRadius(), m_workers[count]->m_swept);
+		}
 	}
 
 	/*for (int i = 0; i < m_workers.size(); i++)
 	{
-		for (int count = 0; count < m_sweeper.size(); count++)
-		{
-			sf::Vector2f position = m_sweeper[count]->getPos();
-			m_workers[i]->distance(50, position);
-			if (m_workers[i]->collected == true)
-			{
-				std::cout << i << std::endl;
-			}
-		}
-	}*/
+			m_sweeper[i]->radiusCollisionWorker(workerPos, radworker, swept);
+		}*/
+
 
 	for (int i = 0; i < m_workers.size(); i++)
 	{
@@ -707,12 +704,12 @@ void Game::generateWorkers()
 {
 	int i, j;
 	int count = 0;
-	Worker*  worker[1];
+	Worker*  worker[10];
 
-	while (m_workers.size() < 1)
+	while (m_workers.size() < 10)
 	{
-		i = 25;//(rand() % 49) + 1;
-		j = 10;//(rand() % 49) + 1;
+		i = (rand() % 49) + 1;
+		j = (rand() % 49) + 1;
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker)
 		{
@@ -738,12 +735,12 @@ void Game::generateSweepers()
 {
 	int i, j;
 	int count = 0;
-	Sweeper*  sweeper[1];
+	Sweeper*  sweeper[5];
 
-	while (m_sweeper.size() < 1)
+	while (m_sweeper.size() < 5)
 	{
-		i = 25; //(rand() % 49) + 1;
-		j = 5;//(rand() % 49) + 1;
+		i = (rand() % 49) + 1;
+		j = (rand() % 49) + 1;
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker && !m_tile[i][i]->containsSweeper)
 		{

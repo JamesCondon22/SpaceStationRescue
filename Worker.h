@@ -27,6 +27,7 @@ public:
 	int getRadius();
 	void distance(int rad, sf::Vector2f position);
 	bool collected = false;
+	bool m_swept = false;
 
 private:
 	sf::Vector2f m_position;
