@@ -33,7 +33,6 @@ protected:
 	void generateNests();
 	void generateWorkers();
 	void generatePredators(AlienNest alien);
-	/
 	void reset();
 	void iterateQueue(double);
 	void generateSweepers();
@@ -43,6 +42,9 @@ protected:
 	void sweeperWallCollision();
 	void bulletWallCollision();
 	void nestbulletWallCollision();
+
+	void predbulletWallCollision();
+	void checkDirections();
 	void getPath(int posX, int posY);
 
 	// main window

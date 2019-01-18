@@ -39,6 +39,9 @@ public:
 	bool getActivate();
 	int getLives();
 	std::vector<Bullet *> m_bullets;
+	int m_score = 0;
+	bool score;
+
 private:
 	sf::Vector2f m_position;
 	sf::Vector2f m_velocity;
@@ -77,6 +80,7 @@ private:
 	//text and labels 
 	sf::Text m_lifeLabel;
 	sf::Text m_boostLabel;
+	
 };
 
 #endif

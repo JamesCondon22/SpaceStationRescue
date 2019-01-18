@@ -7,7 +7,8 @@ Player::Player(sf::Font & font, sf::Vector2f pos) :
 	m_velocity(0, 0),
 	m_rotation(0),
 	m_speed(0),
-	MAX_SPEED(100)
+	MAX_SPEED(100),
+	score(false)
 {
 	if (!m_texture.loadFromFile("player.png")) {
 		//do something
@@ -134,7 +135,10 @@ void Player::update(double dt)
 			}
 		}
 	}
+<<<<<<< HEAD
 	//sets the speed boost to a new max_speed 
+=======
+>>>>>>> master
 	if (speedBoost)
 	{
 		MAX_SPEED = 200;
@@ -222,6 +226,8 @@ void Player::checkSweepers(Sweeper * sweep)
 		{
 			m_bullets.erase(m_bullets.begin());
 			sweep->kill();
+			m_score + sweep->getScoreCount();
+			score = true;
 		}
 	}
 }

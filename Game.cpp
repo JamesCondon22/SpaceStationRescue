@@ -21,7 +21,7 @@ Game::Game()
 	m_count(0)
 
 {
-
+	// All textures loading in
 	m_window.setVerticalSyncEnabled(true);
 	
 	if (!m_font.loadFromFile("images/bernhc.TTF"))
@@ -225,7 +225,6 @@ void Game::processEvents()
 void Game::processGameEvents(sf::Event& event)
 {
 
-
 }
 /// <summary>
 /// resets the tile maze 
@@ -249,23 +248,11 @@ void Game::update(double dt)
 {
 	sf::Time deltaTime;
 
-	//sets the position for the centre of the game view 
-	playerPosition = sf::Vector2f(m_player->getPos().x + 350, m_player->getPos().y + 200);
-	gameView.setCenter(playerPosition);
-
 	//only updates if the player hasnt won or lost 
 	if (!m_winner || !m_gameover) {
-		for (int i = 0; i < m_workers.size(); i++)
-		{
-			m_workers[i]->update(dt, m_player->getPos());
 
-			if (m_workers[i]->getCollision())
-			{
-				std::cout << m_workers.size() << std::endl;
-			}
-		}
-
-		// Calls scoring method see definition far below
+		playerPosition = sf::Vector2f(m_player->getPos().x + 350, m_player->getPos().y + 200);
+		gameView.setCenter(playerPosition);
 		scoring();
 
 		for (int i = 0; i < m_alienNests.size(); i++)
@@ -278,6 +265,11 @@ void Game::update(double dt)
 			{
 				//updates the lifebar 
 				m_player->updateLifeBar();
+			}
+
+			if (!predSpawned)
+			{
+				generatePredators(*m_alienNests[i]);
 			}
 		}
 
@@ -294,13 +286,37 @@ void Game::update(double dt)
 		int curX = round(m_player->getPos().x / 50);
 		int curY = round(m_player->getPos().y / 50);
 
+
+		//Updates the sweeper bots for flee, seek and collection
 		for (int i = 0; i < m_sweeper.size(); i++)
 		{
-			m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius(), m_workers[0]->getPos(), m_workers[0]->getRadius());
-			m_player->checkSweepers(m_sweeper[i]);
+			m_sweeper[i]->update(dt, m_player->getPos(), m_player->getRadius());
+			for (int count = 0; count < m_workers.size(); count++)
+			{
+				m_sweeper[i]->radiusCollisionWorker(m_workers[count]->getPos(), m_workers[count]->getRadius(), m_workers[count]->m_swept);
+				m_player->checkSweepers(m_sweeper[i]);
+				if (m_player->score == true)
+				{
+					m_count += m_player->m_score;
+					m_player->score = false;
+				}
+			}
 		}
 
-		//checks the collsion of the player and the walls 
+
+
+		//Detection for sweepers on worker end
+		for (int i = 0; i < m_workers.size(); i++)
+		{
+			m_workers[i]->update(dt, m_player->getPos());
+			for (int count = 0; count < m_sweeper.size(); count++)
+			{
+				sf::Vector2f pos = m_sweeper[count]->getPos();
+				m_workers[i]->collisionSweeper(pos);
+			}
+		}
+
+	
 		collision(curX, curY);
 		//sets the goal tile 
 		m_goaltile = m_tile[curX][curY];
@@ -322,36 +338,43 @@ void Game::update(double dt)
 		prevX = curX;
 		prevY = curY;
 
-		
-		//calls the predator update
-		iterateQueue(dt);
+
+
 		//checks the predator and the bullet 
 		m_player->checkPreds(m_predators[0]);
 		//calls the player and the bullet collision 
 		if (m_predators[0]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
 		{
 			m_player->updateLifeBar();
+			m_player->checkPreds(m_predators[0]);
+
+			if (m_predators[0]->bulletPlayerCollision(m_player->getPos(), m_player->getRadius()))
+			{
+				m_player->updateLifeBar();
+			}
+
 		}
-		
+
 		//collisions with walls 
 		workerWallCollision();
 		bulletWallCollision();
 		sweeperWallCollision();
+		predbulletWallCollision();
 		nestbulletWallCollision();
 
-	}
-	//centres the minimap 
-	miniMapView.setCenter(m_player->getPos());
-	
-	//checks win condtiion
-	if (m_count >= 10)
-	{
-		m_winner = true;
-	}
-	//checks lose condition
-	if (m_player->getLives() <= 0)
-	{
-		m_gameover = true;
+		iterateQueue(dt);
+		//centres the minimap 
+		miniMapView.setCenter(m_player->getPos());
+
+		if (m_count >= 10)
+		{
+			m_winner = true;
+		}
+		//checks lose condition
+		if (m_player->getLives() <= 0)
+		{
+			m_gameover = true;
+		}
 	}
 	
 }
@@ -361,16 +384,16 @@ void Game::update(double dt)
 /// increments the iterator 
 /// </summary>
 /// <param name="dt"></param>
-/// <param name="count"></param>
 void Game::iterateQueue(double dt)
 {
 
 	for (auto iter = queue.begin(); iter != queue.end();)
 	{
-			m_predators[0]->update(dt, m_tile[iter->getXpos()][iter->getYpos()]->getCircleVec(), m_player->getPos());
-			iter++;	
+		m_predators[0]->update(dt, m_tile[iter->getXpos()][iter->getYpos()]->getCircleVec(), m_player->getPos());
+		iter++;
 	}
 }
+
 
 
 /// <summary>
@@ -530,7 +553,7 @@ void Game::workerWallCollision()
 		{
 			m_workers[i]->changeDirection();
 		}
-		if (m_tile[a][b + 1]->getObstacle())
+		if (m_tile[a][b + 2]->getObstacle())
 		{
 			m_workers[i]->changeDirection();
 		}
@@ -582,6 +605,36 @@ void Game::nestbulletWallCollision()
 /// collision for the sweeper bots and the walls 
 /// if collision is detected the sweepers change direction 
 /// </summary>
+void Game::predbulletWallCollision()
+{
+	for (int i = 0; i < m_predators.size(); i++)
+	{
+		int a = m_predators[i]->m_bullet->getTileX();
+		int b = m_predators[i]->m_bullet->getTileY();
+
+		if (m_tile[a][b - 1]->getObstacle())
+		{
+			m_predators[i]->m_bullet->resetToNest(m_predators[i]->getPos());
+			//m_predators[i]->setShoot();
+		}
+		if (m_tile[a][b + 1]->getObstacle())
+		{
+			m_predators[i]->m_bullet->resetToNest(m_predators[i]->getPos());
+			//m_predators[i]->setShoot();
+		}
+		if (m_tile[a - 1][b]->getObstacle())
+		{
+			m_predators[i]->m_bullet->resetToNest(m_predators[i]->getPos());
+			//m_predators[i]->setShoot();
+		}
+		if (m_tile[a + 1][b]->getObstacle())
+		{
+			m_predators[i]->m_bullet->resetToNest(m_predators[i]->getPos());
+			//m_predators[i]->setShoot();
+		}
+	}
+}
+
 void Game::sweeperWallCollision()
 {
 
@@ -777,9 +830,9 @@ void Game::generateWorkers()
 {
 	int i, j;
 	int count = 0;
-	Worker*  worker[20];
+	Worker*  worker[15];
 
-	while (m_workers.size() < 20)
+	while (m_workers.size() < 15)
 	{
 		i = (rand() % 49) + 1;
 		j = (rand() % 49) + 1;
@@ -818,12 +871,12 @@ void Game::generateSweepers()
 {
 	int i, j;
 	int count = 0;
-	Sweeper*  sweeper[1];
+	Sweeper*  sweeper[5];
 
-	while (m_sweeper.size() < 1)
+	while (m_sweeper.size() < 5)
 	{
-		i = 25;//(rand() % 49) + 1;
-			j = 5;//(rand() % 49) + 1;
+		i = (rand() % 49) + 1;
+		j = (rand() % 49) + 1;
 
 		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker && !m_tile[i][i]->containsSweeper)
 		{

@@ -63,8 +63,9 @@ void Predator::update(double dt, sf::Vector2f position, sf::Vector2f playPos)
 	m_velocity = m_velocity * 0.3f;
 	m_rotation = getNewOrientation(m_rotation, m_velocity);
 
-	//checks for the disance formula 
-	if (circleCollision(playPos, 200) && !shoot)
+
+
+	if (circleCollision(playPos, 150) && !shoot)
 	{
 		m_bullet->resetToNest(m_rect.getPosition());
 		shoot = true;	
