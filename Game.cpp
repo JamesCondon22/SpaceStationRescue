@@ -139,7 +139,7 @@ Game::Game()
 	m_workerUI.setPosition(gameView.getCenter());
 	generateNests();
 	generateWorkers();
-	generatePredators();
+	//generatePredators();
 
 	m_player = new Player(m_font, m_tile[25][25]->getPosition());
 	m_sweeper = new Sweeper();
@@ -323,6 +323,8 @@ void Game::update(double dt)
 			std::cout << "collide" << std::endl;
 			m_player->updateLifeBar();
 		}
+		if (!predSpawned)
+		generatePredators(*m_alienNests[i]);
 	}
 	
 	m_player->update(dt);
@@ -356,8 +358,11 @@ void Game::update(double dt)
 	prevX = curX;
 	prevY = curY;
 
-	//iterateQueue();
-	//m_predators[0]->update(m_tile[m_iter->getXpos()][m_iter->getYpos()]->getCircleVec());
+	for (int i = 0; i < m_predators.size(); i++)
+	{
+		iterateQueue(dt, i);
+	}
+
 	workerWallCollision();
 	bulletWallCollision();
 	
@@ -376,20 +381,23 @@ void Game::update(double dt)
 	
 }
 
-void Game::iterateQueue()
+void Game::iterateQueue(double dt, int count)
 {
 
 	for (auto iter = queue.begin(); iter != queue.end();)
 	{
-		if (m_predators[0]->circleCollision(m_tile[iter->getXpos()][iter->getYpos()]->getCircleVec(), 5))
-		{
-			iter++;
-		}
 		
-		//m_iter = iter;
+			m_predators[count]->update(dt, m_tile[iter->getXpos()][iter->getYpos()]->getCircleVec(), m_player->getPos());
+			iter++;
+		
+		
 	}
 }
 
+void Game::checkDirections()
+{
+
+}
 
 
 
@@ -713,8 +721,6 @@ void Game::addToQueue(std::pair<int, int>& currentPos, std::pair<int, int>& pos,
 	if (!m_tile[currentPos.first][currentPos.second]->getVisited() && !m_tile[currentPos.first][currentPos.second]->getObstacle())
 	{
 		auto currentTop = (queue.front()->getGridPos());
-		//m_tile[currentPos.first][currentPos.second]->setVectorPosition(currentTop);
-		//m_tile[currentPos.first][currentPos.second]->setColor(sf::Color(255, 200 - (cost * 4), 215 - (cost * 2), 221 - (cost * 3)));
 		m_tile[currentPos.first][currentPos.second]->setVisited(true);
 		m_tile[currentPos.first][currentPos.second]->setPrevious(prevpos);
 		m_tile[currentPos.first][currentPos.second]->setCost(cost + 1);
@@ -786,31 +792,13 @@ void Game::generateWorkers()
 /// <summary>
 /// 
 /// </summary>
-void Game::generatePredators()
+void Game::generatePredators(AlienNest alien)
 {
-	int i, j;
-	int count = 0;
-	Predator*  pred[1];
-
-	while (m_predators.size() < 1)
-	{
-		i =  29 /*(rand() % 49) + 1*/;
-		j =  25 /*(rand() % 49) + 1*/;
-
-		if (!m_tile[i][j]->getObstacle() && !m_tile[i][j]->containsNest && !m_tile[i][j]->containsWorker)
-		{
-			if (!m_tile[i][j - 1]->getObstacle() && !m_tile[i][j + 1]->getObstacle() &&
-				!m_tile[i - 1][j]->getObstacle() && !m_tile[i + 1][j]->getObstacle())
-			{
-				m_tile[i][j]->containsWorker = true;
-				pred[count] = new Predator(m_predTexture, m_tile[i][j]->getPosition());
-				m_predators.push_back(pred[count]);
-				count++;
-			}
-
-		}
-
-	}
+	
+	Predator *pred = new Predator(m_predTexture, alien.getPos());
+	m_predators.push_back(pred);
+	predSpawned = true;
+	
 }
 /// <summary>
 /// 
@@ -837,11 +825,8 @@ void Game::getPath(int posX, int posY)
 	{
 		m_tile[iter->m_previous.first][iter->m_previous.second]->setPath();
 		queue.push_back(*m_tile[iter->m_previous.first][iter->m_previous.second]);
-	/*	if (iter->m_previous.second < iter->m_previous.seco + 1)
-		{
-			m_tile[iter->m_previous.first][iter->m_previous.second]->setRotation(90);
-		}*/
+	
 		iter++;
 	}
-	//m_predators[0]->setPosition(m_tile[iter->m_previous.first][iter->m_previous.second]->getPosition().x, m_tile[iter->m_previous.first][iter->m_previous.second]->getPosition().y);
+	
 }

@@ -21,12 +21,15 @@ Tile::Tile(int x, int y, sf::Texture & texture, int dx, int dy, bool isObs) :
 	m_rect.setSize(sf::Vector2f(50.0, 50.0));
 	m_rect.setPosition(m_position);
 	
+	if (!isObs)
+	{
+		circle.setRadius(5);
+		circle.setPosition(0, 0);
+		circle.setOrigin(circle.getRadius(), circle.getRadius());
+		circle.setPosition(m_position.x + 25, m_position.y + 25);
+		circle.setFillColor(sf::Color(0, 0, 0, 40));
+	}
 	
-	circle.setRadius(5);
-	circle.setPosition(0, 0);
-	circle.setOrigin(circle.getRadius(), circle.getRadius());
-	circle.setPosition(m_position.x + 25, m_position.y + 25);
-	circle.setFillColor(sf::Color(0, 0, 0, 40));
 
 	line.setSize(sf::Vector2f(2, 23));
 	line.setPosition(m_position.x + 23, m_position.y + 23);
@@ -94,8 +97,9 @@ void Tile::render(sf::RenderWindow & window)
 	{
 		m_rect.setFillColor(sf::Color::Yellow);
 		//window.draw(line);
+		window.draw(circle);
 	}
-	window.draw(circle);
+	
 	window.draw(m_label);
 
 }

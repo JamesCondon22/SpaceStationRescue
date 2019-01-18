@@ -224,7 +224,7 @@ void Player::handleInput()
 		m_bulletCount = 0;
 		sf::Vector2f newPos = m_rect.getPosition();
 		
-		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rect.getRotation(), true));
+		m_bullets.push_back(new Bullet(m_rect.getPosition(), m_rotation, true, false));
 	}
 }
 

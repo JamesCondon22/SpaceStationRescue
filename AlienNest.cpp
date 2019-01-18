@@ -17,7 +17,7 @@ AlienNest::AlienNest(sf::Texture & texture, sf::Vector2f pos) :
 	m_position = pos;
 	m_rect.setPosition(m_position);
 	
-	m_bullet = new Bullet(m_position, 0, false);
+	m_bullet = new Bullet(m_position, 0, false, false);
 
 	m_surroundingCircle.setRadius(m_radius);
 	m_surroundingCircle.setPosition(0,0);

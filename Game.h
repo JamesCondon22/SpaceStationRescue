@@ -31,16 +31,17 @@ protected:
 	void checkLowest(int lowest, int current);
 	void generateNests();
 	void generateWorkers();
-	void generatePredators();
+	void generatePredators(AlienNest alien);
 	void createMap();
 	void reset();
-	void iterateQueue();
+	void iterateQueue(double dt, int i);
 
 	void collision(int x, int y);
 	void workerWallCollision();
 	void bulletWallCollision();
 	void nestbulletWallCollision();
 	void bulletNestCollision(AlienNest *nest);
+	void checkDirections();
 	void getPath(int posX, int posY);
 	// main window
 	sf::RenderWindow m_window;
@@ -99,6 +100,10 @@ protected:
 
 	//std::list<Tile>::iterator m_iter;
 	std::list<Tile> queue;
+	sf::Clock m_clock;
+	double m_time = 0;
+
+	bool predSpawned;
 };
 
 #endif

@@ -7,11 +7,12 @@
 class Bullet
 {
 public:
-	Bullet(sf::Vector2f pos, float rotation, bool isPlayer);
+	Bullet(sf::Vector2f pos, float rotation, bool isPlayer, bool isPred);
 	~Bullet();
 	int getTileX();
 	int getTileY();
 	void seek(sf::Vector2f position, sf::Vector2f pos, double rot);
+	void predSeek(sf::Vector2f position, sf::Vector2f pos, double rot);
 	float getNewOrientation(float curOrientation, sf::Vector2f velocity);
 	float length(sf::Vector2f vel);
 	sf::Vector2f normalize(sf::Vector2f vec);
